@@ -1,0 +1,35 @@
+/**
+ * @author André Santana - fc49451
+ */
+
+.profile-image-help{
+  width: 250px;
+  margin-top: -10px !important;
+  margin-bottom: -10px !important;
+}
+
+.profile-image{
+  width: 250px;
+  height: 250px;
+  border: 1px solid rgba(0, 0, 82, 0.4);
+}
+
+/*Select for Profile Image*/
+.select-profile-image{
+  background-color: #005C00;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 10px !important;
+  height: 50px !important;
+  border-radius: 0rem 0rem .25rem .25rem;
+  width: 250px;
+  text-align: center;
+  margin-top: -20px;
+}
+
+.select-profile-image:hover {
+  background-color: rgb(2, 75, 2);
+  color: #ffffff;
+  box-shadow: 0px 0px 7px 1px rgba(0,0,0,0.75);
+}

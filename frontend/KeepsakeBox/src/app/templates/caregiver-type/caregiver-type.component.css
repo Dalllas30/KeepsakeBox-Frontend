@@ -1,0 +1,50 @@
+/**
+ * @author André Santana - fc49451
+ */
+
+/*Caregiver Type Help*/
+.caregiver-type-help{
+  width: 345px;
+  border-bottom: 1px solid rgba(0, 0, 82, 0.4);
+}
+
+/*Caregiver Type Box*/
+.caregiver-type-box{
+  border: 1px solid rgba(0, 0, 82, 0.4);
+  padding: 5px;
+  width: 325px;
+  height: 50px;
+  border-radius: 0.25rem;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+input[type=radio] {
+  display: none;
+}
+
+input[type=radio] + label {
+  background-color: white;
+  padding: 5px 22.5px 5px 22.5px;
+  border-radius: 0.25rem;
+  width: 157px;
+  height: 38px;
+  text-align: center;
+  border: none;
+}
+
+input[type=radio] + label:hover {
+  cursor: pointer;
+  color: #004080;
+}
+
+input[type=radio]:checked + label {
+  background-color: #004080;
+  color: white;
+}
+
+/*Formal Caregiver Speciality*/
+.specility-select{
+  width: 325px;
+  height: 50px;
+}
