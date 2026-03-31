@@ -1,0 +1,42 @@
+<!--@author André Santana - fc49451-->
+
+<!--Profile Image Label-->
+<label class="p-2 input-label"
+  style="margin-bottom: -5px;">
+  <i class="bi bi-person-square"></i> 
+  {{'profilePic' | translate}}
+</label>
+
+<!--Profile Image Help-->
+<small class="p-2 form-text text-info-message profile-image-help">
+  {{'profilePicHelp' | translate}}
+</small>
+
+<div class="p-2">
+
+  <!--Profile Image-->
+  <img [src]="profileImage.imageURL" alt="Foto de Perfil" 
+      class="img-thumbnail profile-image"> 
+
+  <!--Select Image Div-->   
+  <div>
+
+    <!--Select Image (Hidden)-->
+    <input type="file" id="profileImage" 
+          (change)="changeProfileImageURL($event)" 
+          class="input-file-hidden"
+          accept="image/*">
+
+    <!--Select Image-->
+    <label for="profileImage" class="select-profile-image">
+      {{'selectPic' | translate}}
+      <div *ngIf="loadingImage" 
+          class="spinner-border small-spinner-white" 
+          role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </label>
+
+  </div>  
+
+</div>

@@ -1,0 +1,509 @@
+/**
+ * @author André Santana - fc49451
+ * @author Pedro Neves - fc46430
+ */
+
+/*Bootstrap Icons*/
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+
+/*
+ Modification to the modal popup DialogBox
+*/
+.modal-fullscreen {
+    background-color: white;  
+}
+
+.modal-content {
+  border: none;
+}
+
+/* original modal-content
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: #ffffff;
+  background-clip: padding-box;
+  border: 1px;
+  border-radius: 0.3rem;
+  outline: 0;
+}
+*/
+
+
+/*Global Settings*/
+*{
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000052;
+  font-size: 16pt;
+}
+
+.three-width{
+  width: 33.333%;
+}
+.half-width{
+  width: 50%;
+}
+
+.full-width{
+  width: 100%;
+}
+
+.blue-border{
+  border-color: #000052 !important;
+}
+
+.light-grey-border{
+  border-color: #b1b5b9 !important;
+}
+
+.light-blue-border{
+  border: 1px solid rgba(0, 0, 82, 0.4);
+}
+
+.color-white{
+  color: white;
+}
+
+.color-blue{
+  color: #000052;
+}
+
+.text-icon-blue{
+  color: #000052;
+  --text-shadow: 0 0 3px black, 0 0 3px black, 0 0 3px black;
+}
+.text-icon-yellow{
+  color: rgb(252, 216, 13);
+  text-shadow: 0 0 3px black, 0 0 3px black, 0 0 3px black;
+}
+
+.text-icon-preview{
+  color: blue;
+  text-shadow: 0 0 3px black, 0 0 35px black, 0 0 3px black;
+}
+.text-icon-red{
+  color: red;
+  --text-shadow: 0 0 3px black, 0 0 35px black, 0 0 3px black;
+}
+
+.bolder-text{
+  font-weight: bolder;
+}
+
+/*App containers*/
+.title-container{
+  margin-top: 10px;
+}
+
+.caregiver-home-container{
+  margin-top: 10px;
+}
+
+/*KeepsakeBox Title*/
+.keepsakeBox-icon{
+  width: 70px;
+  height: 60px;
+  margin-right: 5px;
+}
+
+.sm-keepsakeBox-icon{
+  width: 50px;
+  height: 35px;
+  margin-right: 5px;
+}
+
+/*Input Fields*/
+.input-label{
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.input-text-select{
+  height: 40px;
+  color: #000052;
+  padding: 0 0 0 10px;
+  border: 1px solid rgba(0, 0, 82, 0.4);
+  margin: 0px !important;
+}
+
+.input-text-select:focus{
+  color: #000052;
+}
+
+.input-text-select::placeholder{
+  color: rgb(117, 117, 117);
+}
+
+.disabled-option{
+  color: rgb(117, 117, 117);
+}
+
+.input-text-select-error{
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.input-icon-blue{
+  background-color: #000052;
+  border: 1px solid rgba(0, 0, 82, 0.4);
+  color: white;
+  height: 40px;
+}
+
+/*Hides Input File*/
+.input-file-hidden{
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+}
+
+/*Alerts*/
+.alert-box{
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.page-message{
+  font-size: 24pt;
+  text-align: center !important;
+}
+
+/*Small Text Messages*/
+.text-error-message{
+  font-size: 14pt;
+  color: #A80000;
+  margin-bottom: -20px;
+}
+
+.text-info-message{
+  font-size: 14pt;
+  color: #000052;
+}
+
+/*Cards*/
+.card-header-blue{
+  background-color: #000052;
+  border-color: #000052;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px 10px 20px !important;
+}
+
+.card-body{
+  padding: 10px;
+}
+
+/*Buttons*/
+.button{
+  height: 50px !important;
+}
+
+.small-button{
+  height: 45px !important;
+}
+
+.tiny-button{ 
+  font-size: 12pt;
+  height: 30px !important;
+  padding: 5px 5px 5px 5px !important;
+}
+.tiny-bi{
+  font-size: 16px;
+}
+.btn-link{
+  color: #0017eb;
+}
+
+/*Button Action*/
+.button-action{
+  background-color: #005C00;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.button-action:hover{
+  background-color: rgb(2, 75, 2);
+  color: #ffffff;
+  box-shadow: 0px 0px 7px 1px rgba(0,0,0,0.75);
+}
+
+.button-action:disabled{
+  background-color: #005C00;
+  opacity: 0.3;
+  color: #ffffff;
+  cursor: not-allowed;
+}
+
+/*Button Neutral*/
+.button-neutral{
+  background-color: #004080;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.button-neutral:hover{
+  background-color: #003264;
+  color: #ffffff;
+  box-shadow: 0px 0px 7px 1px rgba(0,0,0,0.75);
+}
+
+.button-neutral:disabled{
+  background-color: #004080;
+  opacity: 0.3;
+  color: #ffffff;
+  cursor: not-allowed;
+}
+
+/*Button Destructive*/
+.button-destructive{
+  background-color: #A80000;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.button-destructive:hover{
+  background-color: #860000;
+  color: #ffffff;
+  box-shadow: 0px 0px 7px 1px rgba(0,0,0,0.75);
+}
+
+.button-destructive:disabled{
+  background-color: #A80000;
+  opacity: 0.3;
+  color: #ffffff;
+  cursor: not-allowed;
+}
+
+/*Spinners*/
+.small-spinner-white{
+  height: 25px;
+  width: 25px;
+  color: white !important;
+}
+
+.big-spinner-blue{
+  height: 50px;
+  width: 50px;
+  color: #000052 !important;
+}
+
+/*Caregiver and Patient Sub-navs*/
+.nav-tabs-grey{
+  border-bottom: 1px solid #b1b5b9;
+}
+
+.nav-link-grey-focus{
+  border: 1px solid #b1b5b9 !important;
+  border-bottom: 1px solid white !important;
+  color: #000052;
+}
+
+.nav-link-grey-focus:hover{
+  color: #007bff;
+}
+
+.nav-link-grey:hover:not(.nav-link-grey-focus){
+  border: 1px solid #b1b5b9 !important;
+  color: #007bff;
+}
+
+.div-separator-top-light-grey{
+  border-top: 1px solid #b1b5b9;
+  margin-top: 5px;
+  padding-top: 5px;
+}
+
+.div-separator-top-light-blue{
+  border-top: 1px solid rgba(0, 0, 82, 0.4);
+  margin-top: 5px;
+  padding-top: 5px;
+}
+
+.tab-inner-display{
+  border: 1px solid #b1b5b9 !important;
+  border-radius: 0 0 .25rem .25rem;
+  text-align: center;
+  width: 100%;
+}
+
+/*Category Buttons*/
+.category-button{
+  border: 1px solid #000052;
+  color: #000052;
+}
+
+.category-button:hover{
+  color: #007bff;
+  cursor: pointer;
+}
+
+.category-button-selected{
+  border: none !important;
+  background-color: #000052 !important;
+  color: white !important;
+}
+.category-button:disabled{
+  background-color: lightgray !important;
+  color: #000052 !important;
+  cursor: not-allowed;
+}
+
+.bi-category-button{
+  background-color: transparent;
+  color: inherit;
+}
+
+/*Notifications*/
+.notification-patient-image{
+  width: 181px;
+  height: 181px;
+}
+
+.notification-text{
+  width: 500px;
+}
+/* Image Card */
+
+.image-square{
+  width: 200px;
+  height: 180px;
+  cursor: grab;
+  background-color: #ffffff;
+}
+
+.image-card-inside{
+    max-width: 185px;
+    max-height: 170px;
+  }
+
+.image-locker{
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    left: 10px;
+  }
+
+.image-favorite{
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    right: 10px;
+  }
+
+.space{
+  height: 35px
+}
+
+.button-detail{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    left: 3px;
+    cursor: pointer;
+    caret-color:blue;
+}
+
+.button-remove{
+  position: absolute;
+  z-index: 99;
+  bottom: 3px;
+  right: 3px;
+  cursor: pointer;
+}
+
+.image-remove{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    right: 7px;
+    cursor: pointer;
+}
+  
+.image-card{
+  text-align: left;
+  width: 200px;
+  height: 255px;
+  background-color: #e0e0e0;
+}
+
+.long-image-card{
+  text-align: left;
+  width: 200px;
+  height: 283px;
+  background-color: #e0e0e0;
+}
+
+.long-image-card:hover{
+  --border: 1px solid blue !important;
+  --background-color: rgb(149, 189, 227);
+  cursor: pointer;
+}
+
+.selected-image{
+    width: 200px;
+    height: 255px;
+    border: 1px solid darkblue;
+    --background-color: #b4b4b4;
+    --background-color: rgb(93, 128, 177);
+    background-color: rgb(149, 189, 227);
+}
+
+.image-description{
+  height: 62px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/*Pagination*/
+ngb-pagination ul > li:not(.active) > a {
+    background-color: white !important;
+    border: 1px solid #000052 !important;
+    color: #000052 !important;
+    padding-top: 10px;
+    padding-left: 18px;
+    height: 50px;
+    min-width: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+ngb-pagination ul > li.active > a {
+    background-color: #004080 !important;
+    border: 1px solid #000052 !important;
+    color: white !important;
+    z-index: 0 !important;
+    padding-top: 10px;
+    padding-left: 18px;
+    height: 50px;
+    min-width: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+ngb-pagination .page-item.disabled {
+    opacity: 0.5;
+}
+
+.Help-tooltip .tooltip-inner{
+  background-color: goldenrod;
+  font-size: 90%;
+}
+
+.Help-tooltip .arrow::before {
+  border-bottom-color: goldenrod;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

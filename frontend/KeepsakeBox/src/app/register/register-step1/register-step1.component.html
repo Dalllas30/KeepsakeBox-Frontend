@@ -1,0 +1,182 @@
+<p>register-step1 works!</p>
+<!--@author André Santana - fc49451-->
+
+<!--Register Step1 Container-->
+<div class="d-flex flex-column">
+
+    <!--Error Alert - Not Valid Email-->
+    <div *ngIf="!validEmail" 
+        class="alert alert-danger alert-box" role="alert">
+        {{'emailAlreadyRegistered' | translate}}
+    </div>
+
+    <!--Validate Email Form-->
+    <form (ngSubmit)="validateEmail()" #validateEmailForm="ngForm">
+
+        <!--Step 1 Register Card-->
+        <div class="card blue-border">
+
+            <!--Step 1 Register Card Header-->
+            <h5 class="card-header card-header-blue">
+                {{'createAcc1of2' | translate}}
+            </h5>
+
+            <!--Step 1 Register Card Body-->
+            <div class="card-body">
+
+                <!--Caregiver Name-->
+                <div class="p-2 form-group"
+                    style="margin-bottom: 10px;">
+                    <label for="name" class="input-label">
+                        <i class="bi bi-person"></i> 
+                        {{'name' | translate}}*
+                    </label>
+                    <input type="text" class="form-control input-text-select" 
+                        id="name" placeholder="{{'required' | translate}}" required 
+                        [(ngModel)]="step1Data.name" 
+                        name="name" #name="ngModel">
+                </div>
+
+                <!--Birth Date and Email-->
+                <div class="d-flex justify-content-start flex-wrap"
+                    style="margin-bottom: -10px;">
+
+                    <!--Birth Date-->
+                    <div class="p-2 form-group">
+                        <app-birth-date-input
+                        [birthDate]="step1Data.birthDate">
+                        </app-birth-date-input>
+                    </div>
+
+                    <!--Email-->
+                    <div class="p-2 form-group" style="width:385px;">
+                        <label for="email" class="input-label">
+                            <i class="bi bi-envelope text-icon-blue"></i>
+                            Email*
+                        </label>
+                        <input type="email" class="form-control input-text-select" 
+                        id="email" placeholder="{{'required' | translate}}" required 
+                        [(ngModel)]="step1Data.email" 
+                        name="email" #email="ngModel"
+                        pattern="(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+                        [class.input-text-select-error]="!validEmailInput"
+                        (change)="isValidEmailValue(email)">
+
+                        <!--Error Message - Not Valid Email-->
+                        <small *ngIf="!validEmailInput"
+                        class="form-text text-error-message"
+                        style="margin-top: 10px;">
+                        {{'emailInvalid' | translate}}
+                        </small>                  
+                    </div>
+
+                    <!--Phone-->
+                    <div class="p-2 form-group" style="width:250px;">
+                        <label for="phone" class="input-label">
+                            <i class="bi bi-telephone-fill"></i> 
+                            {{'mobilePhone' | translate}}
+                        </label>
+                        <input type="number" class="form-control input-text-select"
+                            id="phone" min=0 [(ngModel)]="step1Data.phone" 
+                            placeholder="{{'optional' | translate}}"
+                            name="phone" #phone="ngModel">   
+                    </div>
+
+                </div>
+
+                <!--Passwords-->
+                <div class="d-flex justify-content-start flex-wrap">
+                
+                    <!--Password-->
+                    <div class="p-2 form-group" 
+                        style="padding-right:20px !important;
+                               width:530px;">
+                        <label for="password" class="input-label">
+                            <i class="bi bi-key"></i>
+                            {{'password' | translate}}*
+                        </label>
+                        <input type="password" class="form-control input-text-select" 
+                        id="password" placeholder="{{'required' | translate}}" required 
+                        [(ngModel)]="step1Data.password" 
+                        name="password" #password="ngModel"
+                        [class.input-text-select-error]="!validPasswordFields"
+                        (change)="arePasswordsValid(password,confirmPassword)">   
+                    </div>
+                    
+                    <!--Password Confirm-->
+                    <div class="p-2 form-group" style="width:510px;">
+                        <label for="confirmPassword" class="input-label">
+                            <i class="bi bi-key"></i>
+                            {{'confirmPassword' | translate}}*
+                        </label>
+                        <input type="password" class="form-control input-text-select" 
+                        id="confirmPassword" placeholder="{{'required' | translate}}" required 
+                        [(ngModel)]="step1Data.confirmPassword" 
+                        name="confirmPassword" #confirmPassword="ngModel"
+                        [class.input-text-select-error]="!validPasswordFields"
+                        (change)="arePasswordsValid(password,confirmPassword)"> 
+
+                        <!--Error Message - Passwords Do Not Match-->
+                        <small *ngIf="!validPasswordFields"
+                        class="form-text text-error-message"
+                        style="margin-top: 10px;">
+                        {{'difPasswords' | translate}}
+                        </small>                  
+                    </div>
+
+                </div>
+
+                <!--Required symbol-->
+                <small *ngIf="translateCache=='pt'"
+                       class="p-2 form-text text-info-message profile-image-help"
+                       style="margin-top: -10px;">
+                    Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+                </small>
+                <small *ngIf="translateCache=='en'"
+                       class="p-2 form-text text-info-message profile-image-help"
+                       style="margin-top: -10px;">
+                    All fields with <strong>*</strong> are <strong>Required</strong>.
+                </small>
+
+                <!--Step 1 Buttons-->
+                <div class="d-flex justify-content-start flex-wrap-reverse">
+
+                    <!--Iniciar Sessão-->
+                    <div class="p-2 half-width" 
+                        style="padding-right: 20px !important;width:530px;">
+                        <button type="button" 
+                                class="btn button button-neutral full-width" 
+                                (click)="navigateToLogin()">
+                            <i class="bi bi-caret-left-fill color-white"></i>
+                            {{'login' | translate}}
+                        </button>
+                    </div>
+
+                    <!--Advance to Next Step-->
+                    <div class="p-2 half-width" style="width:510px;">
+                        <button type="submit" 
+                                class="btn button button-action full-width" 
+                                [disabled]="!validateEmailForm.valid || !validEmail
+                                            || !validEmailInput || !validPasswordFields
+                                            || step1Data.birthDate.day == 0
+                                            || step1Data.birthDate.month == -1
+                                            || step1Data.birthDate.year == 0
+                                            || !step1Data.birthDate.validDate">
+                            {{'proceed' | translate}}
+                            <div *ngIf="validatingEmail" 
+                                class="spinner-border small-spinner-white" 
+                                role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>

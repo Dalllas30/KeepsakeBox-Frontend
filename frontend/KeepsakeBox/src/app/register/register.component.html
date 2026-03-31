@@ -1,0 +1,38 @@
+<p>register works!</p>
+<!--@author André Santana - fc49451-->
+
+<!--Title Container-->
+<div class="d-flex justify-content-center title-container">
+  <img src="./assets/keepsakebox-image.png" 
+       class="keepsakeBox-icon" 
+       alt="KeepsakeBox Icóne">
+  <h1>KeepsakeBox</h1>
+</div>
+
+<!--Register Container-->
+<div class="d-flex justify-content-center flex-wrap">
+
+  <!--Cancel Screen-->
+  <app-cancel-screen
+  *ngIf="!hideCancel"
+  (answeredNo)="showStep1()"
+  (answeredYes)="navigateToLogin()">
+  </app-cancel-screen>
+
+  <!--Register Step 1-->
+  <app-register-step1
+  *ngIf="!hideStep1"
+  [step1Data]="step1Data"
+  (backToLogin)="showCancel()"
+  (emailValidationCompleted)="showStep2()">
+  </app-register-step1>
+
+  <!--Register Step 2-->
+  <app-register-step2
+  *ngIf="!hideStep2"
+  [step2Data]="step2Data"
+  (backToStep1)="showStep1()"
+  (registerSubmitted)="caregiverRegister()">
+  </app-register-step2>
+
+</div>

@@ -1,0 +1,118 @@
+<!--@author André Santana - fc49451-->
+
+<!--Cancel Card-->
+<div class="card blue-border">
+
+    <!--Register Cancel Header-->
+    <h5 *ngIf="isRouteActive('register')" class="card-header card-header-blue">
+        {{'registerCancel' | translate}}
+    </h5>
+
+    <!--Logout Cancel Header-->
+    <h5 *ngIf="isRouteActive('logout')" class="card-header card-header-blue">
+        {{'exitApp' | translate}}
+    </h5>
+
+    <!--Add Patient Cancel Header-->
+    <h5 *ngIf="isRouteActive('persons/add') && caregiver != null && caregiver.type=='Formal'"
+        class="card-header card-header-blue">
+        {{'cancelAddNewBeneficiary' | translate}}
+
+    </h5>
+    <h5 *ngIf="isRouteActive('persons/add') && caregiver != null && caregiver.type=='Informal'"
+        class="card-header card-header-blue">
+        {{'cancelAddNewRelative' | translate}}
+    </h5>
+
+    <!--Edit Patient Cancel Header-->
+    <h5 *ngIf="isRouteActive('person/info/update') && caregiver != null && caregiver.type=='Formal'"
+        class="card-header card-header-blue">
+        {{'cancelEditBeneficiary' | translate}}
+    </h5>
+    <h5 *ngIf="isRouteActive('person/info/update') && caregiver != null && caregiver.type=='Informal'"
+        class="card-header card-header-blue">
+        {{'cancelEditRelative' | translate}}
+    </h5>
+
+    <!--Add Observation Cancel Header-->
+    <h5 *ngIf="isRouteActive('person/observations/add')" class="card-header card-header-blue">
+        {{'cancelAddNewObservation' | translate}}
+    </h5>
+
+    <!--Add Observation Cancel Header-->
+    <h5 *ngIf="isRouteActive('person/observations/update')" class="card-header card-header-blue">
+        {{'cancelEditObservation' | translate}}
+    </h5>
+
+    <!--Add Image Cancel Header-->
+    <h5 *ngIf="isRouteActive('person/images/add')
+             ||isRouteActive('profile/images/add')" class="card-header card-header-blue">
+        {{'cancelAddImages' | translate}}
+    </h5>
+
+    <!--Edit Image Cancel Header-->
+    <h5 *ngIf="isRouteActive('person/image/update')
+            ||isRouteActive('profile/image/update')" class="card-header card-header-blue">
+        {{'cancelEditImage' | translate}}
+    </h5>
+
+    <!--Share Patient Cancel Header-->
+    <h5 *ngIf="isRouteActive('person/share/only')" class="card-header card-header-blue">
+        {{'cancelShareCare' | translate}}
+    </h5>
+
+    <!--Principal Share Patient Cancel Header-->
+    <h5 *ngIf="isRouteActive('person/share/principal')" class="card-header card-header-blue">
+        {{'cancelPrimaryCaregiverTransfer' | translate}}
+    </h5>
+
+    <!--Leave Patient Primary Care Header-->
+    <h5 *ngIf="isRouteActive('person/primary/leave') && caregiver != null && caregiver.type=='Formal'"
+        class="card-header card-header-blue">
+        {{'cancelBeneficiaryCareLeave' | translate}}
+    </h5>
+    <h5 *ngIf="isRouteActive('person/primary/leave') && caregiver != null && caregiver.type=='Informal'"
+        class="card-header card-header-blue">
+        {{'cancelRelativeCareLeave' | translate}}
+    </h5>
+
+    <!--Caregiver Profile Update Cancel Header-->
+    <h5 *ngIf="isRouteActive('caregiver/profile/update')" class="card-header card-header-blue">
+        {{'keepProfileInfo' | translate}}
+    </h5>
+
+    <!--Change Password Cancel Header-->
+    <h5 *ngIf="isRouteActive('caregiver/profile/password')" class="card-header card-header-blue">
+        {{'keepPassword' | translate}}
+    </h5>
+
+    <!--Discard Validation Images Header-->
+    <h5 *ngIf="isRouteActive('caregiver/profile/validation/discard')" class="card-header card-header-blue">
+        {{'allImagesWillBeDiscarded' | translate}}
+    </h5>
+
+    <!--Cancel Card Body-->
+    <div class="card-body">
+
+        <!--Discard Validation Images body text-->
+        <p *ngIf="isRouteActive('caregiver/profile/validation/discard')">
+            {{'allImagesWillBeDiscarded' | translate}} {{'allImagesWillBeDiscarded2' | translate}}
+        </p>
+
+        <!--Negative Answer-->
+        <div class="p-2">
+            <button type="button" class="btn button button-neutral full-width" (click)="clickedNo()">
+                {{'no' | translate}}
+            </button>
+        </div>
+
+        <!--Positive Answer-->
+        <div class="p-2">
+            <button type="button" class="btn button button-destructive full-width" (click)="clickedYes()">
+                {{'yes' | translate}}
+            </button>
+        </div>
+
+    </div>
+
+</div>

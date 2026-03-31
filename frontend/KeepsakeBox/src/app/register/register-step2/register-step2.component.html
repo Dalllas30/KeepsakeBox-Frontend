@@ -1,0 +1,88 @@
+<!--@author André Santana - fc49451-->
+
+<!--Register Step 2-->
+<div class="d-flex flex-column">
+
+    <!--Error Alert - Caregiver Register Failed-->
+    <div *ngIf="!step2Data.registered" 
+        class="alert alert-danger alert-box" role="alert">
+        Ocorreu um erro. Tente novamente.
+    </div>
+
+    <!--Final Step Register Form-->
+    <form (ngSubmit)="submitRegister()" #registerForm="ngForm">
+
+      <!--Step 2 Register Card-->
+      <div class="card blue-border">
+
+        <!--Step 2 Register Card Header-->
+        <h5 class="card-header card-header-blue">
+          {{'createAcc2of2' | translate}}
+        </h5>
+
+        <!--Step 2 Register Card Body-->
+        <div class="card-body">
+
+          <div class="d-flex justify-content-start flex-wrap">
+
+            <!--Profile Image-->
+            <app-profile-image
+            [profileImage]="step2Data.profileImage">
+            </app-profile-image>
+
+            <!--Caregiver Type-->
+            <app-caregiver-type
+            [caregiverType]="step2Data.caregiverType">
+            </app-caregiver-type>
+
+          </div>
+
+          <!--Required symbol-->
+          <small *ngIf="translateCache=='pt'"
+                  class="p-2 form-text text-info-message profile-image-help"
+                  style="margin-top: -10px;">
+              Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+          </small>
+          <small *ngIf="translateCache=='en'"
+                  class="p-2 form-text text-info-message profile-image-help"
+                  style="margin-top: -10px;">
+              All fields with <strong>*</strong> are <strong>Required</strong>.
+          </small>
+
+          <!--Step 2 Buttons-->
+          <div class="d-flex justify-content-start flex-wrap-reverse">
+
+            <!--Iniciar Sessão-->
+            <div class="p-2 half-width">
+                <button type="button" 
+                        class="btn button button-neutral full-width" 
+                        (click)="navigateToStep1()">
+                    <i class="bi bi-caret-left-fill color-white"></i>
+                    {{'goBack' | translate}}
+                </button>
+            </div>
+
+            <!--Advance to Next Step-->
+            <div class="p-2 half-width">
+                <button type="submit" 
+                        class="btn button button-action full-width"
+                        [disabled]="step2Data.caregiverType.type == 'Formal' && 
+                                    step2Data.caregiverType.speciality == ''">
+                    {{'submit' | translate}}
+                    <div *ngIf="step2Data.submittingRegister" 
+                         class="spinner-border small-spinner-white" 
+                         role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </form>
+
+</div>

@@ -1,0 +1,79 @@
+<!--@author André Santana - fc49451-->
+
+<!--Caregiver Type Label-->
+<label class="p-2 input-label"
+  style="margin-bottom: -15px !important;">
+  <i class="bi bi-file-medical"></i> 
+  {{'caregiverType' | translate}}*
+</label>
+  
+<!--Formal Caregiver Type Help-->
+<small class="p-2 form-text text-info-message caregiver-type-help"
+  style="margin-top: -5px;">
+  <strong>Formal - </strong> 
+  {{'formalText' | translate}}
+</small>
+
+<!--Informal Caregiver Type Help-->
+<small class="p-2 form-text text-info-message caregiver-type-help">
+  <strong>Informal - </strong> 
+  {{'informalText' | translate}}
+</small>
+
+<!--Caregiver Type Select Box-->
+<div class="p-2">
+  <div class="d-flex justify-content-start caregiver-type-box">
+
+    <!--Formal Caregiver Type-->
+    <div class="input-radio">
+      <input type="radio" id="formal_caregiver" value='Formal' 
+            (click)="setFormalCaregiveType()" 
+            [(ngModel)]="caregiverType.type" name="type" #type="ngModel">
+      <label for="formal_caregiver">Formal</label>
+    </div>
+
+    <!--Informal Caregiver Type-->
+    <div class="input-radio">
+      <input type="radio" id="informal_caregiver" value='Informal' 
+            (click)="setInformalCaregiveType()" 
+            [(ngModel)]="caregiverType.type" name="type" #type="ngModel">
+      <label for="informal_caregiver">Informal</label>
+    </div>
+
+  </div> 
+</div>
+  
+<!--Formal Caregiver Speciality-->
+<div class="p-2" style="margin-top: -10px;"
+    *ngIf="caregiverType.type == 'Formal'">
+
+  <!--Speciality Label-->
+  <label class="input-label" for="caregiver_speciality">
+    <i class="bi bi-award"></i> 
+    {{'speciality' | translate}}*
+  </label><br>
+
+  <!--Speciality Select-->
+  <div *ngIf="translateCache=='pt'">
+    <select class="custom-select mr-sm-2 input-text-select 
+                  specility-select"
+            [(ngModel)]="caregiverType.speciality" 
+            name="speciality" #speciality="ngModel"
+            [class.disabled-option]="caregiverType.speciality==''">
+      <option value="" selected disabled>{{'chooseOne' | translate}}...</option>
+      <option value="{{s}}" *ngFor="let s of specialitiesPT">{{s}}</option>
+    </select>
+  </div>
+  <div *ngIf="translateCache=='en'">
+    <select class="custom-select mr-sm-2 input-text-select 
+                  specility-select"
+            [(ngModel)]="caregiverType.speciality" 
+            name="speciality" #speciality="ngModel"
+            [class.disabled-option]="caregiverType.speciality==''">
+      <option value="" selected disabled>{{'chooseOne' | translate}}...</option>
+      <option value="{{s}}" *ngFor="let s of specialitiesENG">{{s}}</option>
+    </select>
+  </div>
+
+</div>
+

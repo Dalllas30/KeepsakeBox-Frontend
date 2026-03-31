@@ -1,0 +1,12 @@
+{
+  "caregivers": [
+    {
+      "id": 1,
+      "name": "Test Caregiver",
+      "email": "test@test.com",
+      "password": "1234",
+      "caregiverType": "formal",
+      "token": "fake-jwt-token-123"
+    }
+  ]
+}
