@@ -1,0 +1,127 @@
+<p>login works!</p>
+<!--@author André Santana - fc49451-->
+
+<!--Title Container-->
+<div class="d-flex justify-content-center title-container">
+  <img src="./assets/keepsakebox-image.png" 
+       class="keepsakeBox-icon" 
+       alt="KeepsakeBox Icóne">
+  <h1>KeepsakeBox</h1>
+</div>
+
+<!--Loading Login when checking Cache-->
+<app-login-loading 
+*ngIf="existsCurrentCaregiverToken()">
+</app-login-loading>
+
+<!--Login Box-->
+<div *ngIf="!existsCurrentCaregiverToken()">
+
+  <div class="d-flex justify-content-center">
+    <div class="d-flex flex-column">
+
+      <!--Error Alert - Not Valid Email-->
+      <div *ngIf="!validLogin" 
+        class="alert alert-danger alert-box" role="alert">
+        {{'loginError' | translate}}
+      </div>
+
+      <!--Login Card-->
+      <div class="card blue-border">
+
+        <!--Login Card Header-->
+        <h5 class="card-header card-header-blue">
+          {{'login' | translate}}
+        </h5>
+
+        <!--Login Card Body-->
+        <div class="card-body">
+
+          <!--Login Form-->
+          <form (ngSubmit)="caregiverLogin()" #loginForm="ngForm">
+
+            <!--Email-->
+            <div class="p-2 form-group"
+                style="margin-bottom: 0px;">
+              <label for="email" class="input-label">
+                <i class="bi bi-envelope text-icon-blue"></i>
+                  Email*
+              </label>
+              <input type="email" class="form-control input-text-select" 
+              pattern="(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+              id="email" placeholder="{{'required' | translate}}" required 
+              [(ngModel)]="loginData.email" 
+              name="email" #email="ngModel"
+              [class.input-text-select-error]="!validEmailInput"
+              (change)="validateLogin();isValidEmailValue(email)">
+
+              <!--Error Message - Not Valid Email-->
+              <small *ngIf="!validEmailInput"
+              class="form-text text-error-message"
+              style="margin-top: 10px;margin-bottom: -10px;">
+              {{'emailInvalid' | translate}}
+              </small> 
+            </div>
+
+            <!--Password-->
+            <div class="p-2 form-group"
+                style="margin-bottom: 10px;">
+              <label for="password" class="input-label">
+                <i class="bi bi-key text-icon-blue"></i>
+                {{'password' | translate}}*
+              </label>
+              <input type="password" class="form-control input-text-select" 
+                  id="password" placeholder="{{'required' | translate}}" required 
+                  [(ngModel)]="currentPassword" 
+                  name="password" #password="ngModel"
+                  (change)="validateLogin()">
+            </div>
+
+            <!--Login submit button-->
+            <div class="p-2">
+              <button type="submit" 
+                      class="btn button button-action full-width" 
+                      [disabled]="!loginForm.form.valid">
+                {{'login' | translate}}
+              </button>
+            </div>
+
+          </form>
+
+          <!--Forgot password-->
+          <div class="p-2">
+            <button class="btn btn-link full-width 
+                           forget-password-border" 
+                aria-expanded="true">
+              {{'forgotPassword' | translate}}
+            </button>
+          </div>
+
+          <!--Create Account-->
+          <div class="p-2">
+            <button type="button" 
+                    class="btn button button-action full-width" 
+                    routerLink="/register">
+              {{'createAcc' | translate}}
+            </button>
+          </div>
+
+          <!--Return to Home Page-->
+          <div class="p-2">
+            <button type="button" 
+                    class="btn button button-neutral full-width" 
+                    routerLink="">
+              <i class="bi bi-caret-left-fill color-white"></i>
+              {{'homePage' | translate}}
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    
+    </div>
+  </div>
+
+</div>
+

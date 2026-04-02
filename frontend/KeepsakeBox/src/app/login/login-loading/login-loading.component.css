@@ -1,0 +1,9 @@
+/**
+ * @author André Santana - fc49451
+ */
+
+.spinner-loading-screen{
+    width: 200px;
+    height: 200px;
+    color: #000052 !important;
+}

@@ -1,0 +1,93 @@
+<!--@author André Santana - fc49451-->
+
+<!--Home Page Header-->
+<div class="d-flex flex-wrap home-page-header">
+
+  <!--App Title-->
+  <div class="mr-auto p-2 bd-highlight">
+    <div class="d-flex justify-content-start">
+      <img src="./assets/keepsakebox-image-white.png" 
+        class="keepsakeBox-icon keepsakeBox-home-page-icon" 
+        alt="KeepsakeBox Icóne">
+      <h3 style="color: white;">KeepsakeBox</h3>
+    </div>
+  </div>
+
+  <!--Login Button-->
+  <div class="p-2" style="margin-right: 10px;">
+    <button type="button" class="btn button button-action home-page-button" 
+            routerLink="/login">{{'login' | translate}}</button>
+  </div>
+
+  <!--Register Button-->
+  <div class="p-2">
+    <button type="button" class="btn button button-action home-page-button" 
+            routerLink="/register">{{'createAcc' | translate}}</button>
+  </div>
+  
+</div>
+
+<!--Application Introduction Text-->
+<div class="d-flex justify-content-center">
+    <div class="p-2 home-page-text">
+      {{'homeMessage' | translate}}
+    </div>
+</div>
+
+<!--Slide share with application panels-->
+<div class="d-flex justify-content-center">
+  
+
+    <!-- Image Slider Template - PT -->
+    <!-- <div [hidden]="translateCache == 'en'">
+      <ngb-carousel class="carousel">
+      <ng-template 
+        ngbSlide *ngFor="let img of imagesPT">
+        <div class="d-flex justify-content-center align-self-center">
+          <img src="{{img.src}}" 
+          class="slider-image img-thumbnail" 
+          alt="{{img.alt}}">
+        </div>
+        <div class="carousel-c">
+          {{img.alt}}
+        </div>
+        <br>
+      </ng-template>
+      </ngb-carousel>
+    </div> -->
+    
+
+    <!--Image Slider Template - ENG-->
+    <!-- <div [hidden]="translateCache == 'pt'">
+      <ngb-carousel class="carousel">
+      <ng-template 
+        ngbSlide *ngFor="let img of imagesENG">
+        <div class="d-flex justify-content-center align-self-center">
+          <img src="{{img.src}}" 
+          class="slider-image img-thumbnail" 
+          alt="{{img.alt}}">
+        </div>
+        <div class="carousel-c">
+          {{img.alt}}
+        </div>
+        <br>
+      </ng-template>
+      </ngb-carousel>
+    </div> -->
+
+</div>
+
+<!--Footer with application Email-->
+<nav class="d-flex flex-wrap 
+            fixed-bottom home-page-footer">
+  <div class="mr-auto p-2 footer-div">
+    <a href="mailto:rt.home@lasige.di.fc.ul.pt">
+      <i class="bi bi-envelope color-white"></i>
+    </a>
+    rt.home@lasige.di.fc.ul.pt
+  </div>
+  <div class="p-2 color-white bolder-text">
+    {{'language' | translate}}
+    <app-select-language></app-select-language>
+  </div>
+</nav>

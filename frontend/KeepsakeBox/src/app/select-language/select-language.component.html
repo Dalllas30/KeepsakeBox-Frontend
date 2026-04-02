@@ -1,0 +1,10 @@
+<select
+	class="custom-select mr-sm-2 input-text-select specility-select"
+	style="width: 100px"
+	[value]="currentLanguage"
+	(change)="onLanguageChange($event)"
+>
+	<option *ngFor="let lang of languages" [value]="lang">
+		{{ lang | uppercase }}
+	</option>
+</select>
