@@ -3,6 +3,7 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { CaregiverHomeComponent } from './caregiver-home/caregiver-home.component';
+import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -22,5 +23,7 @@ export const routes: Routes = [
   //     { path: 'persons/add', loadComponent: () => import('./caregiver-home/add-patient/add-patient.component').then(m => m.AddPatientComponent) },
   //   ]
   // },
+   //{ path: 'login', loadComponent: () => import('./login/login.component').then(m => m.LoginComponent) },
+   // { path: 'home', loadComponent: () => import('./caregiver-home/caregiver-home.component').then(m => m.CaregiverHomeComponent), canActivate: [authGuard] },
   { path: '**', redirectTo: 'login' }
 ];
