@@ -4,9 +4,17 @@
       "id": 1,
       "name": "Test Caregiver",
       "email": "test@test.com",
-      "password": "1234",
-      "caregiverType": "formal",
+      "password": "encrypted-password",
+      "phone": "123456789",
+      "birthDate": "1990-01-01",
+      "profileImage": "",
+      "caregiverType": "Informal",
+      "speciality": "",
       "token": "fake-jwt-token-123"
     }
-  ]
+  ],
+  "patients": [],
+  "messages": [],
+  "observations": [],
+  "images": []
 }

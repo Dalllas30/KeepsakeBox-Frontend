@@ -13,8 +13,8 @@ import { CaregiverRegisterData } from '../models/caregiver-register-data.model';
 import { environment } from '../../environments/environment';
 
 //Request URLs
-const serverURL = "194.117.20.219"
-//const serverURL = "localhost"
+//const serverURL = "194.117.20.219"
+const serverURL = "localhost"
 const getCaregiverIdByEmailURL = `http://${serverURL}:8080/caregiver/id?email=`;
 const caregiverRegisterURL = `http://${serverURL}:8080/register`;
 const caregiverLoginURL = `http://${serverURL}:8080/login`;
@@ -70,61 +70,69 @@ export class AuthenticationService {
    * @returns TRUE if email does not belong to another caregiver
    */
   async validateEmail(email: string): Promise<boolean> {
-    let validEmail = true;
-    await this.http.get(`${getCaregiverIdByEmailURL}${email}`).toPromise()
-    .then(response => {
-      if (response) {
-        let resp: ResponseBasic = JSON.parse(JSON.stringify(response));
-        validEmail = (resp.result == null)
-      }
-    }).catch(error => {
-      validEmail = false;
-    });
-    return validEmail;
+    try {
+      const response = await firstValueFrom(
+        this.http.get<any[]>(`${environment.apiUrl}/caregivers?email=${email}`)
+      );
+      // If array is empty, email is valid (doesn't exist)
+      return response.length === 0;
+    } catch (error) {
+      console.error('Email validation error:', error);
+      return false;
+    }
   }
 
   /**
    * Request that registers a new caregiver into the application
    * @param caregiver - caregiver data needed to register the caregiver
    */
-  async register(caregiver: CaregiverRegisterData) {
-    // let registered = true;
-    // await this.http.post(caregiverRegisterURL, caregiver).toPromise()
-    // .catch(error => {
-    //   registered = false;
-    // });
-    // return registered;
-    return this.http.post(`${environment.apiUrl}/auth/register`, caregiver);
+  async register(caregiver: CaregiverRegisterData): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<any>(`${environment.apiUrl}/caregivers`, {
+          name: caregiver.name,
+          email: caregiver.email,
+          phone: caregiver.phone,
+          password: caregiver.password,
+          birthDate: caregiver.birthDate,
+          profileImage: caregiver.profileImageURL,
+          caregiverType: caregiver.type,
+          speciality: caregiver.speciality,
+          token: 'temp-token-' + Date.now()
+        })
+      );
+      console.log('Registration successful:', response);
+      return true;
+    } catch (error) {
+      console.error('Registration error:', error);
+      return false;
+    }
   }
 
-  // /**
-  //  * Request that logins a caregiver into the application
-  //  * @param loginData - LoginData for the POST request
-  //  * @param validLogin - Variable that shows if LoginData is valid
-  //  *                     after the request
-  //  * @returns TRUE if login was succeeded
-  //  */
-  // async login(loginData: LoginData) : Promise<boolean> {
-  //   let validLogin = true;
-  //   await this.http.post(caregiverLoginURL, loginData).toPromise()
-  //   .then(response => {
-  //     if (response) {
-  //       let resp: ResponseBasic = JSON.parse(JSON.stringify(response));
-  //       this.setCurrentCaregiverToken(resp.result);
-  //     }else{
-  //       validLogin = false;
-  //     }
-  //   }).catch(err => {
-  //     validLogin =  false;
-  //   });
-  //   return validLogin;
-  // }
-  login(credentials: any) {
-    return this.http.post(`${environment.apiUrl}/auth/login`, credentials).pipe(
-      tap((res: any) => {
-        localStorage.setItem('token', res.token);
-      })
-    );
+  /**
+   * Request that logins a caregiver into the application
+   * @param loginData - LoginData for the POST request
+   * @returns TRUE if login was succeeded
+   */
+  async login(loginData: LoginData): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<any[]>(
+          `${environment.apiUrl}/caregivers?email=${loginData.email}&password=${loginData.password}`
+        )
+      );
+      
+      if (response && response.length > 0) {
+        const caregiver = response[0];
+        this.setCurrentCaregiverToken(caregiver.token);
+        localStorage.setItem('currentCaregiverId', caregiver.id);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
   }
 
   /**
