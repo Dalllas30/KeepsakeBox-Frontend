@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { BirthDate } from '../../models/birth-date.model';
+import { BirthDate } from '../../core/models/birth-date.model';
 
 @Component({
   selector: 'app-birth-date-input',

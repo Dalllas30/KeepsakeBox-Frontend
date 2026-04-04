@@ -55,11 +55,12 @@
               (change)="validateLogin();isValidEmailValue(email)">
 
               <!--Error Message - Not Valid Email-->
-              <small *ngIf="!validEmailInput"
-              class="form-text text-error-message"
-              style="margin-top: 10px;margin-bottom: -10px;">
-              {{'emailInvalid' | translate}}
-              </small> 
+              @if(!validEmailInput) {
+                <small class="form-text text-error-message"
+                style="margin-top: 10px;margin-bottom: -10px;">
+                  {{'emailInvalid' | translate}}
+                </small> 
+              }
             </div>
 
             <!--Password-->

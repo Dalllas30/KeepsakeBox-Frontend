@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProfileImage } from '../../models/profile-image.model';
+import { ProfileImage } from '../../core/models/profile-image.model';
 
 @Component({
   selector: 'app-profile-image',
@@ -17,13 +17,12 @@ export class ProfileImageComponent implements OnInit {
 
   public loadingImage = false;
 
-  constructor(
-    private http: HttpClient
-  ) {}
+  private http = inject(HttpClient);
 
   ngOnInit(): void {
     if (!this.profileImage.imageURL){
-      this.loadDefaultProfileImage();
+      //this.loadDefaultProfileImage();
+      this.profileImage.imageURL = '/assets/profileimage-default.png';
     }
   }
 

@@ -4,7 +4,7 @@ import { RegisterStep1Data } from '../../../../core/models/register-step1-data.m
 import { AuthenticationService } from '../../../../core/services/authentication.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { BirthDateInputComponent } from '../../../../templates/birth-date-input/birth-date-input.component';
+import { BirthDateInputComponent } from '../../../../shared/birth-date-input/birth-date-input.component';
 
 @Component({
   selector: 'app-register-step1',

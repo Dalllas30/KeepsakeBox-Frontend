@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CaregiverType } from '../../models/caregiver-type.model';
+import { CaregiverType } from '../../core/models/caregiver-type.model';
 
 @Component({
   selector: 'app-caregiver-type',

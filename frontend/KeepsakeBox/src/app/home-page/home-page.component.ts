@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
-import { SelectLanguageComponent } from '../select-language/select-language.component';
+import { SelectLanguageComponent } from '../features/select-language/select-language.component';
 
 @Component({
   selector: 'app-home-page',

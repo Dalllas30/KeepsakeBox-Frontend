@@ -1,14 +1,14 @@
-<p>register-step2 works!</p>
 <!--@author André Santana - fc49451-->
 
 <!--Register Step 2-->
 <div class="d-flex flex-column">
 
     <!--Error Alert - Caregiver Register Failed-->
-    <div *ngIf="!step2Data.registered" 
-        class="alert alert-danger alert-box" role="alert">
+    @if (!step2Data.registered) {
+      <div class="alert alert-danger alert-box" role="alert">
         Ocorreu um erro. Tente novamente.
-    </div>
+      </div>
+    }
 
     <!--Final Step Register Form-->
     <form (ngSubmit)="submitRegister()" #registerForm="ngForm">
@@ -39,16 +39,12 @@
           </div>
 
           <!--Required symbol-->
-          <small *ngIf="translateCache=='pt'"
-                  class="p-2 form-text text-info-message profile-image-help"
-                  style="margin-top: -10px;">
-              Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
-          </small>
-          <small *ngIf="translateCache=='en'"
-                  class="p-2 form-text text-info-message profile-image-help"
-                  style="margin-top: -10px;">
-              All fields with <strong>*</strong> are <strong>Required</strong>.
-          </small>
+          @if (translateCache=='pt') {
+            <small>Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.</small>
+          }
+          @if (translateCache=='en') {
+            <small>All fields with <strong>*</strong> are <strong>Required</strong>.</small>
+          }
 
           <!--Step 2 Buttons-->
           <div class="d-flex justify-content-start flex-wrap-reverse">
@@ -70,11 +66,12 @@
                         [disabled]="step2Data.caregiverType.type == 'Formal' && 
                                     step2Data.caregiverType.speciality == ''">
                     {{'submit' | translate}}
-                    <div *ngIf="step2Data.submittingRegister" 
-                         class="spinner-border small-spinner-white" 
-                         role="status">
-                      <span class="sr-only">Loading...</span>
-                    </div>
+                    @if (step2Data.submittingRegister) {
+                      <div class="spinner-border small-spinner-white" role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
+                    }
+
                 </button>
             </div>
 

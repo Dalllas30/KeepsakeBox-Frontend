@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { Router } from '@angular/router';
@@ -13,7 +13,7 @@ import { EncryptionService } from '../../../core/services/encryption.service';
 import { RegisterStep2Component } from './register-step2/register-step2.component';
 import { RegisterStep1Component } from './register-step1/register-step1.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { CancelScreenComponent } from '../../../templates/cancel-screen/cancel-screen.component';
+import { CancelScreenComponent } from '../../../shared/cancel-screen/cancel-screen.component';
 
 @Component({
   selector: 'app-register',
@@ -30,11 +30,9 @@ export class RegisterComponent implements OnInit {
   public step1Data!: RegisterStep1Data;
   public step2Data!: RegisterStep2Data;
 
-  constructor(
-    private authenticationService: AuthenticationService,
-    private router: Router,
-    private encryptionService: EncryptionService
-  ) {}
+  private router = inject(Router);
+  private authenticationService = inject(AuthenticationService);
+  private encryptionService = inject(EncryptionService);
 
   ngOnInit(): void {
     this.showStep1();
