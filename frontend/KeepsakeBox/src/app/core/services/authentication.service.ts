@@ -10,7 +10,7 @@ import { tap } from 'rxjs/operators';
 import { ResponseBasic } from '../models/response-basic.model';
 import { CaregiverRegisterData } from '../models/caregiver-register-data.model';
 
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 //Request URLs
 //const serverURL = "194.117.20.219"

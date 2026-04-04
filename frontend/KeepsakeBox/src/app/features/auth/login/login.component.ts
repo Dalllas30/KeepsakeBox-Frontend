@@ -2,8 +2,8 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { AuthenticationService } from '../services/authentication.service';
-import { EncryptionService } from '../services/encryption.service';
+import { AuthenticationService } from '../../../core/services/authentication.service';
+import { EncryptionService } from '../../../core/services/encryption.service';
 import { LoginLoadingComponent } from './login-loading/login-loading.component';
 
 @Component({

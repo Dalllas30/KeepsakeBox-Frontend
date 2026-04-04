@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
-import { RegisterStep1Data } from '../../models/register-step1-data.model';
-import { AuthenticationService } from '../../services/authentication.service';
+import { RegisterStep1Data } from '../../../../core/models/register-step1-data.model';
+import { AuthenticationService } from '../../../../core/services/authentication.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { BirthDateInputComponent } from '../../templates/birth-date-input/birth-date-input.component';
+import { BirthDateInputComponent } from '../../../../templates/birth-date-input/birth-date-input.component';
 
 @Component({
   selector: 'app-register-step1',

@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { RegisterStep2Data } from '../../models/register-step2-data.model';
+import { RegisterStep2Data } from '../../../../core/models/register-step2-data.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProfileImageComponent } from '../../templates/profile-image/profile-image.component';
-import { CaregiverTypeComponent } from '../../templates/caregiver-type/caregiver-type.component';
+import { ProfileImageComponent } from '../../../../templates/profile-image/profile-image.component';
+import { CaregiverTypeComponent } from '../../../../templates/caregiver-type/caregiver-type.component';
 
 @Component({
   selector: 'app-register-step2',

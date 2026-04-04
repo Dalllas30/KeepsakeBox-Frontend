@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthenticationService } from '../services/authentication.service';
+import { AuthenticationService } from '../../../core/services/authentication.service';
 import { Router } from '@angular/router';
-import { CaregiverRegisterData } from '../models/caregiver-register-data.model';
-import { LoginData } from '../models/login-data.model';
-import { RegisterStep1Data } from '../models/register-step1-data.model';
-import { BirthDate } from '../models/birth-date.model';
-import { RegisterStep2Data } from '../models/register-step2-data.model';
-import { ProfileImage } from '../models/profile-image.model';
-import { CaregiverType } from '../models/caregiver-type.model';
-import { EncryptionService } from '../services/encryption.service';
+import { CaregiverRegisterData } from '../../../core/models/caregiver-register-data.model';
+import { LoginData } from '../../../core/models/login-data.model';
+import { RegisterStep1Data } from '../../../core/models/register-step1-data.model';
+import { BirthDate } from '../../../core/models/birth-date.model';
+import { RegisterStep2Data } from '../../../core/models/register-step2-data.model';
+import { ProfileImage } from '../../../core/models/profile-image.model';
+import { CaregiverType } from '../../../core/models/caregiver-type.model';
+import { EncryptionService } from '../../../core/services/encryption.service';
 import { RegisterStep2Component } from './register-step2/register-step2.component';
 import { RegisterStep1Component } from './register-step1/register-step1.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { CancelScreenComponent } from '../templates/cancel-screen/cancel-screen.component';
+import { CancelScreenComponent } from '../../../templates/cancel-screen/cancel-screen.component';
 
 @Component({
   selector: 'app-register',
