@@ -23,6 +23,18 @@
       "speciality": "",
       "token": "temp-token-1775241362454",
       "id": 2
+    },
+    {
+      "name": "tt",
+      "email": "teste2@gmail.com",
+      "phone": "",
+      "password": "ibjDrM2sAVrATzSfAwBVZg==",
+      "birthDate": "2012-03-31T23:00:00.000Z",
+      "profileImage": "/assets/profileimage-default.png",
+      "caregiverType": "Informal",
+      "speciality": "",
+      "token": "temp-token-1775475076330",
+      "id": 3
     }
   ],
   "patients": [],

@@ -4,10 +4,11 @@
 <div class="d-flex flex-column">
 
     <!--Error Alert - Not Valid Email-->
-    <div *ngIf="!validEmail" 
-        class="alert alert-danger alert-box" role="alert">
-        {{'emailAlreadyRegistered' | translate}}
-    </div>
+    @if(!validEmail) {
+        <div class="alert alert-danger alert-box" role="alert">
+            {{'emailAlreadyRegistered' | translate}}
+        </div>
+    }
 
     <!--Validate Email Form-->
     <form (ngSubmit)="validateEmail()" #validateEmailForm="ngForm">
@@ -62,11 +63,11 @@
                         (change)="isValidEmailValue(email)">
 
                         <!--Error Message - Not Valid Email-->
-                        <small *ngIf="!validEmailInput"
-                        class="form-text text-error-message"
-                        style="margin-top: 10px;">
-                        {{'emailInvalid' | translate}}
-                        </small>                  
+                        @if(!validEmailInput) {
+                        <small class="form-text text-error-message" style="margin-top: 10px;">
+                            {{'invalidEmail' | translate}}
+                        </small>
+                        }
                     </div>
 
                     <!--Phone-->
@@ -116,27 +117,26 @@
                         (change)="arePasswordsValid(password,confirmPassword)"> 
 
                         <!--Error Message - Passwords Do Not Match-->
-                        <small *ngIf="!validPasswordFields"
-                        class="form-text text-error-message"
-                        style="margin-top: 10px;">
-                        {{'difPasswords' | translate}}
-                        </small>                  
+                        ~@if(!validPasswordFields) {
+                        <small class="form-text text-error-message" style="margin-top: 10px;">
+                            {{'difPasswords' | translate}}
+                        </small>
+                        }  
                     </div>
 
                 </div>
 
                 <!--Required symbol-->
-                <small *ngIf="translateCache=='pt'"
-                       class="p-2 form-text text-info-message profile-image-help"
-                       style="margin-top: -10px;">
-                    Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
-                </small>
-                <small *ngIf="translateCache=='en'"
-                       class="p-2 form-text text-info-message profile-image-help"
-                       style="margin-top: -10px;">
-                    All fields with <strong>*</strong> are <strong>Required</strong>.
-                </small>
-
+                @if(translateCache=='pt') {
+                    <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                        Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+                    </small>
+                }
+                @if(translateCache=='en') {
+                    <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                        All fields with <strong>*</strong> are <strong>Required</strong>.
+                    </small>
+                }
                 <!--Step 1 Buttons-->
                 <div class="d-flex justify-content-start flex-wrap-reverse">
 
@@ -162,11 +162,11 @@
                                             || step1Data.birthDate.year == 0
                                             || !step1Data.birthDate.validDate">
                             {{'proceed' | translate}}
-                            <div *ngIf="validatingEmail" 
-                                class="spinner-border small-spinner-white" 
-                                role="status">
-                                <span class="sr-only">Loading...</span>
-                            </div>
+                            @if(validatingEmail) {
+                                <div class="spinner-border small-spinner-white" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            }
                         </button>
                     </div>
 
