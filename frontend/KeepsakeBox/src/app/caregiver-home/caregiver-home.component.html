@@ -1,1 +1,143 @@
-<p>caregiver-home works!</p>
+<!--@author André Santana - fc49451-->
+
+
+
+
+
+
+
+
+
+<!--@author Pedro Neves - fc46430-->
+<!--Nav Container-->
+<div>
+  <ng-container *ngIf="!hideNavBarCaregiver(); then CaregiverHomeContext; else RtSessionContext">
+  </ng-container>
+  <ng-template #CaregiverHomeContext>
+
+    <!--Principal Nav-->
+    <ul class="nav nav-pills nav-fill">
+
+      <!--Profile-->
+      <li class="nav-item">
+          <a class="nav-link" routerLink="/caregiver/profile/info"
+            [class.nav-link-active]="isRouteActive('profile') && !isRouteActive('help/profile')">
+            <i class="bi bi-person-circle color-white"
+            [class.color-blue]="isRouteActive('profile') && !isRouteActive('help/profile')"></i>
+            {{caregiver.name.split(" ")[0]}}
+          </a>
+      </li>
+
+    <!--Notifications-->
+    <li class="nav-item">
+        <a class="nav-link" routerLink="/caregiver/notifications" 
+          [class.nav-link-active]="isRouteActive('notifications')">
+          <i class="bi bi-bell-fill color-white" 
+          [class.color-blue]="isRouteActive('notifications')"></i>
+          <span>{{'notifications' | translate}}</span>
+        </a>
+    </li>
+
+      <!--Beneficiaries/Relatives-->
+      <li class="nav-item">
+          <a class="nav-link" routerLink="/caregiver/persons"
+            [class.nav-link-active]="isRouteActive('persons') || isRouteActive('person/info')">
+            <i class="bi bi-card-list color-white"
+            [class.color-blue]="isRouteActive('persons') || isRouteActive('person/info')"></i>
+            <span class="color-white"
+                  [class.color-blue]="isRouteActive('persons') || isRouteActive('person/info')"
+                  *ngIf="caregiver.type=='Formal'"> {{'beneficiaries' | translate}}</span>
+            <span class="color-white"
+                  [class.color-blue]="isRouteActive('persons') || isRouteActive('person/info')"
+                  *ngIf="caregiver.type=='Informal'">  {{'relatives' | translate}}</span>
+          </a>
+      </li>
+
+    <!--Help-->
+    <li class="nav-item">
+        <a class="nav-link" routerLink="/caregiver/help" 
+          [class.nav-link-active]="isRouteActive('help')">
+          <i class="bi bi-question-circle color-white" 
+          [class.color-blue]="isRouteActive('help')"></i>
+          {{'help' | translate}}
+        </a>
+    </li>
+
+    <!--Logout-->
+    <li class="nav-item">
+        <a class="nav-link logout" 
+          routerLink="/caregiver/logout">
+          <i class="bi bi-box-arrow-right color-white"></i>
+          {{'exit' | translate}}
+        </a>
+    </li>
+
+    </ul>
+
+  </ng-template>
+  <ng-template #RtSessionContext>
+
+    <ng-container *ngIf="!hideNavBarRtSession(); then RtSessionContext; else WithoutNavBar">
+    </ng-container>
+    <ng-template #RtSessionContext>
+      <ul class="nav nav-pills nav-fill">
+
+        <!--Profile-->
+        <li class="nav-item1">
+            <a class="nav-link" routerLink="/caregiver/session/home"
+              [class.nav-link-active]="isRouteActive('session/home')">
+              <i class="bi bi-collection-play color-white"
+              [class.color-blue]="isRouteActive('session/home')"></i>
+              Sessão com {{caregiver.name.split(" ")[0]}}
+            </a>
+        </li>
+
+        <!--Help-->
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/caregiver/session/help"
+              [class.nav-link-active]="isRouteActive('session/help')">
+              <i class="bi bi-question-circle color-white"
+              [class.color-blue]="isRouteActive('session/help')"></i>
+              Ajuda
+            </a>
+        </li>
+
+        <!--Logout-->
+        <li class="nav-item">
+            <a class="nav-link logout"
+              (click)="navigateBack()">
+              <i class="bi bi-box-arrow-left color-white"></i>
+              Voltar
+            </a>
+        </li>
+
+      </ul>
+
+    </ng-template>
+    <ng-template #WithoutNavBar>
+        <span *ngIf="!isRouteActive('caregiver/session/running') && !isRouteActive('caregiver/session/feedback')">
+          <div class="d-flex justify-content-center title-container">
+            <img src="./assets/keepsakebox-image.png"
+               class="keepsakeBox-icon"
+               alt="KeepsakeBox Icóne">
+            <h1>KeepsakeBox</h1>
+          </div>
+        </span>
+    </ng-template>
+  </ng-template>
+
+</div>
+
+<!--Title Container>
+<div *ngIf="hideNavBar() && !isRouteActive('caregiver/person/sessionRT')">
+  <div class="d-flex justify-content-center title-container">
+    <img src="./assets/keepsakebox-image.png"
+         class="keepsakeBox-icon"
+         alt="KeepsakeBox Icóne">
+    <h1>KeepsakeBox</h1>
+  </div>
+
+</div-->
+
+<!--App Outlet-->
+<router-outlet></router-outlet>

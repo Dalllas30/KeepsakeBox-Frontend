@@ -2,13 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
-import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { SelectLanguageComponent } from '../features/select-language/select-language.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterLink, SelectLanguageComponent, NgbCarouselModule],
+  imports: [CommonModule, TranslateModule, RouterLink, SelectLanguageComponent],
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css']
 })

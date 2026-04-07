@@ -1,0 +1,13 @@
+<!--@author André Santana - fc49451-->
+
+<!--Logout Container-->
+<div class="d-flex justify-content-center flex-wrap">
+
+  <!--Logout Possible Cancel Screen-->
+  <app-cancel-screen
+  (answeredNo)="navigateToPatients()"
+  (answeredYes)="logout()">
+  </app-cancel-screen>
+
+</div>
+

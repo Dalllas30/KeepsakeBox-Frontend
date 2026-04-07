@@ -1,0 +1,55 @@
+/**
+ * @author André Santana - fc49451
+ */
+
+.nav{
+  background-color: #000052;
+}
+
+.nav-icon{
+  height: 25px;
+  width: 25px;
+}
+
+.nav-item{
+  height: 50px;
+}
+
+.nav-item1{
+  height: 50px;
+  width: 60%;
+}
+
+.nav-link{
+  background-color: #000052;
+  text-align: center;
+  color: white;
+  border-radius: 0;
+}
+
+.nav-link:hover{
+  background-color: #01196b;
+  color: white;
+  cursor: pointer;
+}
+
+.nav-link-active{
+  background-color: white !important;
+  color: #000052 !important;
+  border: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.nav-link-active:hover{
+  cursor: pointer;
+}
+
+.logout{
+  background-color: #A80000;
+  color: #ffffff;
+}
+
+.logout:hover {
+  background-color: #860000 !important;
+  cursor: pointer;
+}

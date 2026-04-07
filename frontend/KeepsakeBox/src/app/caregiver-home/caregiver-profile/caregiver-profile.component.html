@@ -1,0 +1,83 @@
+<p>caregiver-profile works!</p>
+<!--@author André Santana - fc49451, 
+    @author Bruna Vieites - fc55792-->
+
+<!--Patient Card and Nav Container-->
+<div class="p-2 d-flex justify-content-center caregiver-home-container">
+
+  <!--Patient Card-->
+  <div class="card blue-border">
+
+    <!--Patient Card Header-->
+    <h5 class="card-header card-header-blue">
+      {{caregiver.name}}
+    </h5>
+
+    <!--Patient Card Body-->
+    <div class="card-body">
+
+      <!--Patient Nav-->
+      <div class="p-2">
+        <ul class="nav nav-tabs nav-tabs-grey">
+
+          <!--Info-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/info')"
+              routerLink="/caregiver/profile/info">
+              <i class="bi bi-person-badge"></i> {{caregiver.name.split(" ")[0]}}
+            </a>
+          </li>
+
+          <!--Images-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/images') || 
+                                            isRouteActive('profile/image')" routerLink="/caregiver/profile/images">
+              <i class="bi bi-card-image"></i> {{'myImages' | translate}}
+            </a>
+          </li>
+
+          <!--Sessions-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/session')"
+              routerLink="/caregiver/profile/session">
+              <i class="bi bi-card-list"></i> {{'manageSessions' | translate}}
+            </a>
+          </li>
+
+          <!--History-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/history')"
+              routerLink="/caregiver/profile/history">
+              <i class="bi bi-card-list"></i> {{'sessionHistory' | translate}}
+            </a>
+          </li>
+          <!--Statistics-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/statistics')"
+              routerLink="/caregiver/profile/statistics">
+              <i class="bi bi-card-list"></i> {{'statisticsSessions' | translate}}
+            </a>
+          </li>
+
+          <!--Validation-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/validation')"
+              routerLink="/caregiver/profile/validation">
+              <!--(click)="navigateToValidation()">-->
+              <i class="bi bi-card-image"></i> {{'validation' | translate}}
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+      <!--Selected Tab Content-->
+      <div class="p-2" style="margin-top: -22px;">
+        <div class="tab-inner-display">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+
+    </div>
+
+  </div>

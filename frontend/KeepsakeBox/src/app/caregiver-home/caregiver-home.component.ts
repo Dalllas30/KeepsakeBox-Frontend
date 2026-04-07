@@ -1,9 +1,79 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { AppService } from '../core/services/app.service';
+import { CaregiverService } from '../core/services/caregiver.service';
+import { PatientService } from '../core/services/patient.service';
+import { Caregiver } from '../core/models/caregiver.model';
+import { Patient } from '../core/models/patient.model';
 
 @Component({
   selector: 'app-caregiver-home',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, TranslateModule, RouterLink, RouterOutlet],
   templateUrl: './caregiver-home.component.html',
-  styleUrl: './caregiver-home.component.css',
+  styleUrls: ['./caregiver-home.component.css']
 })
-export class CaregiverHomeComponent {}
+export class CaregiverHomeComponent implements OnInit {
+  public caregiver!: Caregiver;
+  public patient!: Patient;
+  public linkBackwards!: string;
+
+  constructor(
+    private router: Router,
+    private appService: AppService,
+    private patientService: PatientService,
+    private caregiverService: CaregiverService
+  ) {}
+
+  ngOnInit(): void {
+    this.caregiver = this.caregiverService.getCurrentCaregiver()!;
+    this.patient = this.patientService.getCurrentPatient()!;
+  }
+
+  public isRouteActive(route: string): boolean {
+    return this.appService.isRouteActive(route);
+  }
+
+  hideNavBar(): boolean {
+    return this.isRouteActive('caregiver/persons/add') ||
+      this.isRouteActive('caregiver/profile/update') ||
+      this.isRouteActive('caregiver/profile/password') ||
+      this.isRouteActive('caregiver/person/observations/add') ||
+      this.isRouteActive('caregiver/person/observations/delete') ||
+      this.isRouteActive('caregiver/person/observations/update') ||
+      this.isRouteActive('caregiver/person/images/add') ||
+      this.isRouteActive('caregiver/profile/images/add') ||
+      this.isRouteActive('caregiver/person/image/update') ||
+      this.isRouteActive('caregiver/profile/image/update') ||
+      this.isRouteActive('caregiver/person/image/delete') ||
+      this.isRouteActive('caregiver/profile/image/delete') ||
+      this.isRouteActive('caregiver/person/share') ||
+      this.isRouteActive('caregiver/person/leave') ||
+      this.isRouteActive('caregiver/person/primary/leave') ||
+      this.isRouteActive('caregiver/person/caregiver/remove') ||
+      this.isRouteActive('caregiver/person/info/update') ||
+      this.isRouteActive('logout');
+  }
+
+  hideNavBarCaregiver(): boolean {
+    return this.hideNavBar() ||
+      this.isRouteActive('caregiver/session/running') ||
+      this.isRouteActive('caregiver/session/feedback');
+  }
+
+  hideNavBarRtSession(): boolean {
+    return this.hideNavBar() ||
+      this.isRouteActive('caregiver/session/running') ||
+      this.isRouteActive('caregiver/session/feedback');
+  }
+
+  navigateBack() {
+    if (this.linkBackwards == null) {
+      this.router.navigate(['/caregiver/person/info']);
+    } else {
+      this.router.navigate([this.linkBackwards]);
+    }
+  }
+}

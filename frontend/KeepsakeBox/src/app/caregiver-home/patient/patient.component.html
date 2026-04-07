@@ -1,0 +1,101 @@
+<p>patient works!</p>
+<!--@author André Santana - fc49451-->
+
+<!--Patient Card and Nav Container-->
+<div class="p-2 d-flex justify-content-center caregiver-home-container">
+
+  <!--Patient Card-->
+  <div class="card blue-border">
+
+    <!--Patient Card Header-->
+    <h5 class="card-header card-header-blue">
+      {{convertPatientDisplayName(patient.displayName, patient.name)}}
+    </h5>
+
+    <!--Patient Card Body-->
+    <div class="card-body">
+
+      <!--Patient Nav-->
+      <div class="p-2">
+        <ul class="nav nav-tabs nav-tabs-grey">
+
+          <!--Info-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey"
+               [class.nav-link-grey-focus]="isRouteActive('person/info') ||
+                                            isRouteActive('person/caregiver')"
+               routerLink="/caregiver/person/info">
+               <i class="bi bi-person-badge"></i> {{patient.name.split(" ")[0]}}
+            </a>
+          </li>
+
+          <!--Observations-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey"
+               [class.nav-link-grey-focus]="isRouteActive('person/observations')"
+               routerLink="/caregiver/person/observations">
+               <i class="bi bi-card-list"></i> {{'observations' | translate}}
+            </a>
+          </li>
+
+          <!--Messages-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey"
+               [class.nav-link-grey-focus]="isRouteActive('person/messages')"
+               routerLink="/caregiver/person/messages">
+               <i class="bi bi-chat-dots"></i> {{'messages' | translate}}
+            </a>
+          </li>
+
+          
+
+          <!--Images-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey"
+               [class.nav-link-grey-focus]="isRouteActive('person/images') ||
+                                            isRouteActive('person/image')"
+               routerLink="/caregiver/person/images">
+               <i class="bi bi-card-image"></i> {{'images' | translate}}
+            </a>
+          </li>
+
+	        <!--Sessions-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey"
+               [class.nav-link-grey-focus]="isRouteActive('person/rtSessionStartlist') || isRouteActive('person/rtSessionList')"
+               routerLink="/caregiver/person/rtSessionStartlist">
+               <i class="bi bi-card-list"></i> {{'therapySessions' | translate}}
+            </a>
+          </li>
+
+	        <!--Sessions History-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey"
+               [class.nav-link-grey-focus]="isRouteActive('person/sessions')"
+               routerLink="/caregiver/person/sessions">
+               <i class="bi bi-card-list"></i> {{'sessionHistory' | translate}}
+            </a>
+          </li>
+
+          <!--Statistics-->
+          <li class="nav-item">
+            <a class="nav-link nav-link-grey" 
+               [class.nav-link-grey-focus]="isRouteActive('person/statistics')" 
+               routerLink="/caregiver/person/statistics">
+               <i class="bi bi-card-list"></i> {{'statisticsSessions' | translate}}
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+      <!--Selected Tab Content-->
+      <div class="p-2" style="margin-top: -22px;">
+        <div class="tab-inner-display">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+
+    </div>
+
+</div>

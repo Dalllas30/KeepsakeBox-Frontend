@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { EncryptionService } from '../../../core/services/encryption.service';
 import { LoginLoadingComponent } from './login-loading/login-loading.component';
-import { environment } from '../../../../environments/environment.prod';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -77,21 +77,23 @@ export class LoginComponent implements OnInit {
 
     this.loginIn.set(true);
 
-    // const encryptedPassword = this.encryptionService.encrypt(
-    //   "989$%&2!3123KeepsakeBox2021",
-    //   this.currentPassword
-    // );
-    const passwordToUse = environment.useEncryption ? this.encryptionService.encrypt(environment.encryptionKey, this.currentPassword) : this.currentPassword;
+    try {
+      const passwordToUse = environment.useEncryption
+        ? this.encryptionService.encrypt(environment.encryptionKey, this.currentPassword)
+        : this.currentPassword;
 
-    const success = await this.authenticationService.login({
-      email: this.loginData.email,
-      password: passwordToUse
-    });
+      const success = await this.authenticationService.login({
+        email: this.loginData.email,
+        password: passwordToUse
+      });
 
-    if (success) {
-      this.router.navigate(['/caregiver/persons']);
-    } else {
-      this.validLogin.set(false);
+      if (success) {
+        await this.router.navigate(['/caregiver/persons']);
+      } else {
+        this.validLogin.set(false);
+      }
+    } finally {
+      this.loginIn.set(false);
     }
   }
 }

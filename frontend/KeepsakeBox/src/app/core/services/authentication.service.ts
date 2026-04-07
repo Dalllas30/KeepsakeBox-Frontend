@@ -9,6 +9,7 @@ import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ResponseBasic } from '../models/response-basic.model';
 import { CaregiverRegisterData } from '../models/caregiver-register-data.model';
+import { CaregiverService } from './caregiver.service';
 
 import { environment } from '../../../environments/environment';
 
@@ -26,7 +27,10 @@ const caregiverLogoutURL = `http://${serverURL}:8080/logout?token=`;
 export class AuthenticationService {
 
   //Class Constructor
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private caregiverService: CaregiverService
+  ) {
     //Stores the current caregiver token on cache
     this.currentCaregiverToken =
     new BehaviorSubject<string | null>(localStorage.getItem('currentCaregiverToken'));
@@ -126,6 +130,7 @@ export class AuthenticationService {
         const caregiver = response[0];
         this.setCurrentCaregiverToken(caregiver.token);
         localStorage.setItem('currentCaregiverId', caregiver.id);
+        this.caregiverService.setCurrentCaregiver(caregiver);
         return true;
       }
       return false;
