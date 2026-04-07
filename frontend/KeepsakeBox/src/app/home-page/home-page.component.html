@@ -37,43 +37,27 @@
 <!--Slide share with application panels-->
 <div class="d-flex justify-content-center">
   
+    <div class="carousel-container">
+        @if (currentImages.length > 0) {
+          <ngb-carousel [showNavigationArrows]="true" [showNavigationIndicators]="true" class="carousel">
+            @for (img of currentImages; track img.src) {
+              <ng-template ngbSlide>
+                <div class="slide-wrapper d-flex flex-column align-items-center">
+                  
+                  <div class="image-container">
+                    <img [src]="img.src" class="slider-image img-thumbnail" [alt]="img.alt">
+                  </div>
 
-    <!-- Image Slider Template - PT -->
-    <!-- <div [hidden]="translateCache == 'en'">
-      <ngb-carousel class="carousel">
-      <ng-template 
-        ngbSlide *ngFor="let img of imagesPT">
-        <div class="d-flex justify-content-center align-self-center">
-          <img src="{{img.src}}" 
-          class="slider-image img-thumbnail" 
-          alt="{{img.alt}}">
-        </div>
-        <div class="carousel-c">
-          {{img.alt}}
-        </div>
-        <br>
-      </ng-template>
-      </ngb-carousel>
-    </div> -->
-    
+                  <div class="custom-caption mt-3 text-center">
+                    <p class="m-0 fw-bold">{{ img.alt }}</p>
+                  </div>
 
-    <!--Image Slider Template - ENG-->
-    <!-- <div [hidden]="translateCache == 'pt'">
-      <ngb-carousel class="carousel">
-      <ng-template 
-        ngbSlide *ngFor="let img of imagesENG">
-        <div class="d-flex justify-content-center align-self-center">
-          <img src="{{img.src}}" 
-          class="slider-image img-thumbnail" 
-          alt="{{img.alt}}">
-        </div>
-        <div class="carousel-c">
-          {{img.alt}}
-        </div>
-        <br>
-      </ng-template>
-      </ngb-carousel>
-    </div> -->
+                </div>
+              </ng-template>
+            }
+          </ngb-carousel>
+        }
+    </div>
 
 </div>
 

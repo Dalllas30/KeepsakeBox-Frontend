@@ -1,34 +1,39 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-select-language',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, FormsModule],
   templateUrl: './select-language.component.html',
   styleUrls: ['./select-language.component.css']
 })
 export class SelectLanguageComponent {
   public readonly languages: Array<'pt' | 'en'> = ['pt', 'en'];
-  public currentLanguage: 'pt' | 'en';
+  public currentLanguage: 'pt' | 'en' = 'pt';
 
   constructor(
     public translate: TranslateService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
-    this.translate.addLangs(this.languages);
-    this.translate.setDefaultLang('pt');
-    this.currentLanguage = this.resolveSupportedLanguage(
-      isPlatformBrowser(this.platformId)
-        ? (localStorage.getItem('lang') || this.translate.currentLang || navigator.language)
-        : 'pt'
-    );
-    this.translate.use(this.currentLanguage);
-
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem('lang', this.currentLanguage);
+      const saved = localStorage.getItem('lang');
+      if (saved) {
+        this.currentLanguage = (saved.startsWith('pt') ? 'pt' : 'en');
+        this.translate.use(this.currentLanguage);
+      }
     }
+  }
+
+  ngOnInit() {  
+    const active = this.translate.getCurrentLang() || localStorage.getItem('lang') || 'pt';
+    this.currentLanguage = active.startsWith('pt') ? 'pt' : 'en';
+
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLanguage = this.resolveSupportedLanguage(event.lang);
+    });
   }
 
   changeLanguage(language: string): void {

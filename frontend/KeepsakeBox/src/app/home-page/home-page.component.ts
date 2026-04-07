@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { SelectLanguageComponent } from '../features/select-language/select-language.component';
@@ -14,7 +14,7 @@ import { SelectLanguageComponent } from '../features/select-language/select-lang
 export class HomePageComponent {
   public translateCache: string = navigator.language.startsWith('pt') ? 'pt' : 'en';
 
-  constructor(private translate: TranslateService) {}
+  public currentImages: any[] = [];
 
   public imagesPT = [
     {src: "/assets/screen1.png", alt:"Perfil Cuidador"},
@@ -33,4 +33,27 @@ export class HomePageComponent {
     {src: "/assets/screen5eng.png", alt:"Beneficiary/Relative's Images"},
     {src: "/assets/screen6eng.png", alt:"Image"}
   ];
+
+  constructor(
+    private translate: TranslateService, 
+    @Inject(PLATFORM_ID) private platformId: object
+  ) {}
+
+  ngOnInit() {
+    const activeLang = this.translate.getCurrentLang() || 
+                     localStorage.getItem('lang') || 
+                     'pt';
+    
+    this.updateImages(activeLang);
+
+    this.translate.onLangChange.subscribe((event) => {
+      this.updateImages(event.lang);
+    });
+  }
+
+  private updateImages(lang: string) {
+    const newImages = lang.toLowerCase().startsWith('pt') ? this.imagesPT : this.imagesENG;
+    this.currentImages = [...newImages];
+    //this.currentImages = lang.toLowerCase().startsWith('pt') ? this.imagesPT : this.imagesENG;
+  }
 }

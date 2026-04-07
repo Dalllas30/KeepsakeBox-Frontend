@@ -1,4 +1,4 @@
-<select
+<!-- <select
 	class="custom-select mr-sm-2 input-text-select specility-select"
 	style="width: 100px"
 	[value]="currentLanguage"
@@ -7,4 +7,16 @@
 	<option *ngFor="let lang of languages" [value]="lang">
 		{{ lang | uppercase }}
 	</option>
+</select> -->
+<select
+	class="custom-select mr-sm-2 input-text-select specility-select"
+	style="width: 100px"
+	[(ngModel)]="currentLanguage"
+	(ngModelChange)="changeLanguage($event)"
+>
+	@for (lang of languages; track lang) {
+		<option [value]="lang">
+			{{ lang | uppercase }}
+		</option>
+	}
 </select>
