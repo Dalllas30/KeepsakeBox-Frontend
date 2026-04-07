@@ -21,7 +21,7 @@ export class App {
       ? (localStorage.getItem('lang') || 'pt') 
       : 'pt';
     this.translate.addLangs(['pt', 'en']);
-    this.translate.setDefaultLang('pt');
+    this.translate.setFallbackLang('pt');
     this.translate.use(lang);
   }
 }
