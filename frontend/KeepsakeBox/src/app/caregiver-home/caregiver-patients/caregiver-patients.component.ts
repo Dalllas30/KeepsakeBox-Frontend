@@ -9,7 +9,7 @@ import { AuthenticationService } from '../../core/services/authentication.servic
 import { CaregiverService } from '../../core/services/caregiver.service';
 import { PatientService } from '../../core/services/patient.service';
 import { NotificationService } from '../../core/services/notification.service';
-// import { CategoryService } from '../../core/services/category.service';
+import { CategoryService } from '../../core/services/category.service';
 
 @Component({
   selector: 'app-caregiver-patients',
@@ -35,7 +35,7 @@ export class CaregiverPatientsComponent implements OnInit {
     private appService: AppService,
     private notificationService: NotificationService,
     private patientService: PatientService,
-    // private categoryService: CategoryService,
+    private categoryService: CategoryService,
     private router: Router
   ) {}
 
@@ -46,7 +46,7 @@ export class CaregiverPatientsComponent implements OnInit {
   }
 
   async retrievePatients(): Promise<void> {
-    // await this.categoryService.getCategories();
+    await this.categoryService.getCategories();
     this.pList = await this.caregiverService.getCaregiverPatients(this.authenticationService.getCurrentCaregiverToken()!) ?? [];
     this.pListCopy = this.pList;
     this.collectionSize = this.pList.length;
