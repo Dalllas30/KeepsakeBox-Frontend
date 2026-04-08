@@ -1,0 +1,76 @@
+<!--@author André Santana - fc49451-->
+
+<!--Delete Patient Observation Container-->
+<div class="p-2 d-flex justify-content-center caregiver-home-container">
+  <div class="card blue-border">
+
+    <!--Card Header-->
+    <h5 class="card-header card-header-blue">
+      {{'removeObservation' | translate}}
+    </h5>
+
+    <!--Card Body-->
+    <div class="card-body">
+
+      <!--Error Alert-->
+      @if(deleteError) {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'observationError' | translate}}
+        </div>
+      }
+
+      <!--Confirmation Message-->
+      <div class="p-2" style="margin-bottom: 10px;">
+        <p>
+          {{'deleteObservationText' | translate}}
+          <strong>{{convertPatientDisplayName(patient.displayName, patient.name)}}</strong>?
+        </p>
+      </div>
+
+      <!--Observation Preview-->
+      <div class="p-2">
+        <div class="card" style="border: 1px solid rgba(0,0,82,0.3);">
+          <div class="card-body">
+            <p style="white-space: pre-wrap;">{{observation.observation}}</p>
+            <small class="text-muted">
+              {{observation.lastUpdatedDate | date:'shortDate'}}
+              — {{observation.caregiver.name}}
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!--Buttons-->
+      <div class="d-flex justify-content-start flex-wrap-reverse" style="margin-top: 15px;">
+
+        <!--Cancel-->
+        <div class="p-2" style="width: 300px;">
+          <button type="button"
+                  class="btn button button-neutral full-width"
+                  (click)="cancel()">
+            <i class="bi bi-x-circle color-white"></i>
+            {{'no' | translate}}
+          </button>
+        </div>
+
+        <!--Confirm Delete-->
+        <div class="p-2" style="width: 300px;">
+          <button type="button"
+                  class="btn button button-danger full-width"
+                  [disabled]="deleting"
+                  (click)="deleteObservation()">
+            <i class="bi bi-trash color-white"></i>
+            {{'yes' | translate}}
+            @if(deleting) {
+              <div class="spinner-border small-spinner-white" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            }
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

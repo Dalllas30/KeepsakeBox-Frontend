@@ -1,0 +1,181 @@
+<!--Update Profile Container-->
+<div class="d-flex justify-content-center flex-wrap">
+
+  <!--Cancel Screen-->
+  @if (!hideCancel) {
+    <app-cancel-screen
+      (answeredNo)="showEditProfile1()"
+      (answeredYes)="navigateToCaregiverProfile()">
+    </app-cancel-screen>
+  }
+
+  <!--Step 1-->
+  @if (!hideEditProfile1) {
+    <div class="d-flex flex-column">
+
+      @if (!validEmail) {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'emailAlreadyExists' | translate}}
+        </div>
+      }
+      @if (!updated) {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'errorOcurred' | translate}}
+        </div>
+      }
+
+      <form (ngSubmit)="validateEmail()" #step1Form="ngForm">
+        <div class="card blue-border">
+
+          <h5 class="card-header card-header-blue">
+            {{'caregiverProfileUpdate' | translate}}
+          </h5>
+
+          <div class="card-body">
+
+            <!--Name-->
+            <div class="p-2 form-group" style="margin-bottom: 0px;">
+              <label for="name" class="input-label">
+                <i class="bi bi-person text-icon-blue"></i> {{'name' | translate}}*
+              </label>
+              <input type="text" class="form-control input-text-select"
+                id="name" required
+                placeholder="{{'required' | translate}}"
+                [(ngModel)]="updatedCaregiver.name"
+                name="name" #name="ngModel">
+            </div>
+
+            <!--Birth Date-->
+            <app-birth-date-input [birthDate]="birthDate"></app-birth-date-input>
+
+            <!--Email-->
+            <div class="p-2 form-group" style="margin-bottom: 0px;">
+              <label for="email" class="input-label">
+                <i class="bi bi-envelope text-icon-blue"></i> Email*
+              </label>
+              <input type="email" class="form-control input-text-select"
+                pattern="(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+                id="email" required
+                placeholder="{{'required' | translate}}"
+                [(ngModel)]="updatedCaregiver.email"
+                name="email" #email="ngModel"
+                [class.input-text-select-error]="!validEmailInput"
+                (change)="isValidEmailValue(email)">
+              @if (!validEmailInput) {
+                <small class="form-text text-error-message" style="margin-top: 10px;">
+                  {{'emailInvalid' | translate}}
+                </small>
+              }
+            </div>
+
+            <!--Phone-->
+            <div class="p-2 form-group" style="margin-bottom: 0px;">
+              <label for="phone" class="input-label">
+                <i class="bi bi-telephone-fill text-icon-blue"></i> {{'mobilePhone' | translate}}
+              </label>
+              <input type="text" class="form-control input-text-select"
+                id="phone"
+                placeholder="{{'optional' | translate}}"
+                [(ngModel)]="updatedCaregiver.phone"
+                name="phone">
+            </div>
+
+            <!--Required note-->
+            @if (translateCache === 'pt') {
+              <small class="p-2 form-text text-info-message" style="margin-top: -10px;">
+                Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+              </small>
+            }
+            @if (translateCache === 'en') {
+              <small class="p-2 form-text text-info-message" style="margin-top: -10px;">
+                All fields with <strong>*</strong> are <strong>Required</strong>.
+              </small>
+            }
+
+            <!--Buttons-->
+            <div class="d-flex justify-content-start flex-wrap-reverse">
+              <div class="p-2 half-width">
+                <button type="button"
+                        class="btn button button-neutral full-width"
+                        (click)="showCancel()">
+                  <i class="bi bi-caret-left-fill color-white"></i>
+                  {{'profile' | translate}}
+                </button>
+              </div>
+              <div class="p-2 half-width">
+                <button type="submit"
+                        class="btn button button-action full-width"
+                        [disabled]="!step1Form.valid || loading">
+                  {{'advance' | translate}}
+                  @if (loading) {
+                    <div class="spinner-border small-spinner-white" role="status"></div>
+                    <span class="sr-only">Loading...</span>
+                  }
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!--Step 2-->
+  @if (!hideEditProfile2) {
+    <div class="d-flex flex-column">
+
+      <form (ngSubmit)="caregiverUpdate()" #step2Form="ngForm">
+        <div class="card blue-border">
+
+          <h5 class="card-header card-header-blue">
+            {{'caregiverProfileUpdate' | translate}}
+          </h5>
+
+          <div class="card-body">
+
+            <div class="d-flex justify-content-start flex-wrap">
+              <app-profile-image [profileImage]="profileImage"></app-profile-image>
+              <app-caregiver-type [caregiverType]="caregiverType"></app-caregiver-type>
+            </div>
+
+            @if (translateCache === 'pt') {
+              <small class="p-2 form-text text-info-message" style="margin-top: -10px;">
+                Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+              </small>
+            }
+            @if (translateCache === 'en') {
+              <small class="p-2 form-text text-info-message" style="margin-top: -10px;">
+                All fields with <strong>*</strong> are <strong>Required</strong>.
+              </small>
+            }
+
+            <div class="d-flex justify-content-start flex-wrap-reverse">
+              <div class="p-2 half-width">
+                <button type="button"
+                        class="btn button button-neutral full-width"
+                        (click)="showEditProfile1()">
+                  <i class="bi bi-caret-left-fill color-white"></i>
+                  {{'goBack' | translate}}
+                </button>
+              </div>
+              <div class="p-2 half-width">
+                <button type="submit"
+                        class="btn button button-action full-width"
+                        [disabled]="loading">
+                  {{'save' | translate}}
+                  @if (loading) {
+                    <div class="spinner-border small-spinner-white" role="status"></div>
+                    <span class="sr-only">Loading...</span>
+                  }
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+
+</div>

@@ -1,0 +1,77 @@
+<!--@author André Santana - fc49451-->
+
+<!--Add Patient Observation Container-->
+<div class="p-2 d-flex justify-content-center caregiver-home-container">
+
+  <form (ngSubmit)="addObservation()" #addForm="ngForm">
+    <div class="card blue-border">
+
+      <!--Card Header-->
+      <h5 class="card-header card-header-blue">
+        {{'addObservation' | translate}}
+      </h5>
+
+      <!--Card Body-->
+      <div class="card-body">
+
+        <!--Error Alert-->
+        @if(addError) {
+          <div class="alert alert-danger alert-box" role="alert">
+            {{'addObservationError' | translate}}
+          </div>
+        }
+
+        <!--Observation About (patient name)-->
+        <div class="p-2" style="margin-bottom: 5px;">
+          <span class="input-label">
+            <i class="bi bi-person"></i>
+            {{'observationAbout' | translate}} {{convertPatientDisplayName(patient.displayName, patient.name)}}
+          </span>
+        </div>
+
+        <!--Observation Text-->
+        <div class="p-2 form-group" style="margin-bottom: 10px;">
+          <label for="observation" class="input-label">
+            <i class="bi bi-pencil"></i> {{'observations' | translate}}*
+          </label>
+          <textarea class="form-control input-text-select"
+            id="observation" rows="5" required
+            placeholder="{{'required' | translate}}"
+            [(ngModel)]="observation"
+            name="observation"></textarea>
+        </div>
+
+        <!--Buttons-->
+        <div class="d-flex justify-content-start flex-wrap-reverse">
+
+          <!--Cancel-->
+          <div class="p-2" style="width: 300px;">
+            <button type="button"
+                    class="btn button button-neutral full-width"
+                    (click)="cancel()">
+              <i class="bi bi-x-circle color-white"></i>
+              {{'cancel' | translate}}
+            </button>
+          </div>
+
+          <!--Add-->
+          <div class="p-2" style="width: 300px;">
+            <button type="submit"
+                    class="btn button button-action full-width"
+                    [disabled]="!addForm.valid || adding">
+              {{'addObservation' | translate}}
+              @if(adding) {
+                <div class="spinner-border small-spinner-white" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              }
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+</div>

@@ -1,0 +1,122 @@
+<!--@author André Santana - fc49451-->
+
+<!--Edit Patient Info Container-->
+<div class="p-2 d-flex justify-content-center caregiver-home-container">
+
+  <form (ngSubmit)="updatePatient()" #editForm="ngForm">
+    <div class="card blue-border">
+
+      <!--Card Header-->
+      <h5 class="card-header card-header-blue">
+        {{'editInformation' | translate}} — {{convertPatientDisplayName(patient.displayName, patient.name)}}
+      </h5>
+
+      <!--Card Body-->
+      <div class="card-body">
+
+        <!--Error Alert-->
+        @if(updateError) {
+          <div class="alert alert-danger alert-box" role="alert">
+            {{'updateError' | translate}} {{convertPatientDisplayName(patient.displayName, patient.name)}}.
+          </div>
+        }
+
+        <!--Name-->
+        <div class="p-2 form-group" style="margin-bottom: 10px;">
+          <label for="name" class="input-label">
+            <i class="bi bi-person"></i> {{'name' | translate}}*
+          </label>
+          <input type="text" class="form-control input-text-select"
+            id="name" required
+            placeholder="{{'required' | translate}}"
+            [(ngModel)]="updatedPatient.name"
+            name="name">
+        </div>
+
+        <!--Display Name-->
+        <div class="p-2 form-group" style="margin-bottom: 10px;">
+          <label for="displayName" class="input-label">
+            <i class="bi bi-person-badge"></i> {{'nameToPresent' | translate}}
+          </label>
+          <input type="text" class="form-control input-text-select"
+            id="displayName"
+            placeholder="{{'optional' | translate}}"
+            [(ngModel)]="updatedPatient.displayName"
+            name="displayName">
+        </div>
+
+        <!--Education-->
+        <div class="p-2 form-group" style="margin-bottom: 10px;">
+          <label for="education" class="input-label">
+            <i class="bi bi-mortarboard"></i> {{'education' | translate}}
+          </label>
+          <input type="text" class="form-control input-text-select"
+            id="education"
+            placeholder="{{'optional' | translate}}"
+            [(ngModel)]="updatedPatient.education"
+            name="education">
+        </div>
+
+        <!--Interests-->
+        <div class="p-2 form-group" style="margin-bottom: 10px;">
+          <label for="interests" class="input-label">
+            <i class="bi bi-stars"></i> {{'interests' | translate}}
+          </label>
+          <textarea class="form-control input-text-select"
+            id="interests" rows="2"
+            placeholder="{{'optional' | translate}}"
+            [(ngModel)]="updatedPatient.interests"
+            name="interests"></textarea>
+        </div>
+
+        <!--Cities-->
+        <div class="p-2 form-group" style="margin-bottom: 10px;">
+          <label for="cities" class="input-label">
+            <i class="bi bi-geo-alt"></i> {{'cities' | translate}}
+          </label>
+          <textarea class="form-control input-text-select"
+            id="cities" rows="2"
+            placeholder="{{'optional' | translate}}"
+            [(ngModel)]="updatedPatient.cities"
+            name="cities"></textarea>
+        </div>
+
+        <!--Required note-->
+        <small class="p-2 form-text text-info-message" style="margin-top: -10px;">
+          * {{'required' | translate}}
+        </small>
+
+        <!--Buttons-->
+        <div class="d-flex justify-content-start flex-wrap-reverse">
+
+          <!--Cancel-->
+          <div class="p-2" style="width: 300px;">
+            <button type="button"
+                    class="btn button button-neutral full-width"
+                    (click)="cancel()">
+              <i class="bi bi-x-circle color-white"></i>
+              {{'cancel' | translate}}
+            </button>
+          </div>
+
+          <!--Save-->
+          <div class="p-2" style="width: 300px;">
+            <button type="submit"
+                    class="btn button button-action full-width"
+                    [disabled]="!editForm.valid || updating">
+              {{'save' | translate}}
+              @if(updating) {
+                <div class="spinner-border small-spinner-white" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              }
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+</div>

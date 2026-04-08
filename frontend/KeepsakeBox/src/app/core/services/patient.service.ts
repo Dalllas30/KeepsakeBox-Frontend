@@ -9,7 +9,10 @@
  import { PatientCaregiverList } from '../models/patient-caregiver-list.model';
  import { PatientCaregiver } from '../models/patient-caregiver.model';
  import { Patient } from '../models/patient.model';
- 
+ import { PatientObservation } from '../models/patient-observation.model';
+ import { PatientObservationList } from '../models/patient-observation-list.model';
+ import { AddPatientObservationData } from '../models/add-patient-observation-data.model';
+
  //Request URLs
  const serverURL = "194.117.20.219"
  //const serverURL = "localhost"
@@ -20,6 +23,14 @@
  const getPatientsCaregiversByIdURL01= `http://${serverURL}:8080/patient/caregivers?token=`
  const getPatientsCaregiversByIdURL02 = "&patientId="
  const updatePatientURL = `http://${serverURL}:8080/patient/update?token=`
+ const getObservationsURL01 = `http://${serverURL}:8080/patient/observations?token=`
+ const getObservationsURL02 = "&patientId="
+ const addObservationURL = `http://${serverURL}:8080/patient/observation?token=`
+ const updateObservationURL = `http://${serverURL}:8080/patient/observation/update?token=`
+ const deleteObservationURL01 = `http://${serverURL}:8080/patient/observation/delete?token=`
+ const deleteObservationURL02 = "&observationId="
+
+  //change to localhost:4200 when testing
  
  @Injectable({
    providedIn: 'root'
@@ -30,10 +41,14 @@
 constructor(private http: HttpClient) {
   //Stores the current patient on cache
   this.currentPatient = new BehaviorSubject<Patient | null>(JSON.parse(localStorage.getItem('currentPatient')!));
+  this.currentObservation = new BehaviorSubject<PatientObservation | null>(JSON.parse(localStorage.getItem('currentObservation') || 'null'));
 }
 
 //Cache variable for the current patient
 private currentPatient: BehaviorSubject<Patient | null>;
+
+//Cache variable for the currently selected observation
+private currentObservation: BehaviorSubject<PatientObservation | null>;
  
    /**
     * Sets the current patient on cache
@@ -139,6 +154,103 @@ private currentPatient: BehaviorSubject<Patient | null>;
      });
      return patientUpdated;
    }
- 
+
+   // ─── Current Observation State ────────────────────────────────────────────
+
+   /**
+    * Sets the currently selected observation on cache
+    * @param observation - observation to save on cache
+    */
+   setCurrentObservation(observation: PatientObservation): void {
+     localStorage.setItem('currentObservation', JSON.stringify(observation));
+     this.currentObservation.next(observation);
+   }
+
+   /**
+    * Resets currently selected observation on cache
+    */
+   resetCurrentObservation(): void {
+     localStorage.removeItem('currentObservation');
+     this.currentObservation.next(null);
+   }
+
+   /**
+    * Gets currently selected observation from cache
+    * @returns PatientObservation saved on cache
+    */
+   getCurrentObservation(): PatientObservation | null {
+     return this.currentObservation.value;
+   }
+
+   // ─── Observation CRUD ─────────────────────────────────────────────────────
+
+   /**
+    * Gets all observations for a given patient
+    * @param token - current caregiver token
+    * @param patientId - ID of the patient
+    * @returns list of observations
+    */
+   async getPatientObservations(token: string, patientId: string): Promise<PatientObservation[]> {
+     let observations: PatientObservation[] = [];
+     await this.http.get<PatientObservationList>(
+       `${getObservationsURL01}${token}${getObservationsURL02}${patientId}`).toPromise()
+     .then(response => {
+       if (response) {
+         observations = response.observations.sort(
+           (a, b) => new Date(b.lastUpdatedDate).getTime() - new Date(a.lastUpdatedDate).getTime()
+         );
+       }
+     });
+     return observations;
+   }
+
+   /**
+    * Adds a new observation for a patient
+    * @param token - current caregiver token
+    * @param observationData - data for the new observation
+    * @returns TRUE if the operation was successful
+    */
+   async addObservation(token: string, observationData: AddPatientObservationData): Promise<boolean> {
+     let added = true;
+     await this.http.post(
+       `${addObservationURL}${token}`, observationData).toPromise()
+     .catch(error => {
+       added = false;
+     });
+     return added;
+   }
+
+   /**
+    * Updates an existing observation
+    * @param token - current caregiver token
+    * @param observation - updated observation object
+    * @returns TRUE if the operation was successful
+    */
+   async updateObservation(token: string, observation: PatientObservation): Promise<boolean> {
+     let updated = true;
+     await this.http.post(
+       `${updateObservationURL}${token}`, observation).toPromise()
+     .catch(error => {
+       updated = false;
+     });
+     return updated;
+   }
+
+   /**
+    * Deletes an observation by its ID
+    * @param token - current caregiver token
+    * @param observationId - ID of the observation to delete
+    * @returns TRUE if the operation was successful
+    */
+   async deleteObservation(token: string, observationId: string): Promise<boolean> {
+     let deleted = true;
+     await this.http.get(
+       `${deleteObservationURL01}${token}${deleteObservationURL02}${observationId}`).toPromise()
+     .catch(error => {
+       deleted = false;
+     });
+     return deleted;
+   }
+
  }
  
