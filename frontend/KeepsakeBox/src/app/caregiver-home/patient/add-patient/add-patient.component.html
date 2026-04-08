@@ -1,144 +1,382 @@
-<!--@author André Santana - fc49451-->
+<!--Add Patient Component Container-->
+<div class="d-flex justify-content-center flex-wrap">
 
-<!--Add Patient Container-->
-<div class="p-2 d-flex justify-content-center caregiver-home-container">
+  <!--Cancel Screen-->
+  @if (!hideCancel) {
+    <app-cancel-screen
+      (answeredNo)="showAddPatient()"
+      (answeredYes)="navigateToPatientList()">
+    </app-cancel-screen>
+  }
 
-  <form (ngSubmit)="addPatient()" #addForm="ngForm">
-    <div class="card blue-border">
+  <!--Add Patient Container-->
+  @if (!hideAddPatient) {
+    <div class="d-flex flex-column">
 
-      <!--Card Header-->
-      <h5 class="card-header card-header-blue">
-        <span *ngIf="caregiver.type=='Formal'">{{'addBeneficiary' | translate}}</span>
-        <span *ngIf="caregiver.type=='Informal'">{{'addRelative' | translate}}</span>
-      </h5>
-
-      <!--Card Body-->
-      <div class="card-body">
-
-        <!--Error Alert-->
-        @if(addError) {
-          <div class="alert alert-danger alert-box" role="alert">
-            <span *ngIf="caregiver.type=='Formal'">{{'addBeneficiaryError' | translate}}</span>
-            <span *ngIf="caregiver.type=='Informal'">{{'addRelativeError' | translate}}</span>
-          </div>
-        }
-
-        <!--Name-->
-        <div class="p-2 form-group" style="margin-bottom: 10px;">
-          <label for="name" class="input-label">
-            <i class="bi bi-person"></i> {{'name' | translate}}*
-          </label>
-          <input type="text" class="form-control input-text-select"
-            id="name" required
-            placeholder="{{'required' | translate}}"
-            [(ngModel)]="name"
-            name="name">
+      @if (!added && caregiver.type === 'Formal') {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'addBeneficiaryError' | translate}}
         </div>
-
-        <!--Display Name-->
-        <div class="p-2 form-group" style="margin-bottom: 10px;">
-          <label for="displayName" class="input-label">
-            <i class="bi bi-person-badge"></i> {{'nameToPresent' | translate}}
-          </label>
-          <input type="text" class="form-control input-text-select"
-            id="displayName"
-            placeholder="{{'optional' | translate}}"
-            [(ngModel)]="displayName"
-            name="displayName">
+      }
+      @if (!added && caregiver.type === 'Informal') {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'addRelativeError' | translate}}
         </div>
+      }
 
-        <!--Birth Date-->
-        <div class="p-2 form-group">
-          <app-birth-date-input [birthDate]="birthDate"></app-birth-date-input>
-        </div>
+      <form (ngSubmit)="addPatient()" #addPatientForm="ngForm"
+            (keydown.enter)="$event.preventDefault()"
+            (keydown.shift.enter)="$event.preventDefault()">
 
-        <!--Education-->
-        <div class="p-2 form-group" style="margin-bottom: 10px;">
-          <label for="education" class="input-label">
-            <i class="bi bi-mortarboard"></i> {{'education' | translate}}
-          </label>
-          <input type="text" class="form-control input-text-select"
-            id="education"
-            placeholder="{{'optional' | translate}}"
-            [(ngModel)]="education"
-            name="education">
-        </div>
+        <div class="card blue-border">
 
-        <!--Interests-->
-        <div class="p-2 form-group" style="margin-bottom: 10px;">
-          <label for="interests" class="input-label">
-            <i class="bi bi-stars"></i> {{'interests' | translate}}
-          </label>
-          <textarea class="form-control input-text-select"
-            id="interests" rows="2"
-            placeholder="{{'optional' | translate}}"
-            [(ngModel)]="interests"
-            name="interests"></textarea>
-        </div>
+          @if (caregiver.type === 'Formal') {
+            <h5 class="card-header card-header-blue">{{'addBeneficiary' | translate}}</h5>
+          }
+          @if (caregiver.type === 'Informal') {
+            <h5 class="card-header card-header-blue">{{'addRelative' | translate}}</h5>
+          }
 
-        <!--Cities-->
-        <div class="p-2 form-group" style="margin-bottom: 10px;">
-          <label for="cities" class="input-label">
-            <i class="bi bi-geo-alt"></i> {{'cities' | translate}}
-          </label>
-          <textarea class="form-control input-text-select"
-            id="cities" rows="2"
-            placeholder="{{'optional' | translate}}"
-            [(ngModel)]="cities"
-            name="cities"></textarea>
-        </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-start flex-wrap">
 
-        <!--Relation (Informal only)-->
-        <div class="p-2 form-group" style="margin-bottom: 10px;"
-             *ngIf="caregiver.type=='Informal'">
-          <label for="relation" class="input-label">
-            <i class="bi bi-people"></i> {{'relativeIsMy' | translate}}*
-          </label>
-          <input type="text" class="form-control input-text-select"
-            id="relation" required
-            placeholder="{{'required' | translate}}"
-            [(ngModel)]="patientRelation"
-            name="patientRelation">
-        </div>
-
-        <!--Required note-->
-        <small class="p-2 form-text text-info-message" style="margin-top: -10px;">
-          * {{'required' | translate}}
-        </small>
-
-        <!--Buttons-->
-        <div class="d-flex justify-content-start flex-wrap-reverse">
-
-          <!--Cancel-->
-          <div class="p-2" style="width: 300px;">
-            <button type="button"
-                    class="btn button button-neutral full-width"
-                    (click)="cancel()">
-              <i class="bi bi-x-circle color-white"></i>
-              {{'cancel' | translate}}
-            </button>
-          </div>
-
-          <!--Add-->
-          <div class="p-2" style="width: 300px;">
-            <button type="submit"
-                    class="btn button button-action full-width"
-                    [disabled]="!addForm.valid || !isBirthDateValid || adding">
-              <i class="bi bi-person-plus color-white"></i>
-              <span *ngIf="caregiver.type=='Formal'" class="color-white"> {{'addBeneficiary' | translate}}</span>
-              <span *ngIf="caregiver.type=='Informal'" class="color-white"> {{'addRelative' | translate}}</span>
-              @if(adding) {
-                <div class="spinner-border small-spinner-white" role="status">
-                  <span class="sr-only">Loading...</span>
-                </div>
+              <!--Profile Image-->
+              @if (!advance) {
+                <app-profile-image [profileImage]="profileImage"></app-profile-image>
               }
-            </button>
+
+              <div class="d-flex flex-column flex-wrap">
+
+                <!--Step 1 Fields-->
+                @if (!advance) {
+
+                  <!--Name-->
+                  <div class="p-2 form-group" style="margin-bottom: 5px;">
+                    <label for="name" class="input-label">
+                      <i class="bi bi-person"></i> {{'name' | translate}}*
+                    </label>
+                    <input type="text" class="form-control input-text-select" id="name"
+                      placeholder="{{'required' | translate}}" required
+                      [(ngModel)]="caregiverPatientRegisterData.patient.name"
+                      name="name" #name="ngModel">
+                  </div>
+
+                  <div class="d-flex justify-content-start flex-wrap">
+
+                    <!--Display Name-->
+                    <div class="p-2 form-group" style="margin-bottom: 10px;">
+                      <label for="displayName" class="input-label">
+                        <i class="bi bi-file-person"></i> {{'nameToPresent' | translate}}
+                      </label>
+                      <input type="text" class="form-control input-text-select" id="displayName"
+                        placeholder="{{'optional' | translate}}"
+                        [(ngModel)]="caregiverPatientRegisterData.patient.displayName"
+                        name="displayName">
+                    </div>
+
+                    <!--Birth Date-->
+                    <div class="p-2 form-group" style="margin-right: -10px !important;">
+                      <app-birth-date-input [birthDate]="birthDate"></app-birth-date-input>
+                    </div>
+
+                  </div>
+
+                  <!--Education-->
+                  <div class="p-2" style="margin-bottom: 10px !important;">
+                    <label for="education" class="input-label">
+                      <i class="bi bi-book"></i> {{'education' | translate}}:*
+                    </label><br>
+                    @if (translateCache === 'pt') {
+                      <select class="custom-select mr-sm-2 input-text-select" id="education"
+                        [(ngModel)]="caregiverPatientRegisterData.patient.education"
+                        name="education" #education="ngModel">
+                        <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
+                        @for (e of educationsPT; track e) {
+                          <option [value]="e">{{e}}</option>
+                        }
+                      </select>
+                    }
+                    @if (translateCache === 'en') {
+                      <select class="custom-select mr-sm-2 input-text-select" id="education"
+                        [(ngModel)]="caregiverPatientRegisterData.patient.education"
+                        name="education" #education="ngModel">
+                        <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
+                        @for (e of educationsENG; track e) {
+                          <option [value]="e">{{e}}</option>
+                        }
+                      </select>
+                    }
+                  </div>
+
+                  <!--Relation (Informal only)-->
+                  @if (caregiver.type === 'Informal') {
+                    <div class="p-2" style="margin-bottom: -20px !important;">
+                      <label for="patientRelation" class="input-label">
+                        <i class="bi bi-person"></i> {{'relativeIsMy' | translate}}
+                      </label><br>
+                      @if (translateCache === 'pt') {
+                        <select class="custom-select mr-sm-2 input-text-select" id="patientRelation"
+                          [(ngModel)]="caregiverPatientRegisterData.patientRelation"
+                          name="patientRelation">
+                          <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
+                          @for (r of relationsPT; track r) {
+                            <option [value]="r">{{r}}</option>
+                          }
+                        </select>
+                      }
+                      @if (translateCache === 'en') {
+                        <select class="custom-select mr-sm-2 input-text-select" id="patientRelation"
+                          [(ngModel)]="caregiverPatientRegisterData.patientRelation"
+                          name="patientRelation">
+                          <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
+                          @for (r of relationsENG; track r) {
+                            <option [value]="r">{{r}}</option>
+                          }
+                        </select>
+                      }
+                    </div>
+                  }
+                }
+
+                <!--Step 2 Fields-->
+                @if (advance) {
+
+                  <!--Cities of Interest-->
+                  <div class="p-2" style="margin-bottom: 10px !important;">
+                    <label class="input-label">
+                      <i class="bi bi-map"></i>
+                      Cidades de interesse (onde nasceu, viveu, viajou, etc):*
+                    </label>
+                  </div>
+
+                  <div class="d-flex flex-column justify-content-start" style="margin-top: -20px; margin-left: -10px;">
+                    <div class="d-flex flex-row" style="height: 200px;">
+                      <div class="d-flex flex-column">
+                        <div class="d-flex justify-content-left flex-wrap p-2">
+                          <div class="p-2" style="width: 700px">
+                            <div class="input-group mb-2 mr-sm-2">
+                              <div class="input-group-prepend">
+                                <div class="input-group-text input-icon-blue" style="height:50px">
+                                  <i class="bi bi-search color-white"></i>
+                                </div>
+                              </div>
+                              <input [(ngModel)]="categoryTextInput" [ngModelOptions]="{standalone: true}"
+                                (keyup.enter)="onEnterCatTextInput()" type="text"
+                                class="form-control input-text-select" style="height:50px" placeholder="Cidade...">
+                            </div>
+                          </div>
+                        </div>
+                        @if (alertCategoryInput) {
+                          <div class="d-flex justify-content-left flex-wrap p-2">
+                            <div class="alert alert-warning"
+                              style="width: 450px; font-size: 20px; margin-bottom: 10px; margin-top: -20px; margin-left: 10px;">
+                              Esta categoria já foi adicionada à pesquisa
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+
+                    <div class="d-flex flex-column">
+                      <div class="p-2 d-flex flex-row" style="margin-top: -100px; margin-left: 10px;">
+                        <b>Cidades selecionadas:</b>
+                      </div>
+                      <div class="d-flex flex-row justify-content-start" style="height: 80px;">
+                        <div class="d-flex flex-column justify-content-start" style="margin-left: 10px;">
+                          @if (chosenCategories.length > 0) {
+                            <div class="d-flex justify-content-start flex-wrap p-2" style="width: 1000px; margin-left: -10px;">
+                              @for (category of chosenCategories; track category) {
+                                <div class="p-2" style="margin-top: -10px;">
+                                  <button type="button" class="btn button category-button category-button-selected"
+                                    (click)="removeFromSelectedCategories(category)">
+                                    <i class="bi bi-trash color-white" style="margin-right: 10px;"></i>
+                                    <span style="color: white;">{{category}}</span>
+                                  </button>
+                                </div>
+                              }
+                              <div class="p-2" style="margin-top: -10px;">
+                                <button type="button" class="btn button button-neutral" (click)="resetSelectedCategories()">
+                                  <i class="bi bi-eraser-fill color-white"></i> {{'clean' | translate}}
+                                </button>
+                              </div>
+                            </div>
+                          }
+                          @if (chosenCategories.length === 0) {
+                            <div class="p-2" style="margin-top: 10px; margin-left: 10px; color:#007bff">
+                              Nenhuma cidade selecionada
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--Interests-->
+                  <div class="p-2" style="margin-bottom: 10px !important;">
+                    <label class="input-label">
+                      <i class="bi bi-emoji-smile"></i> Outros Interesses/Hobbies:*
+                    </label>
+                  </div>
+
+                  <div class="d-flex flex-column justify-content-start" style="margin-top: 0px; margin-left: -10px;">
+                    <div class="d-flex flex-row" style="height: 200px;">
+                      <div class="d-flex flex-column">
+                        <div class="p-2" style="margin-top: 10px; margin-left: 10px; text-align: left;">
+                          Escreva os interesses/hobbies e/ou selecione das sugestões
+                        </div>
+                        <div class="d-flex justify-content-left flex-wrap p-2">
+                          <div class="p-2" style="width: 530px">
+                            <div class="input-group mb-2 mr-sm-2">
+                              <div class="input-group-prepend">
+                                <div class="input-group-text input-icon-blue" style="height:50px">
+                                  <i class="bi bi-search color-white"></i>
+                                </div>
+                              </div>
+                              <input [(ngModel)]="interestTextInput" [ngModelOptions]="{standalone: true}"
+                                (keyup.enter)="onEnterInterestTextInput()" type="text"
+                                class="form-control input-text-select" style="height:50px"
+                                placeholder="Interesse/Hobby...">
+                            </div>
+                          </div>
+                        </div>
+                        @if (alertInterestInput) {
+                          <div class="d-flex justify-content-left flex-wrap p-2">
+                            <div class="alert alert-warning"
+                              style="width: 450px; font-size: 20px; margin-bottom: 10px; margin-top: -20px; margin-left: 10px;">
+                              Esta categoria já foi adicionada à pesquisa
+                            </div>
+                          </div>
+                        }
+                      </div>
+
+                      <div class="d-flex flex-column">
+                        <div class="p-2" style="margin-top: 10px; margin-left: 10px; text-align: left; margin-bottom: 10px;">
+                          <i class="bi bi-question-circle"></i> Sugestões
+                        </div>
+                        @if (translateCache === 'pt') {
+                          @if (categoriesCopy.length > 0) {
+                            <div class="d-flex justify-content-start flex-wrap p-2" style="width: 500px; height: 100px;">
+                              @for (category of categoriesCopy; track category) {
+                                <div class="p-2" style="margin-top: -10px;">
+                                  <button type="button" class="btn button category-button"
+                                    (click)="interestClick(category)">{{category}}</button>
+                                </div>
+                              }
+                            </div>
+                          }
+                          @if (categoriesCopy.length === 0) {
+                            <div class="p-2" style="margin-top: 10px; margin-left: 10px; color:#007bff">
+                              Nenhum interesse sugerido
+                            </div>
+                          }
+                        }
+                      </div>
+                    </div>
+
+                    <div class="d-flex flex-column">
+                      <div class="p-2 d-flex flex-row" style="margin-top: 10px; margin-left: 10px;">
+                        <b>Interesses selecionados:</b>
+                      </div>
+                      <div class="d-flex flex-row justify-content-start" style="height: 80px;">
+                        <div class="d-flex flex-column justify-content-start" style="margin-left: 10px;">
+                          @if (chosenInterests.length > 0) {
+                            <div class="d-flex justify-content-start flex-wrap p-2" style="width: 1000px; margin-left: -10px;">
+                              @for (category of chosenInterests; track category) {
+                                <div class="p-2" style="margin-top: -10px;">
+                                  <button type="button" class="btn button category-button category-button-selected"
+                                    (click)="removeFromSelectedInterests(category)">
+                                    <i class="bi bi-trash color-white" style="margin-right: 10px;"></i>
+                                    <span style="color: white;">{{category}}</span>
+                                  </button>
+                                </div>
+                              }
+                              <div class="p-2" style="margin-top: -10px;">
+                                <button type="button" class="btn button button-neutral" (click)="resetSelectedInterests()">
+                                  <i class="bi bi-eraser-fill color-white"></i> {{'clean' | translate}}
+                                </button>
+                              </div>
+                            </div>
+                          }
+                          @if (chosenInterests.length === 0) {
+                            <div class="p-2" style="margin-top: 10px; margin-left: 10px; color:#007bff">
+                              Nenhum interesse selecionado
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+              </div>
+            </div>
+
+            <!--Required note-->
+            @if (translateCache === 'pt') {
+              <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+              </small>
+            }
+            @if (translateCache === 'en') {
+              <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                All fields with <strong>*</strong> are <strong>Required</strong>.
+              </small>
+            }
+
+            <!--Step 2 Buttons-->
+            @if (advance) {
+              <div class="d-flex justify-content-start flex-wrap-reverse">
+                <div class="p-2 half-width">
+                  <button type="button" class="btn button button-neutral full-width" (click)="goBackAdvance()">
+                    <i class="bi bi-caret-left-fill color-white"></i>
+                    <span class="color-white"> {{'goBack' | translate}}</span>
+                  </button>
+                </div>
+                <div class="p-2 half-width">
+                  <button type="submit" class="btn button button-action full-width"
+                    [disabled]="!addPatientForm.valid
+                                || birthDate.day == 0
+                                || birthDate.month == -1
+                                || birthDate.year == 0
+                                || !birthDate.validDate
+                                || (caregiver.type === 'Informal' && caregiverPatientRegisterData.patientRelation === '')">
+                    {{'submit' | translate}}
+                    @if (addingPatient) {
+                      <div class="spinner-border small-spinner-white" role="status"></div>
+                      <span class="sr-only">Loading...</span>
+                    }
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!--Step 1 Buttons-->
+            @if (!advance) {
+              <div class="d-flex justify-content-start flex-wrap-reverse">
+                <div class="p-2 half-width">
+                  <button type="button" class="btn button button-neutral full-width" (click)="showCancel()">
+                    <i class="bi bi-caret-left-fill color-white"></i>
+                    @if (caregiver.type === 'Formal') {
+                      <span class="color-white"> {{'beneficiaries' | translate}}</span>
+                    }
+                    @if (caregiver.type === 'Informal') {
+                      <span class="color-white"> {{'relatives' | translate}}</span>
+                    }
+                  </button>
+                </div>
+                <div class="p-2 three-width">
+                  <button type="button" class="btn button button-action full-width" (click)="goAdvance()">
+                    {{'proceed' | translate}}
+                    <i class="bi bi-caret-right-fill color-white"></i>
+                  </button>
+                </div>
+              </div>
+            }
+
           </div>
-
         </div>
-
-      </div>
+      </form>
     </div>
-  </form>
+  }
 
 </div>

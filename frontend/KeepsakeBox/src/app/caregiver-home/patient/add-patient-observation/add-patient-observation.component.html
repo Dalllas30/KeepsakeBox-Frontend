@@ -1,77 +1,93 @@
-<!--@author André Santana - fc49451-->
+<!--Add Observation Component Container-->
+<div class="d-flex justify-content-center flex-wrap">
 
-<!--Add Patient Observation Container-->
-<div class="p-2 d-flex justify-content-center caregiver-home-container">
+  <!--Cancel Screen-->
+  @if (!hideCancel) {
+    <app-cancel-screen
+      (answeredNo)="showAddObservation()"
+      (answeredYes)="navigateToPatientObservations()">
+    </app-cancel-screen>
+  }
 
-  <form (ngSubmit)="addObservation()" #addForm="ngForm">
-    <div class="card blue-border">
+  <!--Add Observation Container-->
+  @if (!hideAddObservation) {
+    <div class="d-flex flex-column">
 
-      <!--Card Header-->
-      <h5 class="card-header card-header-blue">
-        {{'addObservation' | translate}}
-      </h5>
-
-      <!--Card Body-->
-      <div class="card-body">
-
-        <!--Error Alert-->
-        @if(addError) {
-          <div class="alert alert-danger alert-box" role="alert">
-            {{'addObservationError' | translate}}
-          </div>
-        }
-
-        <!--Observation About (patient name)-->
-        <div class="p-2" style="margin-bottom: 5px;">
-          <span class="input-label">
-            <i class="bi bi-person"></i>
-            {{'observationAbout' | translate}} {{convertPatientDisplayName(patient.displayName, patient.name)}}
-          </span>
+      @if (!added) {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'addObservationError' | translate}}
         </div>
+      }
 
-        <!--Observation Text-->
-        <div class="p-2 form-group" style="margin-bottom: 10px;">
-          <label for="observation" class="input-label">
-            <i class="bi bi-pencil"></i> {{'observations' | translate}}*
-          </label>
-          <textarea class="form-control input-text-select"
-            id="observation" rows="5" required
-            placeholder="{{'required' | translate}}"
-            [(ngModel)]="observation"
-            name="observation"></textarea>
-        </div>
+      <form (ngSubmit)="addPatientObservation()" #addObservationForm="ngForm">
+        <div class="card blue-border">
 
-        <!--Buttons-->
-        <div class="d-flex justify-content-start flex-wrap-reverse">
+          <h5 class="card-header card-header-blue">
+            {{'addObservation' | translate}}
+          </h5>
 
-          <!--Cancel-->
-          <div class="p-2" style="width: 300px;">
-            <button type="button"
-                    class="btn button button-neutral full-width"
-                    (click)="cancel()">
-              <i class="bi bi-x-circle color-white"></i>
-              {{'cancel' | translate}}
-            </button>
+          <div class="card-body">
+            <div class="d-flex justify-content-start flex-wrap">
+
+              <!--Patient Profile Image-->
+              <div class="p-2">
+                <img [src]="patient.profileImageURL"
+                     alt="Foto de Perfil de {{patient.name}}"
+                     class="img-thumbnail profile-image">
+              </div>
+
+              <!--Observation-->
+              <div class="p-2 form-group" style="margin-bottom: 5px;">
+                <label for="observation" class="input-label">
+                  <i class="bi bi-card-text"></i> {{'observationAbout' | translate}}:
+                  {{convertPatientDisplayName(patient.displayName, patient.name)}}*
+                </label>
+                <textarea class="form-control input-text-select"
+                  id="observation" required rows="6"
+                  placeholder="{{'required' | translate}}"
+                  [(ngModel)]="obs.observation"
+                  name="observation" #observation="ngModel">
+                </textarea>
+              </div>
+
+            </div>
+
+            <!--Required note-->
+            @if (translateCache === 'pt') {
+              <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+              </small>
+            }
+            @if (translateCache === 'en') {
+              <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                All fields with <strong>*</strong> are <strong>Required</strong>.
+              </small>
+            }
+
+            <!--Buttons-->
+            <div class="d-flex justify-content-start flex-wrap-reverse">
+              <div class="p-2 half-width">
+                <button type="button" class="btn button button-neutral full-width" (click)="showCancel()">
+                  <i class="bi bi-caret-left-fill color-white"></i>
+                  {{'observations' | translate}}
+                </button>
+              </div>
+              <div class="p-2 half-width">
+                <button type="submit" class="btn button button-action full-width"
+                        [disabled]="!addObservationForm.valid">
+                  {{'submit' | translate}}
+                  @if (addingObservation) {
+                    <div class="spinner-border small-spinner-white" role="status"></div>
+                    <span class="sr-only">Loading...</span>
+                  }
+                </button>
+              </div>
+            </div>
+
           </div>
-
-          <!--Add-->
-          <div class="p-2" style="width: 300px;">
-            <button type="submit"
-                    class="btn button button-action full-width"
-                    [disabled]="!addForm.valid || adding">
-              {{'addObservation' | translate}}
-              @if(adding) {
-                <div class="spinner-border small-spinner-white" role="status">
-                  <span class="sr-only">Loading...</span>
-                </div>
-              }
-            </button>
-          </div>
-
         </div>
-
-      </div>
+      </form>
     </div>
-  </form>
+  }
 
 </div>

@@ -1,66 +1,56 @@
-/**
- * @author André Santana - fc49451
- */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { Router } from '@angular/router';
-import { Patient } from '../../../core/models/patient.model';
-import { Caregiver } from '../../../core/models/caregiver.model';
-import { PatientObservation } from '../../../core/models/patient-observation.model';
-import { AppService } from '../../../core/services/app.service';
+import { Router, RouterModule } from '@angular/router';
 import { AuthenticationService } from '../../../core/services/authentication.service';
-import { CaregiverService } from '../../../core/services/caregiver.service';
 import { PatientService } from '../../../core/services/patient.service';
+import { ObservationService } from '../../../core/services/observation.service';
+import { AppService } from '../../../core/services/app.service';
+import { Patient } from '../../../core/models/patient.model';
+import { PatientObservation } from '../../../core/models/patient-observation.model';
+import { SimpleCaregiver } from '../../../core/models/simple-caregiver.model';
 
 @Component({
   selector: 'app-delete-patient-observation',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, RouterModule],
   templateUrl: './delete-patient-observation.component.html',
-  styleUrls: ['./delete-patient-observation.component.css']
+  styleUrl: './delete-patient-observation.component.css'
 })
 export class DeletePatientObservationComponent implements OnInit {
-  public caregiver!: Caregiver;
-  public patient!: Patient;
-  public observation!: PatientObservation;
-  public deleteError: boolean = false;
-  public deleting: boolean = false;
+  private router                = inject(Router);
+  private appService            = inject(AppService);
+  private authenticationService = inject(AuthenticationService);
+  private patientService        = inject(PatientService);
+  private observationService    = inject(ObservationService);
 
-  constructor(
-    private appService: AppService,
-    private authenticationService: AuthenticationService,
-    private caregiverService: CaregiverService,
-    private patientService: PatientService,
-    private router: Router
-  ) {}
+  deleting = false;
+  deleted  = true;
 
-  ngOnInit(): void {
-    this.caregiver = this.caregiverService.getCurrentCaregiver()!;
+  patient!: Patient;
+  obs!: PatientObservation;
+
+  constructor() {
     this.patient = this.patientService.getCurrentPatient()!;
-    this.observation = this.patientService.getCurrentObservation()!;
+    const state  = this.router.currentNavigation()?.extras?.state;
+    this.obs     = state?.['observation'] ?? new PatientObservation("", "",
+      new SimpleCaregiver("", "", ""), "", null /*new Date() to fix maybe?*/);
   }
 
-  async deleteObservation(): Promise<void> {
-    this.deleting = true;
-    this.deleteError = false;
-    const token = this.authenticationService.getCurrentCaregiverToken()!;
-
-    const success = await this.patientService.deleteObservation(token, this.observation.id);
-    if (success) {
-      this.patientService.resetCurrentObservation();
-      this.router.navigate(['/caregiver/person/observations']);
-    } else {
-      this.deleteError = true;
-    }
-    this.deleting = false;
-  }
-
-  cancel(): void {
-    this.router.navigate(['/caregiver/person/observations']);
-  }
+  ngOnInit(): void {}
 
   convertPatientDisplayName(displayName: string, name: string): string {
     return this.appService.convertPatientDisplayName(displayName, name);
+  }
+
+  async deletePatientObservation(): Promise<void> {
+    this.deleting = true;
+    const token = this.authenticationService.getCurrentCaregiverToken()!;
+    if (await this.observationService.deletePatientObservation(token, this.obs.id)) {
+      this.router.navigate(['/caregiver/person/observations']);
+    } else {
+      this.deleted = false;
+      this.deleting = false;
+    }
   }
 }
