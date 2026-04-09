@@ -14,8 +14,8 @@
  import { CaregiverList } from '../models/caregiver-list.model';
  
  //Request URLs
- const serverURL = "194.117.20.219"
-// const serverURL = "localhost"
+//const serverURL = "194.117.20.219"
+ const serverURL = "localhost"
  const getCaregiverURL = `http://${serverURL}:8080/caregiver?token=`
  const getCaregiverPatientsURL01 = `http://${serverURL}:8080/caregiver/patients?token=`
  const getCaregiverPatientsURL02 = "&patientId="

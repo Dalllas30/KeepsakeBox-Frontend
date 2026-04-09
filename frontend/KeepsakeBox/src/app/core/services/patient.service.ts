@@ -14,8 +14,8 @@
  import { AddPatientObservationData } from '../models/add-patient-observation-data.model';
 
  //Request URLs
- const serverURL = "194.117.20.219"
- //const serverURL = "localhost"
+ //const serverURL = "194.117.20.219"
+ const serverURL = "localhost"
  const getPatientByIdURL01= `http://${serverURL}:8080/patient?token=`
  const getPatientByIdURL02 = "&patientId="
  const getPatientNameByIdURL01= `http://${serverURL}:8080/patient/name?token=`

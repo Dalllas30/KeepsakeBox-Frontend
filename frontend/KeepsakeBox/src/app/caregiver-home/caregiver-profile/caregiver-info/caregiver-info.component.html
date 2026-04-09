@@ -1,0 +1,79 @@
+<p>caregiver-info works!</p>
+<!--@author André Santana - fc49451-->
+
+<!--Patient Info Container-->
+<div class="d-flex flex-wrap">
+
+    <!--Profile Image and Info-->
+    <div class="mr-auto p-2">        
+        <div class="d-flex justify-content-start flex-wrap">
+
+            <!--Profile Image-->
+            <div class="p-2">
+                <img [src]="caregiver.profileImageURL" 
+                alt="Foto de Perfil de {{caregiver.name}}" 
+                class="img-thumbnail profile-image">
+            </div>
+
+            <!--Info-->
+            <div class="d-flex flex-column">
+
+                <!--Name-->
+                <div class="p-2 info-field">
+                    <strong><i class="bi bi-envelope"></i> Email</strong><br>
+                    {{caregiver.email}}
+                </div>
+
+                <!--Phone-->
+                <div *ngIf="caregiver.phone != 'null'" class="p-2 info-field">
+                    <strong><i class="bi bi-telephone-fill"></i> {{'mobilePhone' | translate}}</strong><br>
+                    {{caregiver.phone}}
+                </div>
+
+                <!--Birth Date-->
+                <div class="p-2 info-field">
+                    <strong><i class="bi bi-calendar-event"></i> {{'birthDate' | translate}}</strong><br>
+                    {{caregiver.birthDate | date:'shortDate'}}
+                </div>
+
+                <!--Caregiver Type-->
+                <div class="p-2 info-field">
+                    <strong><i class="bi bi-file-medical"></i> {{'caregiverType' | translate}}</strong><br>
+                    {{caregiver.type}}
+                </div>
+
+                <!--Caregiver Speciality-->
+                <div *ngIf="caregiver.type=='Formal'" class="p-2 info-field">
+                    <strong><i class="bi bi-award"></i> {{'speciality' | translate}}</strong><br>
+                    {{caregiver.speciality}}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!--Patient Action Buttons-->
+    <div class="p-2">
+
+        <!--------------------Edit Ceregiver Profile Button------------------------------------------------>
+        <div class="p-2">
+            <button type="button" class="btn button button-action button-caregiver"
+            style="width: 210px;"
+            routerLink="/caregiver/profile/update">
+            {{'editProfile' | translate}}
+            </button>
+        </div>
+
+        <!--------------------Change Password------------------------------------------------>
+        <div class="p-2">
+            <button type="button" class="btn button button-action button-caregiver"
+            style="width: 210px;"
+            routerLink="/caregiver/profile/password">
+            {{'changePassword' | translate}}
+            </button>
+        </div>
+
+    </div>
+
+</div>

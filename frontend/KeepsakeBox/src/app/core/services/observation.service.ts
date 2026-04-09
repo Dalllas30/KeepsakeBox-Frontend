@@ -11,7 +11,8 @@ import { PatientObservationList } from '../models/patient-observation-list.model
 import { PatientObservation } from '../models/patient-observation.model';
 
 // Configuração centralizada para facilitar a manutenção
-const SERVER_URL = "194.117.20.219";
+//const SERVER_URL = "194.117.20.219";
+const SERVER_URL = "localhost";
 const BASE_API = `http://${SERVER_URL}:8080/patient`;
 
 @Injectable({

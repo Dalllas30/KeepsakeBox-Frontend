@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { ImageToValidate, ImageToValidateData, Request } from '../models/image.model';
 import { firstValueFrom } from 'rxjs';
 
-const serverURL = "194.117.20.219";
+//const serverURL = "194.117.20.219";
+const serverURL = "localhost";
 //const createCaregiverRequestURL = `http://${serverURL}:8080/caregiver/image/personal?token=`;
 const getRequestURL = `http://${serverURL}:8080/request`
 const createRequestURL = `http://${serverURL}:8080/createrequest?token=`
