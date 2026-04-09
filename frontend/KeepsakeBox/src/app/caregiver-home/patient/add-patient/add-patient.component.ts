@@ -81,7 +81,7 @@ export class AddPatientComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.caregiverPatientRegisterData = new CaregiverPatientRegisterData(
-      new PatientRegisterData("", "", null /*Same prob in delete-pat-obs component*/, "", "", "", ""), ""
+      new PatientRegisterData("", "", null, "", "", "", ""), ""
     );
     this.caregiver   = this.caregiverService.getCurrentCaregiver()!;
     this.profileImage = new ProfileImage("");

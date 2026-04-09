@@ -8,7 +8,7 @@ export class PatientRegisterData {
     constructor(
         public name: string,
         public displayName: string,
-        public birthDate: Date,
+        public birthDate: Date | null,
         public education: string,
         public profileImageURL: string,
         public interests: string,

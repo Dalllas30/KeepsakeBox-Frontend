@@ -205,7 +205,7 @@
     * @returns TRUE if patient was added and associated successfully
     */
    async addPatient(token: string,
-     caregiverPatientRegisterData: CaregiverPatientRegisterData): Promise<ResponseBasic | null>{
+     caregiverPatientRegisterData: CaregiverPatientRegisterData): Promise<String | null>{
      let patientId = null;
      await this.http.post<ResponseBasic>(
        `${addCaregiverPatientURL}${token}`,caregiverPatientRegisterData).toPromise()

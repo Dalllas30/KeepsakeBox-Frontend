@@ -34,7 +34,7 @@ export class DeletePatientObservationComponent implements OnInit {
     this.patient = this.patientService.getCurrentPatient()!;
     const state  = this.router.currentNavigation()?.extras?.state;
     this.obs     = state?.['observation'] ?? new PatientObservation("", "",
-      new SimpleCaregiver("", "", ""), "", null /*new Date() to fix maybe?*/);
+      new SimpleCaregiver("", "", ""), "", null);
   }
 
   ngOnInit(): void {}

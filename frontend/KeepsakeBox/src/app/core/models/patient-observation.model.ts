@@ -10,6 +10,6 @@ export class PatientObservation {
         public patientId: string,
         public caregiver: SimpleCaregiver,
         public observation: string,
-        public lastUpdatedDate: Date
+        public lastUpdatedDate: Date | null
     ){}
 }
