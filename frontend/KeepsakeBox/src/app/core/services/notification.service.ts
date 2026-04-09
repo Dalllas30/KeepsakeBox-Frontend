@@ -8,8 +8,8 @@ import { CaregiverNotificationList } from '../models/caregiver-notification-list
 import { CaregiverNotification } from '../models/caregiver-notification.model';
 
 //Request URLs
-const serverURL = "194.117.20.219"
-//const serverURL = "localhost"
+//const serverURL = "194.117.20.219"
+const serverURL = "localhost"
 const getCaregiverNotificationsURL = `http://${serverURL}:8080/caregiver/notifications?token=`
 const notifySharePatientURL01 = `http://${serverURL}:8080/caregiver/notify/share?token=`
 const notifySharePatientURL02 = "&receiverEmail="

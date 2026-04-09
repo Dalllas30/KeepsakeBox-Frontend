@@ -1,0 +1,19 @@
+/**
+ * @author André Santana - fc49451
+ */
+
+ .profile-image{
+    width: 350px;
+    min-width: 350px;
+    height: 350px;
+    min-height: 350px;
+}
+
+.info-field{
+    text-align: left !important;
+    margin-bottom: -12px !important;
+}
+
+.button-caregiver{
+    width: 200px;
+}

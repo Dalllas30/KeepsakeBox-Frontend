@@ -1,0 +1,170 @@
+<p>caregiver-validation-images works!</p>
+<!--Interface de validacao-->
+<div class="p-2 d-flex justify-content-center caregiver-home-container">
+
+    <!--Patient Card-->
+    <div class="card blue-border">
+
+        <!--Patient Card Header-->
+        <h5 class="card-header card-header-blue">
+            Validar Imagens
+        </h5>
+
+        <div class="d-flex justify-content-center flex-wrap p-2">
+
+            Após analisar todas as imagens (<b>{{activeArray.length}}</b>) o sistema sugeriu:
+            Incluir&nbsp;<b>{{acceptedArray.length}}</b>&nbsp;, Rejeitar&nbsp; <b>{{rejectedArray.length}}</b>
+
+        </div>
+
+        <!--Patient Card Body-->
+        <div class="card-body">
+
+            <!--Patient Nav-->
+            <div class="p-2">
+                <ul class="nav nav-tabs nav-tabs-grey">
+
+                    <!--Info-->
+                    <li class="nav-item" (click)="changeTabToAccepted()" style="cursor:pointer;">
+                        <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="tabAcceptedActive">
+                            <i class="bi bi-person-badge"></i> Imagens a incluir ({{acceptedArray.length}})
+                        </a>
+                    </li>
+
+                    <!--Sessions-->
+                    <li class="nav-item" (click)="changeTabToRejected()" style="cursor:pointer;">
+                        <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="!tabAcceptedActive">
+                            <i class="bi bi-card-list"></i> Imagens a rejeitar ({{rejectedArray.length}})
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <!--Selected Tab Content ACCEPT-->
+            <div class="p-2" style="margin-top: -22px; width: 1200px;" *ngIf="tabAcceptedActive">
+                <div class="tab-inner-display">
+                    <!--Patient Images-->
+                    <!--Caregiver Images-->
+                    <div class="d-flex justify-content-center flex-wrap" style="margin-top: 20px;">
+                        <div class="p-2" *ngFor="let img of acceptedArray, index as indexOfElement">
+
+                            <div class="card long-image-card light-blue-border">
+                                <div class="space"></div>
+                                <!--Image-->
+                                <div
+                                    class="d-flex justify-content-center align-items-center img-thumbnail image-square">
+                                    <i *ngIf="!validationActiveAutoSearch && !acceptanceMap.get(img.imagePath)"
+                                        class="bi bi-exclamation-triangle-fill text-icon-yellow image-favorite"></i>
+                                    <i *ngIf="validationActiveAutoSearch && !acceptanceMap.get(img.src)"
+                                        class="bi bi-exclamation-triangle-fill text-icon-yellow image-favorite"></i>
+                                    <i *ngIf="!validationActiveAutoSearch && !img.isPrivate" class="bi bi-unlock-fill text-icon-blue image-locker"></i>
+                                    <i *ngIf="!validationActiveAutoSearch && img.isPrivate" class="bi bi-lock-fill text-icon-blue image-locker"></i>
+                                    <!-- <i *ngIf="!img.isFavorite" class="bi bi-star text-icon-blue image-favorite"></i>
+                                    <i *ngIf="img.isFavorite" class="bi bi-star-fill text-icon-blue image-favorite"></i> -->
+                                    <img [src]="img.imagePath" alt="{{img.description}}" class="image-card-inside"
+                                        *ngIf="!validationActiveAutoSearch">
+                                    <img [src]="img.src" class="image-card-inside" *ngIf="validationActiveAutoSearch">
+                                </div>
+
+                                <!--Image Description-->
+                                <div class="p-1 image-description" *ngIf="!validationActiveAutoSearch">
+                                    <i class="bi bi-tag"></i>
+                                    {{translateLabels(img.category)}}
+                                    <br>
+                                    <i class="bi bi-card-text"></i>
+                                    {{img.description}}
+                                </div>
+                            </div>
+                            <!--Image Reject-->
+                            <div class="p-2 image-description"
+                                style="background-color: #A80000; color: white; margin-top: -5px; border-radius: 0.25em; cursor:pointer; max-height: 50px; border: 1px solid rgba(0, 0, 82, 0.4) !important;"
+                                (click)="rejectImage(img)">
+                                <i class="bi bi-x color-white"></i> Rejeitar
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="acceptedArray.length === 0" style="margin-top: 30px; margin-bottom:30px">
+                        Nenhuma imagem a incluir
+                    </div>
+                </div>
+            </div>
+
+            <!--Selected Tab Content REJECT-->
+            <div class="p-2" style="margin-top: -22px; width: 1200px;" *ngIf="!tabAcceptedActive">
+                <div class="tab-inner-display">
+                    <!--Patient Images-->
+                    <div class="d-flex justify-content-center flex-wrap" style="margin-top: 20px;"
+                        *ngIf="rejectedArray.length > 0">
+                        <div class="p-2" *ngFor="let img of rejectedArray, index as indexOfElement">
+
+                            <div class="card long-image-card light-blue-border">
+                                <div class="space"></div>
+                                <!--Image-->
+                                <div
+                                    class="d-flex justify-content-center align-items-center img-thumbnail image-square">
+                                    <i *ngIf="!validationActiveAutoSearch && !acceptanceMap.get(img.imagePath)"
+                                        class="bi bi-exclamation-triangle-fill text-icon-yellow image-favorite"></i>
+                                    <i *ngIf="validationActiveAutoSearch && !acceptanceMap.get(img.src)"
+                                        class="bi bi-exclamation-triangle-fill text-icon-yellow image-favorite"></i>
+                                    <i *ngIf="!validationActiveAutoSearch && !img.isPrivate" class="bi bi-unlock-fill text-icon-blue image-locker"></i>
+                                    <i *ngIf="!validationActiveAutoSearch && img.isPrivate" class="bi bi-lock-fill text-icon-blue image-locker"></i>
+                                    <!-- <i *ngIf="!img.isFavorite" class="bi bi-star text-icon-blue image-favorite"></i>
+                                    <i *ngIf="img.isFavorite" class="bi bi-star-fill text-icon-blue image-favorite"></i> -->
+                                    <img [src]="img.imagePath" alt="{{img.description}}" class="image-card-inside"
+                                        *ngIf="!validationActiveAutoSearch">
+                                    <img [src]="img.src" class="image-card-inside" *ngIf="validationActiveAutoSearch">
+                                </div>
+
+                                <!--Image Description-->
+                                <div class="p-1 image-description" *ngIf="!validationActiveAutoSearch">
+                                    <i class="bi bi-tag"></i>
+                                    {{translateLabels(img.category)}}
+                                    <br>
+                                    <i class="bi bi-card-text"></i>
+                                    {{img.description}}
+                                </div>
+
+                            </div>
+                            <!--Image Accept-->
+                            <div class="p-2 image-description"
+                                style="background-color: #005C00; color: white; margin-top: -5px; border-radius: 0.25em; cursor:pointer; max-height: 50px; border: 1px solid rgba(0, 0, 82, 0.4) !important;"
+                                (click)="acceptImage(img)">
+                                <i class="bi bi-check color-white"></i> Incluir
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="rejectedArray.length === 0" style="margin-top: 30px; margin-bottom:30px">
+                        Nenhuma imagem a rejeitar
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Pagination-->
+
+        <div class="d-flex justify-content-center flex-wrap">
+            <ngb-pagination [(page)]="page" [pageSize]="pageSize" [maxSize]="maxSize" [collectionSize]="collectionSize"
+                [rotate]="true" [ellipses]="true">
+                <ng-template ngbPaginationPrevious>
+                    <i class="bi bi-caret-left"></i>Anterior
+                </ng-template>
+                <ng-template ngbPaginationNext>Seguinte<i class="bi bi-caret-right"></i></ng-template>
+                <ng-template ngbPaginationEllipsis>...</ng-template>
+            </ngb-pagination>
+        </div>
+
+        <div class="d-flex justify-content-center flex-wrap p-2" style="margin-top: 10px !important;">
+            <button type="button" class="btn button button-neutral" style="min-width: 300px;"
+                (click)="leaveValidationInterface()" routerLink="/caregiver/profile/validation">
+                <i class="bi bi-caret-left-fill color-white"></i>
+                {{'goBack' | translate}}
+            </button>
+
+            <button type="button" class="btn button button-action" style="min-width: 300px; margin-left: 50px;"
+                (click)="leaveValidationInterfaceConfirm()">
+                Concluir validação
+            </button>
+        </div>
+    </div>

@@ -1,0 +1,97 @@
+/**
+ * @author Bruna Vieites - fc5592
+ */
+
+.border {
+  border: 0.5px solid !important;
+  border-color: #b1b5b9 !important;
+  padding-left: 1em !important;
+  border-radius: .25rem .25rem .25rem .25rem;
+}
+
+.padding {
+  margin-top: 0.4em;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+td {
+  border-top: none !important;
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+.table-text-fields{
+  padding-top: 26px !important;
+}
+
+.center-smiley{
+  padding-top: 18px!important;
+}
+
+.emoji-yes {
+  background: none !important;
+  border: none !important;
+  font-size: 1.5rem !important;
+  padding: 0rem !important;
+}
+
+.circleEmojiButton {
+  clip-path: circle();
+  background: white;
+  width: 31px;
+  height: 31px;
+}
+.emoji-options{
+  font-size: 1.5rem; 
+  display: flex;
+  align-items: center;
+}
+.font-red {
+  color: red !important;
+}
+.font-orange {
+  color: rgb(240, 100, 6) !important;
+}
+.font-grey {
+  color: grey !important;
+}
+.font-green {
+  color: green !important;
+}
+.font-blue {
+  color: blue !important;
+}
+
+/*Pagination*/
+ngb-pagination ::ng-deep ul > li:not(.active) > a {
+    background-color: white !important;
+    border: 1px solid #000052 !important;
+    color: #000052 !important;
+    padding-top: 10px;
+    padding-left: 18px;
+    height: 50px;
+    min-width: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  ngb-pagination ::ng-deep ul > li.active > a {
+    background-color: #004080 !important;
+    border: 1px solid #000052 !important;
+    color: white !important;
+    z-index: 0 !important;
+    padding-top: 10px;
+    padding-left: 18px;
+    height: 50px;
+    min-width: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  ngb-pagination ::ng-deep .page-item.disabled {
+    opacity: 0.5;
+  }
