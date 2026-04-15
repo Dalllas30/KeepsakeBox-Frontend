@@ -62,8 +62,7 @@ export class CaregiverUpdateProfileComponent implements OnInit {
 
     this.lastEmailValidated = this.currentCaregiver.email;
 
-    const dateValues = this.currentCaregiver.birthDate.toString()
-      .split('-').map(v => Number(v));
+    const dateValues = this.currentCaregiver.birthDate?.toString().split('-').map(v => Number(v)) ?? [0, 0, 0];
     this.birthDate    = new BirthDate(dateValues[2], dateValues[1] - 1, dateValues[0], true);
     this.profileImage = new ProfileImage(this.currentCaregiver.profileImageURL);
     this.caregiverType = new CaregiverType(

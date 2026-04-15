@@ -34,8 +34,8 @@ export class ObservationService {
       const response = await firstValueFrom(this.http.get<PatientObservationList>(url));
       
       if (response?.observations) {
-        return response.observations.sort((a, b) => 
-          new Date(b.lastUpdatedDate).getTime() - new Date(a.lastUpdatedDate).getTime()
+        return response.observations.sort(
+          (a, b) => (b.lastUpdatedDate?.getTime() ?? 0) - (a.lastUpdatedDate?.getTime() ?? 0)
         );
       }
       return [];

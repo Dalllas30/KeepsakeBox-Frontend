@@ -53,23 +53,18 @@
                         <!--GeneralReaction-->
                         <div class="p-2 info-field col-2">
                             <strong>{{'globalFeedback' | translate}}</strong><br>
-                                <span *ngIf="session.patient_feedback==1">
+                                @if(session.patient_feedback == 0) {
                                     <i class="bi bi-emoji-angry-fill emoji-yes font-red"></i>
-                                </span>
-                                <span *ngIf="session.patient_feedback==2">
+                                } @else if (session.patient_feedback==2) {
                                     <i class="bi bi-emoji-frown-fill emoji-yes font-orange"></i>
-                                </span>
-                                <span *ngIf="session.patient_feedback==3">
+                                } @else if (session.patient_feedback==3) {
                                     <i class="bi bi-emoji-neutral-fill emoji-yes font-grey"></i>
-                                </span>
-                                <span *ngIf="session.patient_feedback==4">
+                                } @else if (session.patient_feedback==4) {
                                     <i class="bi bi-emoji-smile-fill emoji-yes font-green"></i>
-                                </span>
-                                <span *ngIf="session.patient_feedback==5">
+                                } @else if (session.patient_feedback==5) {
                                     <i class="bi bi-emoji-heart-eyes-fill emoji-yes font-blue"></i>
-                                </span>
+                                }
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -106,12 +101,11 @@
     <!--GeneralObservations-->
     <div class="p-2 info-field">
         <strong>{{'observations' | translate}}</strong><br>
-        <ng-template [ngIf]="session.global_feedback.patient_observation != '' && session.global_feedback.patient_observation != ' ' " [ngIfElse]="withOutObservation">
+        @if(session.global_feedback.patient_observation != '' && session.global_feedback.patient_observation != ' ') {
             {{session.global_feedback.patient_observation}}
-        </ng-template>
-        <ng-template #withOutObservation>
+        } @else {
             {{'noneF' | translate}}
-        </ng-template>
+        }
     </div>
 </div>
 

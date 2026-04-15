@@ -45,23 +45,20 @@
 
       <!--Not Favorite/Favorite and Private/Public-->
       <div class="div-separator-top-grey">
-
+        @if(!img.isFavorite) {
+          <i class="bi bi-star text-icon-yellow"></i> {{'notFavorite' | translate}}
+        } @else {
+          <i class="bi bi-star-fill text-icon-yellow"></i> {{'favorite' | translate}}
+        }
         <div *ngIf="!img.isFavorite">
           <i class="bi bi-star text-icon-yellow"></i> {{'notFavorite' | translate}}
         </div>
 
-        <div *ngIf="img.isFavorite">
-          <i class="bi bi-star-fill text-icon-yellow"></i> {{'favorite' | translate}}
-        </div>
-
-        <div *ngIf="!img.image.isPrivate">
+        @if(!img.image.isPrivate) {
           <i class="bi bi-unlock-fill text-icon-yellow"></i> {{'public' | translate}}
-        </div>
-
-        <div *ngIf="img.image.isPrivate">
+        } @else {
           <i class="bi bi-lock-fill text-icon-yellow"></i> {{'private' | translate}}
-        </div>
-
+        }
       </div>
 
     </div>
@@ -69,8 +66,8 @@
 </div>
 
 <!--Image Edit Options-->
-<div *ngIf="caregiver.email == img.image.createdBy.email" 
-     class="d-flex justify-content-start flex-wrap-reverse">
+@if (caregiver.email == img.image.createdBy.email) {
+  <div class="d-flex justify-content-start flex-wrap-reverse">
 
     <!--Edit Image-->
     <div class="p-2 half-width buttons-min-width">
@@ -90,7 +87,8 @@
         </button>
     </div>
 
-</div>
+  </div>
+}
 
 <!--Return to Patient Images-->
 <div class="d-flex justify-content-start flex-wrap-reverse">
