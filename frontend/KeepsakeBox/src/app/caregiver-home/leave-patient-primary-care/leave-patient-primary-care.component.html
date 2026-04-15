@@ -1,1 +1,188 @@
-<p>leave-patient-primary-care works!</p>
+<!--@author André Santana - fc49451-->
+
+<div class="d-flex justify-content-center flex-wrap">
+
+  <!--Cancel Screen-->
+  @if (!hideCancel) {
+    <app-cancel-screen
+      (answeredNo)="showLeaveCare()"
+      (answeredYes)="navigateToPatientInfo()">
+    </app-cancel-screen>
+  }
+
+  <!--Leave Care Screen-->
+  @if (!hideLeaveCare) {
+    <div class="d-flex flex-column">
+      <div class="card blue-border">
+
+        @if (currentCaregiver.type === 'Formal') {
+          <h5 class="card-header card-header-blue">
+            {{'leaveCare' | translate}} {{'beneficiary' | translate}}
+          </h5>
+        }
+        @if (currentCaregiver.type === 'Informal') {
+          <h5 class="card-header card-header-blue">
+            {{'leaveCare' | translate}} {{'relative' | translate}}
+          </h5>
+        }
+
+        <div class="card-body">
+
+          <!--No other caregivers — cannot leave-->
+          @if (collectionSize === 0) {
+            <div class="p-2">
+              <img [src]="patient.profileImageURL" alt="Foto de Perfil"
+                   class="img-thumbnail patient-image">
+            </div>
+            <div class="p-2" style="width: 600px;">
+              <label class="input-label" style="font-weight: normal;">
+                {{'cantStopCaring' | translate}}
+                <strong style="font-weight: bolder;">
+                  {{convertPatientDisplayName(patient.displayName, patient.name)}}
+                </strong>
+                {{'noMoreCaregiversAssociated' | translate}}<br>
+                <strong>{{'onlyStopIfOthersAssociated' | translate}}</strong>
+              </label>
+            </div>
+          }
+
+          <!--Other caregivers available-->
+          @if (collectionSize !== 0) {
+            <div class="d-flex justify-content-start flex-wrap">
+              <div class="p-2">
+                <img [src]="patient.profileImageURL" alt="Foto de Perfil"
+                     class="img-thumbnail patient-image">
+              </div>
+              <div class="p-2" style="width: 600px;">
+                <label class="input-label" style="font-weight: normal;">
+                  {{'ifYouReallyWishToLeaveCare' | translate}}
+                  <strong style="font-weight: bolder;">
+                    {{convertPatientDisplayName(patient.displayName, patient.name)}}
+                  </strong>
+                  {{'ifYouReallyWishToLeaveCareContinue' | translate}}
+                </label>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-start flex-wrap">
+              <div class="d-flex flex-column">
+                <table class="table table-sm" style="width: 770px;">
+                  <thead>
+                    <tr>
+                      <th scope="col" colspan="2">{{'caregivers' | translate}}</th>
+                      <th scope="col">{{'relation' | translate}}</th>
+                      <th scope="col" colspan="2"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (c of patientCaregivers | slice: (page-1) * pageSize : page * pageSize; track c.caregiver.email) {
+                      <tr>
+                        <td>
+                          <img [src]="c.caregiver.profileImageURL"
+                               alt="Foto de Perfil de {{c.caregiver.name}}"
+                               class="rounded table-profile-image">
+                        </td>
+                        <td class="table-text-fields bolder-text">
+                          {{convertPatientDisplayName(c.caregiver.name, "")}}
+                        </td>
+                        @if (c.caregiver.type === 'Formal') {
+                          <td class="table-text-fields">{{'caregiver' | translate}}</td>
+                        }
+                        @if (c.caregiver.type === 'Informal') {
+                          <td class="table-text-fields">{{c.patientRelation}}</td>
+                        }
+                        <td colspan="2">
+                          <div class="p-2">
+                            <button type="button" class="btn button button-destructive full-width button-send"
+                                    (click)="leavePatientPrimaryCare(c)">
+                              {{'sendRequest' | translate}}
+                              @if (leavingCare) {
+                                <div class="spinner-border small-spinner-white" role="status">
+                                  <span class="sr-only">Loading...</span>
+                                </div>
+                              }
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center flex-wrap">
+                  <ngb-pagination
+                    [(page)]="page"
+                    [pageSize]="pageSize"
+                    [maxSize]="maxSize"
+                    [collectionSize]="collectionSize"
+                    [rotate]="true"
+                    [ellipses]="true">
+                    <ng-template ngbPaginationPrevious>
+                      <i class="bi bi-caret-left"></i>{{'previous' | translate}}
+                    </ng-template>
+                    <ng-template ngbPaginationNext>
+                      {{'next' | translate}}<i class="bi bi-caret-right"></i>
+                    </ng-template>
+                    <ng-template ngbPaginationEllipsis>...</ng-template>
+                  </ngb-pagination>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!--Back Button-->
+          <div class="d-flex justify-content-start flex-wrap-reverse">
+            <div class="p-2 full-width">
+              <button type="button" class="btn button button-neutral full-width" (click)="showCancel()">
+                <i class="bi bi-caret-left-fill color-white"></i>
+                @if (currentCaregiver.type === 'Formal') {
+                  <span class="color-white"> {{'beneficiary' | translate}}</span>
+                }
+                @if (currentCaregiver.type === 'Informal') {
+                  <span class="color-white"> {{'relative' | translate}}</span>
+                }
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  }
+
+  <!--Care Left Screen-->
+  @if (!hideCareLeft) {
+    <div class="card blue-border">
+
+      @if (currentCaregiver.type === 'Formal') {
+        <h5 class="card-header card-header-blue">
+          {{'leaveCare' | translate}} {{'beneficiary' | translate}}
+        </h5>
+      }
+      @if (currentCaregiver.type === 'Informal') {
+        <h5 class="card-header card-header-blue">
+          {{'leaveCare' | translate}} {{'relative' | translate}}
+        </h5>
+      }
+
+      <div class="card-body">
+        <div class="p-2">
+          {{'toLeaveCare' | translate}}
+          <strong>{{convertPatientDisplayName(patient.displayName, patient.name)}}</strong>
+          {{'requestSentTo' | translate}}
+          <strong style="font-weight: bolder;">{{selectedCaregiver.name}}</strong>
+          {{'toBeTheNewCaregiver' | translate}}
+        </div>
+        <div class="p-2 full-width">
+          <button type="button" class="btn button button-action full-width"
+                  routerLink="/caregiver/person/info">
+            <i class="bi bi-check-lg color-white"></i>
+            OK
+          </button>
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>

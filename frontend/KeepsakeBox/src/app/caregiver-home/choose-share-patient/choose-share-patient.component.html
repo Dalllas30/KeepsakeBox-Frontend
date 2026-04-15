@@ -1,1 +1,50 @@
-<p>choose-share-patient works!</p>
+<!--@author André Santana - fc49451-->
+
+<div class="d-flex justify-content-center flex-wrap">
+
+  <div class="card blue-border">
+
+    @if (currentCaregiver.type === 'Formal') {
+      <h5 class="card-header card-header-blue">
+        {{'chooseShareOption' | translate}} {{'beneficiary' | translate}}?
+      </h5>
+    }
+    @if (currentCaregiver.type === 'Informal') {
+      <h5 class="card-header card-header-blue">
+        {{'chooseShareOption' | translate}} {{'relative' | translate}}?
+      </h5>
+    }
+
+    <div class="card-body">
+
+      <div class="p-2">
+        <button type="button" class="btn button button-action full-width"
+                routerLink="/caregiver/person/share/only">
+          {{'shareCareWithCaregiver' | translate}}
+        </button>
+      </div>
+
+      <div class="p-2">
+        <button type="button" class="btn button button-action full-width"
+                routerLink="/caregiver/person/share/principal">
+          {{'assignOtherPrimary' | translate}}
+        </button>
+      </div>
+
+      <div class="p-2">
+        <button type="button" class="btn button button-neutral full-width"
+                routerLink="/caregiver/person/info">
+          <i class="bi bi-caret-left-fill color-white"></i>
+          @if (currentCaregiver.type === 'Formal') {
+            <span class="color-white"> {{'beneficiary' | translate}}</span>
+          }
+          @if (currentCaregiver.type === 'Informal') {
+            <span class="color-white"> {{'relative' | translate}}</span>
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -1,1 +1,166 @@
-<p>principal-share-patient works!</p>
+<!--@author André Santana - fc49451-->
+
+<div class="d-flex justify-content-center flex-wrap">
+
+  <!--Cancel Screen-->
+  @if (!hideCancel) {
+    <app-cancel-screen
+      (answeredNo)="showSharePatient()"
+      (answeredYes)="navigateToPatientInfo()">
+    </app-cancel-screen>
+  }
+
+  <!--Share Patient Container-->
+  @if (!hideSharePatient) {
+    <div class="d-flex flex-column">
+      <div class="card blue-border">
+        <h5 class="card-header card-header-blue">{{'newPrimaryCaregiver' | translate}}</h5>
+
+        <div class="card-body">
+
+          <!--No other caregivers-->
+          @if (collectionSize === 0) {
+            <div class="p-2">
+              <img [src]="patient.profileImageURL" alt="Foto a Adicionar"
+                   class="img-thumbnail patient-image">
+            </div>
+            <div class="p-2" style="width: 600px">
+              <label class="input-label" style="font-weight: normal;">
+                {{'cantStopBeingPrimary' | translate}}
+                <strong style="font-weight: bolder;">
+                  {{convertPatientDisplayName(patient.displayName, patient.name)}}
+                </strong>
+                {{'noMoreCaregivers' | translate}}
+              </label>
+            </div>
+          }
+
+          <!--Caregivers available-->
+          @if (collectionSize !== 0) {
+            <div class="d-flex justify-content-start flex-wrap">
+              <div class="p-2">
+                <img [src]="patient.profileImageURL" alt="Foto a Adicionar"
+                     class="img-thumbnail patient-image">
+              </div>
+              <div class="p-2" style="width: 600px">
+                <label class="input-label" style="font-weight: normal;">
+                  {{'wantToLeavePrimary' | translate}}
+                  <strong style="font-weight: bolder;">
+                    {{convertPatientDisplayName(patient.displayName, patient.name)}}
+                  </strong>?
+                  {{'wantToLeavePrimary2' | translate}}
+                  <br>
+                  {{'wantToLeavePrimary3' | translate}}
+                </label>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-start flex-wrap">
+              <div class="d-flex flex-column">
+
+                <table class="table table-sm" style="width: 770px;">
+                  <thead>
+                    <tr>
+                      <th scope="col" colspan="2">{{'caregivers' | translate}}</th>
+                      <th scope="col">{{'relation' | translate}}</th>
+                      <th scope="col" colspan="2"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (c of patientCaregivers | slice: (page-1) * pageSize : page * pageSize; track c.caregiver.email) {
+                      <tr>
+                        <td>
+                          <img [src]="c.caregiver.profileImageURL"
+                               alt="Foto de Perfil de {{c.caregiver.name}}"
+                               class="rounded table-profile-image">
+                        </td>
+                        <td class="table-text-fields bolder-text">
+                          {{convertPatientDisplayName(c.caregiver.name, "")}}
+                        </td>
+                        @if (c.caregiver.type === 'Formal') {
+                          <td class="table-text-fields">{{'caregiver' | translate}}</td>
+                        }
+                        @if (c.caregiver.type === 'Informal') {
+                          <td class="table-text-fields">{{c.patientRelation}}</td>
+                        }
+                        <td colspan="2">
+                          <div class="p-2">
+                            <button type="button"
+                                    class="btn button button-action full-width button-send"
+                                    (click)="notifyPrimaryCareTransfer(c)">
+                              {{'sendRequest' | translate}}
+                              @if (notifyingPatient) {
+                                <div class="spinner-border small-spinner-white" role="status">
+                                  <span class="sr-only">Loading...</span>
+                                </div>
+                              }
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center flex-wrap">
+                  <ngb-pagination
+                    [(page)]="page"
+                    [pageSize]="pageSize"
+                    [maxSize]="maxSize"
+                    [collectionSize]="collectionSize"
+                    [rotate]="true"
+                    [ellipses]="true">
+                    <ng-template ngbPaginationPrevious>
+                      <i class="bi bi-caret-left"></i>{{'previous' | translate}}
+                    </ng-template>
+                    <ng-template ngbPaginationNext>
+                      {{'next' | translate}}<i class="bi bi-caret-right"></i>
+                    </ng-template>
+                    <ng-template ngbPaginationEllipsis>...</ng-template>
+                  </ngb-pagination>
+                </div>
+
+              </div>
+            </div>
+          }
+
+          <!--Back Button-->
+          <div class="d-flex justify-content-start flex-wrap-reverse">
+            <div class="p-2 full-width">
+              <button type="button" class="btn button button-neutral full-width" (click)="showCancel()">
+                <i class="bi bi-caret-left-fill color-white"></i>
+                @if (currentCaregiver.type === 'Formal') {
+                  <span class="color-white"> {{'beneficiary' | translate}}</span>
+                }
+                @if (currentCaregiver.type === 'Informal') {
+                  <span class="color-white"> {{'relative' | translate}}</span>
+                }
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  }
+
+  <!--Patient Shared Container-->
+  @if (!hidePatientShared) {
+    <div class="card blue-border">
+      <h5 class="card-header card-header-blue">{{'newPrimaryCaregiver' | translate}}</h5>
+      <div class="card-body">
+        <div class="p-2">
+          {{'requestSentTo' | translate}} {{selectedCaregiver.name}}.
+        </div>
+        <div class="p-2 full-width">
+          <button type="button" class="btn button button-action full-width"
+                  routerLink="/caregiver/person/info">
+            <i class="bi bi-check-lg color-white"></i>
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

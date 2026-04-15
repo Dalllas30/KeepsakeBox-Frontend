@@ -8,7 +8,7 @@ export class Caregiver {
     public name: string,
     public email: string,
     public phone: string,
-    public birthDate: Date,
+    public birthDate: Date | null,
     public profileImageURL: string,
     public type: string,
     public speciality: string,
