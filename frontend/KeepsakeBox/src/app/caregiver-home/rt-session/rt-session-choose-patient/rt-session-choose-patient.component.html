@@ -1,0 +1,189 @@
+<p>rt-session-choose-patient works!</p>
+<!--@author Pedro Neves - fc46430-->
+
+<div class="d-flex justify-content-center caregiver-home-container"> 
+
+    <!--Step 1 Register Card-->
+    <div class="card blue-border">
+
+        <!--Step 2 Register Card Header-->
+        <h5 class="card-header card-header-blue" *ngIf="caregiver.type=='Formal'">
+            {{'chooseBeneficiary' | translate}}
+        </h5>
+        <!--Step 2 Register Card Header-->
+        <h5 class="card-header card-header-blue" *ngIf="caregiver.type=='Informal'">
+            {{'chooseRelative' | translate}}
+        </h5>
+
+        <!--Step 1 select a patient-->
+        <div class="card-body">
+            <h5>
+                {{'shareHelpInformation' | translate}}
+            </h5>
+        <!--Home Page Container-->
+        <div class="d-flex justify-content-center flex-wrap caregiver-home-container" style="width:900px">
+            <div class="d-flex flex-column">
+                
+                <!--Search Bar and Add Patient-->
+                <div class="d-flex justify-content-start flex-wrap">
+                    <!--Search Bar-->
+                    <div class="p-2" style="width: 900px">
+                    <div class="input-group mb-2 mr-sm-2">
+                        <div class="input-group-prepend">
+                        <div class="input-group-text input-icon-blue"
+                            style="height:50px">
+                            <i class="bi bi-search color-white"></i>
+                        </div>
+                        </div>
+                        <input *ngIf="caregiver.type=='Formal'" 
+                            type="text" class="form-control input-text-select"
+                            style="height:50px"
+                            placeholder="{{'searchBeneficiary' | translate}}..." 
+                            (keyup)="searchPatientByName($event)">
+                        <input *ngIf="caregiver.type=='Informal'" 
+                            type="text" class="form-control input-text-select" 
+                            style="height:50px"
+                            placeholder="{{'searchRelative' | translate}}..." 
+                            (keyup)="searchPatientByName($event)">
+                    </div>
+                    </div>
+                </div>
+            
+                <!--No Patients-->
+                <div class="p-2 page-message" 
+                    *ngIf="collectionSize == 0 && 
+                            pListCopy.length == 0">
+                    {{'stillHaveNo' | translate}}
+                    <span class="page-message"
+                            *ngIf="caregiver.type=='Formal'"> {{'beneficiaries' | translate}}.</span>
+                    <span class="page-message"
+                            *ngIf="caregiver.type=='Informal'"> {{'relatives' | translate}}.</span>
+                </div>
+            
+                <!--No Search Results-->
+                <div class="p-2 page-message" 
+                *ngIf="collectionSize == 0 && 
+                        pListCopy.length != 0">
+                    {{'noSearchResults' | translate}}
+                </div>
+            
+                <!--Patient List-->
+                <div *ngIf="pList.length != 0 ">
+            
+                    <div class="p-2" style="margin-top: -10px;">
+                        <div class="card" style="border:1px solid rgba(0, 0, 82, 0.4); background-color: rgba(0, 0, 82);">
+                            <div class="card-body d-flex justify-content-start flex-wrap patients-header">
+            
+                                <!--Patient Name-->
+                                <div class="patient-field-header" style="padding-left: 20px;width: 340px;">
+                                    <span class="color-white"
+                                            *ngIf="caregiver.type=='Formal'"> {{'beneficiaries' | translate}}</span>
+                                    <span class="color-white"
+                                            *ngIf="caregiver.type=='Informal'"> {{'relatives' | translate}}</span>
+                                </div>
+            
+                                <!--Last Session-->
+                                <div class="patient-field-header color-white" style="width: 245px;">
+                                    {{'lastSession' | translate}}
+                                </div>
+
+                                <!--Action-->
+                                <div class="patient-field-header color-white" style="width: 240px;">
+                                    {{'alocatePatient' | translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!--Patients-->
+                    <div class="p-2" 
+                        *ngFor="let p of pList | slice: (page-1) * pageSize : page * pageSize">
+                        <div class="card" style="border:1px solid rgba(0, 0, 82, 0.4);">
+                            <div class="card-body d-flex justify-content-start flex-wrap">
+                                
+                                <!--Patient Image-->
+                                <div class="p-2">
+                                    <img [src]="p.profileImageURL" 
+                                        alt="Foto de Perfil de 
+                                        {{convertPatientDisplayName(p.displayName, p.name)}}" 
+                                        class="rounded list-profile-image">
+                                </div>
+            
+                                <!--Patient Name-->
+                                <div class="p-2" style="font-weight: bold;width: 250px;margin-top: 10px;">
+                                    {{convertPatientDisplayName(p.displayName, p.name)}}
+                                </div>
+                                <!--Last Session-->
+                                <div class="p-2" style="width: 245px;margin-top: 10px;">
+                                    {{p.lastSession | date:'shortDate'}}
+                                    <span *ngIf="(p.lastSession | date:'shortDate') == null">
+                                    {{'noSessionsYet' | translate}}
+                                    </span>
+                                </div>
+                    
+                                <!--Select Patient-->
+                                <div class="p-2" style="width: 200px;">
+                                    <div class="d-flex justify-content-left">                             
+                                        <div class="d-flex justify-content-start YesNo-box">
+                                        <div class="input-radio">
+                                            <input type="radio" id="{{p.id}}_No" [value]=false
+                                                [(ngModel)]="p.isActive" name="{{p.id}}_radio" 
+                                                [checked]="! p.isActive">
+                                            <label for="{{p.id}}_No">{{'no' | translate}}</label>
+                                        </div>
+                                        <div class="input-radio">
+                                            <input type="radio" id="{{p.id}}_Yes" [value]=true
+                                                [(ngModel)]="p.isActive" name="{{p.id}}_radio"
+                                                [checked]="p.isActive">
+                                            <label for="{{p.id}}_Yes">{{'yes' | translate}}</label>
+                                        </div>
+                                        </div>  
+                                    </div>                  
+                                </div>
+                            </div>
+                        </div>        
+                    </div>
+            
+                    <!--Pagination-->
+                    <div style="margin-top: 10px;"
+                        class="d-flex justify-content-center flex-wrap">
+                        <ngb-pagination
+                            [(page)]="page"
+                            [pageSize]="pageSize"
+                            [maxSize]="maxSize"
+                            [collectionSize]="collectionSize"
+                            [rotate]="true" 
+                            [ellipses]="true"
+                            >
+                            <ng-template ngbPaginationPrevious>
+                                <i class="bi bi-caret-left"></i>{{'previous' | translate}}</ng-template>
+                            <ng-template ngbPaginationNext>{{'next' | translate}}<i class="bi bi-caret-right"></i></ng-template>
+                            <ng-template ngbPaginationEllipsis>...</ng-template>
+                        </ngb-pagination>
+                    </div>
+                    
+                    <!--Action Buttons-->
+                    <div>
+                        <div class="d-flex justify-content-center">
+                            <div class="p-1 full-width">
+                                <button type="button" class="btn button button-neutral full-width"
+                                    (click)="backToImageSelection()">
+                                    <i class="bi bi-caret-left-fill color-white"></i>
+                                    {{'backtoTheList' | translate}}
+                                </button>
+                            </div>    
+                            <div class="p-1 full-width">
+                                <button type="button" class="btn button button-action full-width"
+                                    (click)="saveAlocateSession()">
+                                    <i class="bi bi-check-lg color-white"></i>
+                                    {{'save' | translate}}                            
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>      
+            </div>
+        </div>
+    </div>
+</div>
+        

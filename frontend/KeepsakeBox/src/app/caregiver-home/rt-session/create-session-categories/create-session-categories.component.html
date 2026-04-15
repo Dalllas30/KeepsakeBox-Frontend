@@ -1,0 +1,67 @@
+<p>create-session-categories works!</p>
+<div class="d-flex justify-content-center caregiver-home-container"> 
+    <!--Validate Email Form-->
+    <form (ngSubmit)="goToNextStep()" #selectCategoriesForm="ngForm">
+
+        <!--Step 1 Register Card-->
+        <div class="card blue-border">
+
+            <!--Step 1 Register Card Header-->
+            <h5 *ngIf="!appContext.editing" class="card-header card-header-blue">
+                {{'createSession' | translate}} {{'step1Of3' | translate}}
+            </h5>
+            <h5 *ngIf="appContext.editing" class="card-header card-header-blue">
+                {{'updateSession' | translate}}: {{'step1Of3' | translate}}
+            </h5>
+
+            <!--Step 1 Register Card Body-->
+            <div class="card-body">
+                <h5>
+                    {{'selectCategories' | translate}}
+                </h5>
+                <div style="white-space: pre-wrap;">
+                    <i class="bi bi-info-circle"></i>
+                    {{'selectCategoriesHelp' | translate}} 
+                </div>
+                <div *ngIf="categories.length > 0" class="d-flex justify-content-center flex-wrap p-2" style="max-width: 1250px;">
+                    <div class="p-2" *ngFor="let category of categories">
+                        <button type="button" class="btn button category-button" style="width: 200px;"
+                                [class.category-button-selected]="isCategorySelected(category)"
+                                [disabled]="categoryImagesNumber(category) == 0"
+                                (click)="categoryClick(category)">
+                            {{translateLabel(category)}}
+                        </button>
+                    </div>
+                 </div>
+
+                <!--Advance to Next Step-->
+                <div class="d-flex justify-content-center">
+                    <div class="p-1 full-width">
+                        <button type="button" class="btn button button-neutral full-width"
+                            (click)="backToStartList()">
+                            <i class="bi bi-caret-left-fill color-white"></i>
+                            {{'backtoTheList' | translate}}
+                        </button>
+                    </div>
+                    <div class="p-1 full-width">
+                        <button type="submit" 
+                            class="btn button button-action full-width"
+                            (click)="generateImagesAuto()"
+                            [disabled]="size(selectedCategories) < 0">
+                            <i class="bi bi-gear-fill color-white"></i>
+                            {{'autoGeneration' | translate}}
+                        </button>
+                    </div>
+                    <div class="p-1 full-width">
+                        <button type="submit" 
+                            class="btn button button-action full-width"
+                            [disabled]="size(selectedCategories) == 0">
+                            {{'chooseImages' | translate}}
+                            <i class="bi bi-caret-right-fill color-white"></i>
+                        </button>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </form>
+</div>

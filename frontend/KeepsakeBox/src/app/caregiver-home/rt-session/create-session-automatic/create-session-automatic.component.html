@@ -1,0 +1,107 @@
+<div class="d-flex justify-content-center caregiver-home-container"> 
+    <!--Validate Email Form-->
+    <form (ngSubmit)="formGoToNextStep($event)" #validateEmailForm="ngForm">
+
+        <!--Step 1 Register Card-->
+        <div class="card blue-border">
+
+            <!--Step 1 Register Card Header-->
+            <h5 class="card-header card-header-blue">
+                {{'createSession' | translate}} {{'step2Of3' | translate}}
+            </h5>
+
+            <!--Step 1 Register Card Body-->
+            <div *ngIf="selectedCategories.length > 0" class="card-body" > <!--style="width: 1150px!important; "-->
+                <h5>
+                    {{'selectImagesQuantityByCategory' | translate}}
+                </h5>
+            </div>
+            <div *ngIf="selectedCategories.length==0" class="card-body" style="width: 620px!important; ">
+                <h5>
+                    {{'selectImagesQuantity' | translate}}
+                </h5>
+            </div>
+
+            <div class="p-2">
+                <table class="table table-sm">
+                    <!--Table Header-->
+                    <thead>
+                        <tr>
+                            <th *ngIf="selectedCategories.length>0" scope="col" >{{'category' | translate}}</th>
+                            <th scope="col" >
+                                <div class="d-flex">
+                                    <div>{{'quantity' | translate}}</div>
+                                    <div *ngIf="selectedCategories.length==0">
+                                        &nbsp;&nbsp;
+                                        <button type="button" 
+                                            class="btn button button-neutral button-full-width" style="padding: 2px 5px 2px 5px; height: 35px!important;"
+                                            (click)="decreaseTotalImages()">
+                                            <i class="bi bi-dash-lg color-white"></i>
+                                        </button>
+                                        &nbsp;
+                                        <input type="number" id="total_quantity" name="total_quantity" 
+                                            min="1" max={{maxtotalImagesNumber}}
+                                            value="1" style="width: 70px; text-align: right;">
+                                        &nbsp;
+                                        <button type="button" 
+                                            class="btn button button-neutral button-full-width" style="padding: 2px 5px 2px 5px; height: 35px!important;"
+                                            (click)="increaseTotalImages()">
+                                            <i class="bi bi-plus-lg color-white"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+        
+                    <tbody>
+                        <tr *ngFor="let category of selectedCategories ">
+            
+                            <td class="table-text-fields bolder-text">
+                                <label for="category" class="input-label">
+                                    {{translateLabel(category)}}
+                                </label>
+                            </td>
+                            <td class="table-text-fields bolder-text">
+                                <button type="button" 
+                                        class="btn button button-neutral button-full-width" style="padding: 2px 5px 2px 5px; height: 35px!important;"
+                                        (click)="decreaseImagesNumber(category)">
+                                    <i class="bi bi-dash-lg color-white"></i>
+                                </button>
+                                &nbsp;
+                                <input type="number" id={{category}} name="quantity" 
+                                       min="0" max={{categoryImagesNumber(category)}}
+                                       value="1" style="width: 70px; text-align: right;">
+                                &nbsp;
+                                <button type="button" 
+                                        class="btn button button-neutral button-full-width" style="padding: 2px 5px 2px 5px; height: 35px!important;"
+                                        (click)="increaseImagesNumber(category)">
+                                    <i class="bi bi-plus-lg color-white"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+
+            <div class="d-flex justify-content-center">
+                <div class="p-2 full-width">
+                    <button type="button" class="btn button button-neutral full-width"
+                        (click)="backToCategoryList()">
+                        <i class="bi bi-caret-left-fill color-white"></i>
+                        {{'backtoTheList' | translate}}
+                    </button>
+                </div>
+                <div class="p-2 full-width">
+                    <button type="submit"
+                        class="btn button button-action full-width">
+                        {{'generateSession' | translate}}
+                        <i class="bi bi-caret-right-fill color-white"></i>
+                    </button>
+                </div>
+            </div>  
+
+        </div>
+    </form>
+</div>

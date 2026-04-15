@@ -1,0 +1,89 @@
+<p>preview-session works!</p>
+<div class="d-flex justify-content-center caregiver-home-container"> 
+    <!--Validate Email Form-->
+    <form (ngSubmit)="saveSession()" #selectCategoriesForm="ngForm">
+
+        <!--Step 1 Register Card-->
+        <div class="card blue-border">
+
+            <!--Step 1 Register Card Header-->
+            <h5 *ngIf="!appContext.editing" class="card-header card-header-blue">
+                {{'createSession' | translate}} {{'step3Of3' | translate}}
+            </h5>
+            <h5 *ngIf="appContext.editing" class="card-header card-header-blue">
+                {{'updateSession' | translate}}: {{'step3Of3' | translate}}
+            </h5>
+
+            <!--Step 1 Register Card Body-->
+            <div class="card-body">
+                <h5>
+                    {{'previewSessionTitle' | translate}}
+                </h5>
+                <div>
+                    <i class="bi bi-info-circle"></i>
+                    {{'helpTextDescription' | translate}}
+                </div>
+                <div class="d-flex justify-content-center flex-wrap p-2" style="width: 1150px;">
+                   
+                    <div class="p-2" *ngFor="let img of selectedImages">
+                    
+                        <div class="card image-card light-blue-border"
+                                draggable="true"
+                                (dragstart)="dragImage(img)"
+                                (drop)="dropImage($event, img)"
+                                (dragover)="allowDropImage($event)"
+                                (dropzone)="true"
+                                (click)="true">  <!-- (mousedown)="dragImage(img)" (mouseup)="dropImage(img)" -->
+                                <!--Image-->
+                                <div class="space"></div>
+                                <div class="d-flex justify-content-center align-items-center img-thumbnail image-square"
+                                    draggable="false" >
+
+                                        <i *ngIf="!img.image.isPrivate" class="bi bi-unlock-fill text-icon-blue image-locker"></i>
+                                        <i *ngIf="img.image.isPrivate" class="bi bi-lock-fill text-icon-blue image-locker"></i>
+                                        <i *ngIf="!img.isFavorite" class="bi bi-star text-icon-blue image-favorite"></i>
+                                        <i *ngIf="img.isFavorite" class="bi bi-star-fill text-icon-blue image-favorite"></i>
+                                        <!--button (click)="openImageDetail(img)"-->
+                                        <button type="button" class="btn button-neutral tiny-button button-detail"
+                                            (click)="openImageDetail(img, $event)">
+                                            {{'viewDetail' | translate}} <i class="bi tiny-bi bi-zoom-in color-white"></i>
+                                        </button>
+                                        <button type="button" class="btn button-destructive tiny-button button-remove"
+                                            (click)="removeImage(img)">
+                                            {{'remove' | translate}} <i class="bi tiny-bi bi-trash color-white"></i>
+                                        </button>
+
+                                            <!--i class="bi bi-arrows-fullscreen text-icon-blue image-detail" (click)="openImageDetail(img, $event)"></i-->
+                                            <!--i class="bi bi-trash text-icon-red image-remove" (click)="removeImage(img)"></i-->
+                                        <!--/button-->
+
+                                    <img [src]="img.image.imageURL" alt="{{img.image.description}}" class="image-card-inside" draggable="false">
+                                </div>
+                                <div class="space"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Advance to Next Step-->
+                <div class="d-flex justify-content-center">
+                    <div class="p-2 full-width">
+                        <button type="button" class="btn button button-neutral full-width"
+                            (click)="backToImageSelection()">
+                            <i class="bi bi-caret-left-fill color-white"></i>
+                            {{'backToImagesListSelection' | translate}}
+                        </button>
+                    </div>
+                    <div class="p-2 full-width">
+                        <button type="submit" 
+                            [disabled]="selectedImages.length==0"
+                            class="btn button button-action full-width">
+                            <i class="bi bi-check-lg color-white"></i>&nbsp;
+                            <span *ngIf="appContext.editing" class="color-white">{{'updateSession' | translate}}</span>
+                            <span *ngIf="! appContext.editing" class="color-white">{{'saveSession' | translate}}</span>
+                        </button>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </form>
+</div>

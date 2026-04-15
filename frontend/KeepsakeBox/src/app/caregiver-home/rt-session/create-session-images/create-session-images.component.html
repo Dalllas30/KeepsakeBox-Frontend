@@ -1,0 +1,242 @@
+<p>create-session-images works!</p>
+<div class="d-flex justify-content-center caregiver-home-container"> 
+    <!--Validate Email Form-->
+    <form (ngSubmit)="formGoToNextStep()" #validateEmailForm="ngForm">
+
+        <!--Step 1 Register Card-->
+        <div class="card blue-border">
+
+            <!--Step 1 Register Card Header-->
+            <h5 *ngIf="!appContext.editing" class="card-header card-header-blue">
+                {{'createSession' | translate}} {{'step2Of3' | translate}}
+            </h5>
+            <h5 *ngIf="appContext.editing" class="card-header card-header-blue">
+                {{'updateSession' | translate}}: {{'step2Of3' | translate}}
+            </h5>
+
+            <!--Step 1 Register Card Body-->
+            <!--div class="card-body" style="width: 1150px!important; "   Este ó o div com menu em baixo imagem-->
+            <!--div class="card-body" style="width: 1305px!important; "   Este ó o div com menu ao lado imagem-->
+            <div class="card-body" style="width: 1190px!important; ">
+                <h5>
+                    {{'selectImages' | translate}}
+                </h5>
+                
+                <div class="d-flex">
+                    <!--Search Bar-->
+                    <div class="d-flex" style="padding-top: 5px; width: 505px">
+                        <div class="input-group mb-2 mr-sm-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text input-icon-blue"
+                                    style="height:50px">
+                                <i class="bi bi-search color-white"></i>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control input-text-select" 
+                                    style="height:50px"
+                                    placeholder="{{'searchDescription' | translate}}" 
+                                    #inputRef (keyup)="searchImageByDescription($event, inputRef.value)">
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap filter-box">
+                        <div style="width:245px; padding: 0.15rem">
+                            {{'myImages' | translate}}
+                        </div>     
+                        <div style="padding-left: 10px">
+                            <button class="btn button filter-button" 
+                                    [class.filter-button-selected]="MyImageAll" 
+                                    (click)="MyImageAll=!MyImageAll;MyImagePrivate=false;MyImageFavorite=false;setFilters()">
+                                    {{'all-a' | translate}}
+                            </button>
+                        </div>
+                        <div style="padding-left: 10px">
+                            <button class="btn button filter-button" 
+                                    [class.filter-button-selected]="MyImagePrivate" 
+                                    (click)="MyImagePrivate=!MyImagePrivate;MyImageAll=false;setFilters()">
+                                    {{'privates-a' | translate}}
+                            </button>
+                        </div>
+                        <div style="padding-left: 10px">
+                            <button class="btn button filter-button" 
+                                    [class.filter-button-selected]="MyImageFavorite" 
+                                    (click)="MyImageFavorite=!MyImageFavorite;MyImageAll=false;setFilters()">
+                                    {{'favorites-a' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="d-flex" style="width: 505px"> <!-- justify-content: space-between; -->
+                            <!--div style="padding-top: 5px; padding-right: 10px;" -->
+                            <!--span style="justify-content: flex-start"></span>
+                            <button class="btn button button-neutral" style="width: 160px; opacity: 0; pointer-events: none;"
+                                        (click)="setFilters()">
+                                    Aplicar filtros
+                            </button-->                                                        
+                        <!--/div-->
+                        <!--span class="justify-content-end"-->
+                        <div class="d-flex flex-wrap filter-box">
+                            <div style="width:345px; padding: 0.15rem">
+                                {{'publicImages' | translate}}
+                            </div>     
+                            <div style="padding-left: 10px">
+                                <button class="btn button filter-button" 
+                                        [class.filter-button-selected]="AllPublicImage" 
+                                        (click)="AllPublicImage=!AllPublicImage;setFilters()">
+                                        {{'all-a' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="showPatientFilter" class="d-flex flex-wrap filter-box">
+                        <div style="width:245px; padding: 0.15rem">
+                            <span *ngIf="caregiver.type=='Formal'">{{'patientImagesBen' | translate}} </span>
+                            <span *ngIf="caregiver.type=='Informal'">{{'patientImagesRel' | translate}} </span>
+                        </div>     
+                        <div style="padding-left: 10px">
+                            <button class="btn button filter-button" 
+                                    [class.filter-button-selected]="PatientImageAll" 
+                                    (click)="PatientImageAll=!PatientImageAll;PatientImagePrivate=false;PatientImageFavorite=false;setFilters()">
+                                {{'all-a' | translate}}
+                            </button>
+                        </div>
+                        <div style="padding-left: 10px">
+                            <button class="btn button filter-button" 
+                                    [class.filter-button-selected]="PatientImagePrivate" 
+                                    (click)="PatientImagePrivate=!PatientImagePrivate;PatientImageAll=false;setFilters()">
+                                {{'privates-a' | translate}}
+                            </button>
+                        </div>
+                        <div style="padding-left: 10px">
+                            <button class="btn button filter-button" 
+                                    [class.filter-button-selected]="PatientImageFavorite" 
+                                    (click)="PatientImageFavorite=!PatientImageFavorite;PatientImageAll=false;setFilters()">
+                                {{'favorites-a' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-left flex-wrap">
+                    <ul class="nav nav-tabs nav-tabs-grey">
+                        <div *ngFor="let category of selectedCategories">
+
+                            <!--Info-->
+                            <li class="nav-item">
+                              <a class="nav-link nav-link-grey" style="padding: 4px 10px 4px 10px; width: 195px;"
+                                  [class.nav-link-grey-focus]="isCategoryActive(category)"
+                                  (click)="selectCategory(category)">
+                                  {{translateLabel(category)}}&nbsp;
+                                  <span *ngIf="selectedImagesByCategory.get(category)>0" 
+                                        class="badge rounded-pill bg-warning position-absolute"
+                                        style="font-size: 14px;">
+                                    {{selectedImagesByCategory.get(category)}}
+                                  </span>
+                              </a>
+                            </li>
+ 
+                        </div>
+                    </ul>
+                </div>
+
+                <!--div class="p-2" style="margin-top: -23px;"-->
+                <div style="margin-top: -1px;">
+
+                    <div class="tab-inner-display">
+                        <div class="p-1 d-flex justify-content-left flex-wrap">
+                            <h6 *ngIf="imagesSize(images) == 0">
+                                {{'emptyImageListByCategoryMessage' | translate}}
+                            </h6>
+                            <!--Images Loading-->
+                            <div *ngIf="loadingImages" class="p-2">
+                                <div class="p-2 spinner-border big-spinner-blue" 
+                                    role="status"
+                                    style="margin-bottom: 30px !important;">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!loadingImages" class="d-flex justify-content-left flex-wrap" >
+                            <div class="p-1" *ngFor="let img of images | slice: (page-1) * pageSize : page * pageSize">
+                        
+                                <div class="card image-card light-blue-border"
+                                    [class.selected-image]="isImageSelected(img.image.id)"
+                                    (click)="selectImage(img)">
+                                    <!--Image-->
+                                    <div class="space">
+                                    </div>
+                                    <div class="d-flex justify-content-center align-items-center img-thumbnail image-square"
+                                        >
+                                        <!-- [class.selected-image]="isImageSelected(img.image.id)" -->
+                                            <i *ngIf="!img.image.isPrivate" class="bi bi-unlock-fill text-icon-blue image-locker"></i>
+                                            <i *ngIf="img.image.isPrivate" class="bi bi-lock-fill text-icon-blue image-locker"></i>
+                                            <i *ngIf="!img.isFavorite" class="bi bi-star text-icon-blue image-favorite"></i>
+                                            <i *ngIf="img.isFavorite" class="bi bi-star-fill text-icon-blue image-favorite"></i>
+                                            <!--button (click)="openImageDetail(img)"-->
+                                                <button type="button" class="btn button-neutral tiny-button button-detail"
+                                                    (click)="openImageDetail(img, $event)">
+                                                    <!--style="--bs-btn-padding-y: .5rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"-->
+                                                    {{'viewDetail' | translate}} <i class="bi tiny-bi bi-zoom-in color-white"></i>
+                                                </button>
+                                                <!--i class="bi bi-arrows-fullscreen text-icon-blue image-detail-c2" (click)="openImageDetail(img, $event)"></i-->
+                                                <!--i class="bi bi-trash text-icon-red image-remove-c2"></i-->
+                                            <!--/button-->
+
+                                        <img [src]="img.image.imageURL" alt="{{img.image.description}}" class="image-card-inside">
+                                    </div>
+                                    <div class="space">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Pagination-->
+                        <!-- documentation -->
+                        <!-- https://ng-bootstrap.github.io/#/components/pagination/api -->
+                        <!-- https://github.com/jhipster/generator-jhipster/issues/10931 -->
+                        <div *ngIf="collectionSize != 0">
+                            <div class="d-flex justify-content-center flex-wrap"
+                                style="margin-top: 10px;">
+                            <ngb-pagination
+                                (pageChange)="setPage($event)"
+                                [(page)]="page"
+                                [pageSize]="pageSize"
+                                [maxSize]="maxSize"
+                                [collectionSize]="collectionSize"
+                                [rotate]="true"
+                                [ellipses]="false"
+                                >
+                                <ng-template ngbPaginationPrevious>
+                                    <i class="bi bi-caret-left"></i>{{'previous' | translate}}</ng-template>
+                                <ng-template ngbPaginationNext>{{'next' | translate}}<i class="bi bi-caret-right"></i></ng-template>
+                                <ng-template ngbPaginationEllipsis>...</ng-template>
+                            </ngb-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Advance to Next Step-->
+                <!--div class="p-2 half-width" style="width:510px;"-->
+                <div class="d-flex justify-content-center">
+                    <div class="p-2 full-width">
+                        <button type="button" class="btn button button-neutral full-width"
+                            (click)="backToCategories()">
+                            <i class="bi bi-caret-left-fill color-white"></i>
+                            {{'backToCategoryList' | translate}}
+                        </button>
+                    </div>
+                    <div class="p-2 full-width">
+                        <button type="submit" 
+                            class="btn button button-action full-width" 
+                                    [disabled]="selectedImagesSize(selectedImages) <= 0"
+                                    (click)="goToNextStep()">
+                                {{'previewSession' | translate}}
+                                <i class="bi bi-caret-right-fill color-white"></i>
+                            </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

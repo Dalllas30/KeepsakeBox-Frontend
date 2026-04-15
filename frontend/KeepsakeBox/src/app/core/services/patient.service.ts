@@ -197,7 +197,7 @@ private currentObservation: BehaviorSubject<PatientObservation | null>;
      .then(response => {
        if (response) {
          observations = response.observations.sort(
-           (a, b) => new Date(b.lastUpdatedDate).getTime() - new Date(a.lastUpdatedDate).getTime()
+           (a, b) => new Date(b.lastUpdatedDate || 0).getTime() - new Date(a.lastUpdatedDate || 0).getTime()
          );
        }
      });

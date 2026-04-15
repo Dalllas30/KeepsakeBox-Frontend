@@ -1,0 +1,172 @@
+/*
+.image-square{
+    width: 200px;
+    height: 180px;
+    cursor: grab;
+  }
+  
+.image-square-c1{
+    width: 200px;
+    height: 180px;
+    cursor: grab;
+    background-color: #e0e0e0;
+}
+
+.image-square-c2{
+  width: 200px;
+  height: 180px;
+  cursor: grab;
+  --background-color: #e0e0e0;
+  background-color: #ffffff;
+}
+
+.image-inside{
+    max-width: 185px;
+    max-height: 170px;
+  }
+
+.image-locker{
+    position: absolute;
+    z-index: 1;
+    top: 7px;
+    left: 10px;
+  }
+
+.image-locker-c1{
+    position: absolute;
+    z-index: 1;
+    --top: 90px;
+    top: 37px;
+    right: 5px;
+  }
+
+.image-locker-c2{
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    left: 10px;
+  }
+
+.image-favorite{
+    position: absolute;
+    z-index: 1;
+    top: 7px;
+    left: 35px;
+  }
+
+.image-favorite-c1{
+    position: absolute;
+    z-index: 1;
+    --top: 60px;
+    top: 7px;
+    right: 5px;
+  }
+
+.image-favorite-c2{
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    right: 10px;
+  }
+
+.space-c1 {
+    height: 0px
+  }
+  
+.space-c2 {
+    height: 35px
+  }
+  
+.image-detail{
+    position: absolute;
+    z-index: 99;
+    top: 7px;
+    right: 10px;
+    cursor: pointer;
+  }
+
+.image-detail-c1{
+    position: absolute;
+    z-index: 99;
+    --top: 7px;
+    bottom: 33px;
+    right: 5px;
+    cursor: pointer;
+    caret-color:blue;
+  }
+
+.image-detail-c2{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    left: 5px;
+    cursor: pointer;
+    caret-color:blue;
+  }
+
+.button-detail-c2{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    left: 3px;
+    cursor: pointer;
+    caret-color:blue;
+}
+
+.image-remove{
+  position: absolute;
+  z-index: 99;
+  top: 7px;
+  right: 40px;
+  cursor: pointer;
+}
+
+.image-remove-c1{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    right: 5px;
+    cursor: pointer;
+  }
+  
+.image-remove-c2{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    right: 7px;
+    cursor: pointer;
+  }
+  
+.button-remove-c2{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    right: 3px;
+    cursor: pointer;
+  }
+
+  .image-card{
+    text-align: left;
+    width: 200px;
+    height: 100%;
+  }
+
+.image-card-c1{
+    text-align: left;
+    width: 235px;
+    height: 182px;
+    background-color: #b4b4b4;
+}
+
+.image-card-c2{
+  text-align: left;
+  width: 200px;
+  height: 255px;
+  --background-color: #b4b4b4;
+  background-color: #e0e0e0;
+}
+*/
+.selected-image {
+    --background-color: rgba(0, 0, 139, 0.25);
+    border: 5px solid darkblue;
+  }

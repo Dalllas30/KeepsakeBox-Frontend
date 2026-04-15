@@ -1,0 +1,84 @@
+<p>rt-session-preview-image works!</p>
+<!--div class="modal-header card-header-blue" -->
+<div class="card-header-blue" >
+    <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-start title-container color-white">
+            <img src="./assets/keepsakebox-image-white.png"
+            class="sm-keepsakeBox-icon"
+            alt="KeepsakeBox Icóne">
+            <h4 class="color-white">KeepsakeBox</h4>  
+        </div>    
+        <div class="d-flex justify-content-end title-container color-white" style="cursor: pointer;" (click)="closeWindow()">
+            <i class="bi bi-x-lg color-white"></i>
+        </div>
+        </div>
+</div>
+
+<div class="card-body">
+    <h5 >
+        {{'imagePreviewTitle' | translate}} 
+    </h5>
+
+    <!--Image Container-->
+    <div class="d-flex justify-content-start flex-wrap">
+
+        <!--Image-->
+        <div class="p-2 d-flex justify-content-center flex-wrap">
+            <div class="d-flex justify-content-center align-self-center img-thumbnail image-square">
+                <img [src]="img.image.imageURL" alt="{{img.image.description}}" class="image-inside">
+            </div>
+        </div>
+
+        <!--Image Details-->
+        <div class="p-2 image-info">
+            
+            <!--Created by-->
+            <i class="bi bi-person"></i><strong>{{'createdBy' | translate}}</strong> {{img.image.createdBy.name}}<br>            
+            <i class="bi bi-envelope-fill"></i> {{img.image.createdBy.email}}<br>
+
+            <!--Dates-->
+            <i class="bi bi-calendar-event"></i> <strong> {{'createdOn' | translate}}</strong> {{img.image.createdDate | date:'longDate'}} <br>
+            <i class="bi bi-calendar-event"></i> <strong> {{'lastUpdateOn' | translate}}</strong> {{img.image.lastUpdatedDate | date:'longDate'}}
+
+            <!--Category and Description-->
+            <div class="div-separator-top-light-blue" style="width: 750px">
+
+                <i class="bi bi-tag"></i>
+                {{translateLabels(img.image.category)}}
+                <br>
+
+                <i class="bi bi-card-text"></i>
+                {{img.image.description}}
+
+            </div>
+
+            <!--Not Favorite/Favorite and Private/Public-->
+            <div class="div-separator-top-grey">
+
+                <span *ngIf="!img.isFavorite">
+                    <i class="bi bi-star text-icon-yellow"></i> {{'notFavorite' | translate}}
+                </span>
+
+                <span *ngIf="img.isFavorite">
+                    <i class="bi bi-star-fill text-icon-yellow"></i> {{'favorite' | translate}}
+                </span>
+                &nbsp;&nbsp;&nbsp;
+                <span *ngIf="!img.image.isPrivate">
+                    <i class="bi bi-unlock-fill text-icon-yellow"></i> {{'public' | translate}}
+                </span>
+
+                <span *ngIf="img.image.isPrivate">
+                    <i class="bi bi-lock-fill text-icon-yellow"></i> {{'private' | translate}}
+                </span>
+
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center p-2 full-width">
+        <button type="button" class="btn button button-neutral full-width"
+            (click)="closeWindow()">
+            <i class="bi bi-caret-left-fill color-white"></i>
+            {{'backToImageList' | translate}}
+        </button>
+    </div>
+</div>

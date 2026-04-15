@@ -1,0 +1,367 @@
+.emoji-no {
+  background: none !important;
+  border: none !important;
+  font-size: 1.5rem !important;
+}
+.emoji-yes {
+  background: none !important;
+  border: none !important;
+  font-size: 1.5rem !important;
+  padding: 0.2rem !important;
+}
+.font-red {
+  color: red !important;
+}
+.font-orange {
+  color: orange !important;
+}
+.font-grey {
+  color: grey !important;
+}
+.font-green {
+  color: green !important;
+}
+.font-blue {
+  color: blue !important;
+}
+.bi-emoji {
+  font-size: 1.5rem !important;
+  padding: 0.2rem !important;
+}
+
+
+
+/*Pagination*/
+
+.previous-button {
+  border-right: 1px solid black;
+}
+
+.next-button {
+  border-left: 1px solid black;
+}
+
+.enable-light-button {
+  background: white;
+}
+
+.disable-light-button {
+  background: lightgrey;
+  pointer-events: none;
+}
+
+.image-count-box{
+  pointer-events: none;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.Left-button-over-image {
+  position:fixed;
+  top: 0;
+  left:0;
+  width: 25%;
+  height: 90vh !important;
+  z-index: 1;
+  opacity: 0;
+}
+
+.Right-button-over-image {
+  position:fixed;
+  top: 0;
+  width: 25%;
+  height: 90vh !important;
+  z-index: 1;
+  opacity: 0;
+}
+
+ngb-pagination ::ng-deep ul > li:not(.active) > a {
+  background-color: white !important;
+  border: 1px solid #000052 !important;
+  color: #000052 !important;
+  padding-top: 10px;
+  padding-left: 18px;
+  height: 50px;
+  min-width: 50px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+ngb-pagination ::ng-deep ul > li.active > a {
+  background-color: #004080 !important;
+  border: 1px solid #000052 !important;
+  color: white !important;
+  z-index: 0 !important;
+  padding-top: 10px;
+  padding-left: 18px;
+  height: 50px;
+  min-width: 50px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+ngb-pagination ::ng-deep .page-item.disabled {
+  opacity: 0.5;
+}
+
+.table-buttons > thead > tr > td,
+.table-buttons > thead > tr > th,
+.table-buttons > tr > td,
+.table-buttons > tr > th,
+.table-buttons > tfoot > tr > td,
+.table-buttons > tfoot > tr > th {
+    --border: none;
+    border: 5px solid #000052;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:visited {
+    background-color: gray !important;
+}
+
+/* The side navigation menu */
+.RightPanel {
+  height: 90vh;
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  right: 0;
+  border-left: 1px solid white;
+  background-color: #181818; /* Dark Gray=#181818*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 0; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.RightPanel a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.RightPanel a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the config button (top right corner) */
+.RightPanel .configbtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Position and style the close button (top right corner) */
+.RightPanel .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.MainScreen {
+  height: 90vh;
+  width: 100vw; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  Left: 0;
+  text-align: center;
+  border: 5px;
+  background-color: black; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.MainScreen a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  text-align: center;
+  border: 5px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.MainScreen a:hover {
+  color: #f1f1f1;
+}
+
+.icon-flipped {
+    transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+}
+
+.small-button-text {
+  display: inline;
+}
+
+.row-button {
+  height: 10vh;
+  background: black;
+  top: 90vh;
+  left:0;
+}
+
+.h90-image {
+  height: 90vh;
+}
+
+.alert-screen {
+  display:none;
+}
+
+
+.YesNo-box{
+  border: 1px solid rgba(0, 0, 82, 0.4);
+  padding: 5px;
+  -width: 200px;
+  width: 132px;
+  height: 50px;
+  border-radius: 0.25rem;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+input[type=radio] {
+  display: none;
+}
+
+input[type=radio] + label {
+  background-color: white;
+  -padding: 5px 22.5px 5px 22.5px;
+  padding: 5px 5px 5px 5px;
+  border-radius: 0.25rem;
+  width: 60px;
+  height: 38px;
+  text-align: center;
+  border: none;
+}
+
+input[type=radio] + label:hover {
+  cursor: pointer;
+  color: #004080;
+}
+
+input[type=radio]:checked + label {
+  background-color: #004080;
+  color: white;
+}
+
+.font-my-color{
+  color:rgb(240, 100, 6);
+}
+
+.black-background{
+  background-color: black;
+}
+
+.image-in-MainScreen{
+  width: 99%;
+  height: 99%;
+  object-fit: contain;
+}
+
+.one-of-three-width{
+  width: 33vw;
+}
+
+.one-of-three-middle-width{
+  width: 34vw;
+}
+
+.extra-padding{
+  padding: 2px;
+}
+
+.symptoms{
+  margin-bottom: 10px;
+  margin-left:25px
+}
+
+.half-width{
+  width: 65%;
+}
+
+@media screen and (max-width: 1080px) {
+  .small-button-text {
+    display: none;
+  }
+}
+
+@media screen and (max-height: 500px) {
+  .h90-image {
+    height: 100vh;
+  }
+
+  .row-button {
+    height: 10vh;
+    background: none;
+    top: 85vh;
+    left:0;
+    z-index: 10;
+    position: absolute;
+  }
+
+  .MainScreen {
+    height: 100vh;
+    width: 100vw; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    Left: 0;
+    text-align: center;
+    border: 5px;
+    background-color: black; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+  }
+}
+
+@media screen and (max-height: 250px), (max-width: 350px) {
+  .h90-image {
+    height: 100vh;
+  }
+
+  .row-button {
+    height: 10vh;
+    background: none;
+    top: 5vh;
+    left:0;
+    z-index: 10;
+    position: absolute;
+    display: none !important;
+  }
+
+  .alert-screen {
+    font-size: 12px;
+    position:fixed;
+    top: 0.5em;
+    Right: 1em;
+    Left:1em;
+    z-index: 999;
+    display:inline;
+  }
+}
+
+
+

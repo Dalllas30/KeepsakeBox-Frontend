@@ -1,0 +1,129 @@
+<p>rt-session-detail works!</p>
+<div class="d-flex justify-content-center caregiver-home-container"> 
+    <!--Step 1 Register Card-->
+    <div class="card blue-border">
+
+        <!--Step 1 Register Card Header-->
+        <h5 class="card-header card-header-blue">
+            {{'sessionDetailTitle' | translate}}
+        </h5>
+        <!--h5 *ngIf="appContext.patientId==null" class="card-header card-header-blue">
+            {{'sessionDetailTitle' | translate}}&nbsp;&nbsp;&nbsp;({{'notAlocated' | translate}})
+        </h5>
+        <h5 *ngIf="appContext.patientId!=null" class="card-header card-header-blue">
+            {{'sessionDetailTitle' | translate}}&nbsp;&nbsp;&nbsp;({{patients}})
+        </h5-->
+
+        <!--Step 1 Register Card Body-->
+        <div class="card-body">
+            <div class="d-flex justify-content-left flex-wrap p-2" style="width: 1150px; max-width: 1150px;">
+                <!--Identificação da sessão-->
+                <div *ngIf="caregiver" class="p-1">
+                    <!--Created by-->
+                    <i class="bi bi-person"></i><strong> {{'createdBy' | translate}}</strong> {{caregiver.name}}
+
+                    <!--Patient-->
+                    <span *ngIf="isForPatient(templateSession)">
+                        <strong> {{'forThe' | translate}} 
+                            <span *ngIf="caregiver && caregiver.type=='Formal'">{{'beneficiary' | translate}}</span>
+                            <span *ngIf="caregiver && caregiver.type=='Informal'">{{'relative' | translate}}</span>
+                        </strong>
+                        {{original_patient_name}} 
+                    </span>
+                    <span>
+                        <br><i class="bi bi-envelope-fill"></i> {{caregiver.email}}
+                    </span>
+                    
+                    <!--Dates-->
+                    <br><i class="bi bi-calendar-event"></i> <strong> {{'createdOn' | translate}}</strong> {{templateSession.created_date | date:'longDate'}} 
+                    <strong> {{'with' | translate}} {{'lastUpdateOn' | translate}}</strong> {{templateSession.last_updated_date | date:'longDate'}}
+                </div>
+                <!--div>
+                    <i class="bi bi-info-circle"></i>
+                    {{'sessionDetailHelp' | translate}} 
+                </div-->
+            </div>
+            <div class="d-flex justify-content-center flex-wrap p-2" style="width: 1150px; max-width: 1150px;">
+                <div class="p-1 d-flex justify-content-left flex-wrap">
+                    <!--Images Loading-->
+                    <div *ngIf="loadingImages" class="p-2">
+                        <div class="p-2 spinner-border big-spinner-blue" 
+                            role="status"
+                            style="margin-bottom: 30px !important;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-2" *ngFor="let img of selectedImages">
+                
+                    <div class="card image-card light-blue-border"
+                            (click)="true">
+                            <!--Image-->
+                            <div class="space"></div>
+                            <div class="d-flex justify-content-center align-items-center img-thumbnail image-square">
+
+                                <i *ngIf="!img.image.isPrivate" class="bi bi-unlock-fill text-icon-blue image-locker"></i>
+                                <i *ngIf="img.image.isPrivate" class="bi bi-lock-fill text-icon-blue image-locker"></i>
+                                <i *ngIf="!img.isFavorite" class="bi bi-star text-icon-blue image-favorite"></i>
+                                <i *ngIf="img.isFavorite" class="bi bi-star-fill text-icon-blue image-favorite"></i>
+                                <!--button (click)="openImageDetail(img)"-->
+                                <button type="button" class="btn button-neutral tiny-button button-detail"
+                                    (click)="openImageDetail(img, $event)">
+                                    {{'viewDetail' | translate}} <i class="bi tiny-bi bi-zoom-in color-white"></i>
+                                </button>
+                                <img [src]="img.image.imageURL" alt="{{img.image.description}}" class="image-card-inside">
+                            </div>
+                            <div class="space"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Action Buttons-->
+            <div>
+                <div *ngIf="appContext.editing" class="d-flex justify-content-center">
+                    <div class="p-1 full-width">
+                        <button type="button" class="btn button button-action full-width"
+                            (click)="goToEditTemplateSession()">
+                            <i class="bi bi-pencil-fill color-white"></i>
+                            {{'edit' | translate}}
+                        </button>
+                    </div>    
+                    <div class="p-1 full-width">
+                        <button type="button" class="btn button button-destructive full-width"
+                            (click)="removeSession()">
+                            <i class="bi bi-trash-fill color-white"></i>
+                            {{'remove' | translate}}                            
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="appContext.editing" class="d-flex justify-content-center">
+                    <div class="p-1 full-width">
+                        <button type="button" class="btn button button-action full-width"
+                            (click)="goToShareSession()">
+                            <i class="bi bi-people-fill color-white"></i>
+                            {{'shareSession' | translate}}
+                        </button>
+                    </div>    
+                    <div *ngIf="! appContext.patientContext" class="p-1 full-width">
+                        <button type="button" class="btn button button-action full-width"
+                            (click)="goToAlocatePatient()">
+                            <i class="bi bi-person-fill color-white"></i>
+                            <span *ngIf="caregiver && caregiver.type=='Formal'" class="color-white"> {{'alocateBeneficiary' | translate}}</span>
+                            <span *ngIf="caregiver && caregiver.type=='Informal'"class="color-white"> {{'alocateRelative' | translate}}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-1 full-width">
+                    <button type="button" class="btn button button-neutral full-width"
+                        (click)="backToImageSelection()">
+                        <i class="bi bi-caret-left-fill color-white"></i>
+                        {{'backtoTheList' | translate}}
+                    </button>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>

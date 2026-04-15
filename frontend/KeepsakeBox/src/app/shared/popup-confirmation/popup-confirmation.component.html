@@ -1,0 +1,79 @@
+<p>popup-confirmation works!</p>
+<div *ngIf="fullWindow" style="border: none!important">
+    <div class="d-flex justify-content-center title-container" style="border: hidden;">
+        <img src="./assets/keepsakebox-image.png"
+           class="keepsakeBox-icon"
+           alt="KeepsakeBox Icóne">
+        <h1>KeepsakeBox</h1>
+    </div>
+
+    <div class="card blue-border">
+        <h5 class="card-header card-header-blue">
+            {{ message | translate}}
+        </h5>
+        <h6 class="p-2">
+            {{ help | translate }}
+        </h6>
+        <!--Cancel Card Body-->
+        <div class="card-body">
+            <!--Negative Answer-->
+            <div class="p-2">
+            <button type="button" 
+                    class="btn button button-neutral full-width" 
+                    (click)="decline()">
+                {{'no' | translate}}
+            </button>
+            </div>
+
+            <!--Positive Answer-->
+            <div class="p-2">
+            <button type="button" 
+                    class="btn button button-destructive full-width" 
+                    (click)="accept()">
+                {{'yes' | translate}}
+            </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!fullWindow">
+    <!--div class="modal-header card-header-blue" -->
+    <div class="card-header-blue" >
+        <div class="d-flex justify-content-left title-container color-white">
+            <img src="./assets/keepsakebox-image-white.png"
+            class="sm-keepsakeBox-icon"
+            alt="KeepsakeBox Icóne">
+            <h4 class="color-white">KeepsakeBox</h4>
+        </div>
+    </div>
+
+    <!--div class="modal-body" -->
+    <div >
+        <h4>
+            {{ message | translate}}
+        </h4>
+        <h6 *ngIf="showHelp">
+            {{ help | translate}}
+        </h6>
+    </div>
+
+    <div *ngIf="help!=''" class="d-flex btn-group justify-content-center align-items-center one-of-three-middle-width" role="group" aria-label="Horizontal Button Group">
+        <button type="button" class="btn button button-action button-with-help" (click)="accept()">
+            <i class="bi bi-hand-thumbs-up-fill color-white"></i>
+            {{'yes' | translate}}
+        </button>
+        <button type="button" class="btn button button-destructive button-with-help" (click)="decline()">
+            <i class="bi bi-hand-thumbs-down-fill color-white"></i>
+            {{'no' | translate}}
+        </button>
+        <button *ngIf="help!=''" type="button" class="btn button button-neutral button-help" (click)="showHelp = !showHelp"><i class="bi bi-question-circle-fill color-white"></i></button>
+    </div>
+
+    <div *ngIf="help==''" class="d-flex btn-group justify-content-center align-items-center one-of-three-middle-width" role="group" aria-label="Horizontal Button Group">
+            <button type="button" class="btn button button-action button-without-help" (click)="accept()">{{'yes' | translate}}</button>
+            <button type="button" class="btn button button-destructive button-without-help" (click)="decline()">{{'no' | translate}}</button>
+    </div>
+
+</div>

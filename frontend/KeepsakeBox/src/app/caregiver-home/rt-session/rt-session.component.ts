@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-rt-session',
-  imports: [],
+  standalone: true,
+  imports: [RouterOutlet],
   templateUrl: './rt-session.component.html',
-  styleUrl: './rt-session.component.css',
+  styleUrls: ['./rt-session.component.css']
 })
-export class RtSessionComponent {
-
-}
+export class RtSessionComponent {}

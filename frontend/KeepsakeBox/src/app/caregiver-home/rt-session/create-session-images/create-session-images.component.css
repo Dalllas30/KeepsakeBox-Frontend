@@ -1,0 +1,208 @@
+
+/*   ===> a definição do c2 (sem C2) Passou para a o Style.css
+
+.image-square{
+    width: 200px;
+    height: 180px;
+    cursor: grab;
+    --background-color: #eeeeee;
+  }
+  
+.image-square-c1{
+    width: 200px;
+    height: 180px;
+    cursor: grab;
+    background-color: #e0e0e0;
+}
+
+.image-square-c2{
+  width: 200px;
+  height: 180px;
+  cursor: grab;
+  --background-color: #e0e0e0;
+  background-color: #ffffff;
+}
+
+.image-inside{
+    max-width: 185px;
+    max-height: 170px;
+  }
+
+.image-locker{
+    position: absolute;
+    z-index: 1;
+    top: 7px;
+    left: 10px;
+  }
+
+.image-locker-c1{
+    position: absolute;
+    z-index: 1;
+    --top: 90px;
+    top: 37px;
+    right: 5px;
+  }
+
+.image-locker-c2{
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    left: 10px;
+  }
+
+.image-favorite{
+    position: absolute;
+    z-index: 1;
+    top: 7px;
+    left: 35px;
+  }
+
+.image-favorite-c1{
+    position: absolute;
+    z-index: 1;
+    --top: 60px;
+    top: 7px;
+    right: 5px;
+  }
+
+.image-favorite-c2{
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    right: 10px;
+  }
+
+.space-c1 {
+  height: 0px
+}
+
+.space-c2 {
+  height: 35px
+}
+
+.image-detail{
+    position: absolute;
+    z-index: 99;
+    top: 7px;
+    right: 10px;
+    cursor: pointer;
+    caret-color:blue;
+  }
+
+.image-detail-c1{
+    position: absolute;
+    z-index: 99;
+    --top: 7px;
+    bottom: 33px;
+    right: 5px;
+    cursor: pointer;
+    caret-color:blue;
+  }
+
+.image-detail-c2{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    left: 5px;
+    cursor: pointer;
+    caret-color:blue;
+  }
+
+.button-detail-c2{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    left: 3px;
+    cursor: pointer;
+    caret-color:blue;
+}
+
+.image-remove-c1{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    right: 5px;
+    cursor: pointer;
+  }
+  
+.image-remove-c2{
+    position: absolute;
+    z-index: 99;
+    bottom: 3px;
+    right: 7px;
+    cursor: pointer;
+  }
+  
+.image-card{
+    text-align: left;
+    width: 200px;
+    height: 100%;
+  }
+
+.image-card-c1{
+    text-align: left;
+    width: 235px;
+    height: 182px;
+    background-color: #b4b4b4;
+}
+
+.image-card-c2{
+  text-align: left;
+  width: 200px;
+  height: 255px;
+  --background-color: #b4b4b4;
+  background-color: #e0e0e0;
+}
+
+.selected-image {
+    --background-color: rgba(0, 0, 139, 0.25);
+    border: 5px solid darkblue;
+  }
+
+.selected-image-c1 {
+    width: 235px;
+    height: 182px;
+    border: 5px solid darkblue;
+  }
+
+.selected-image-c2 {
+    width: 200px;
+    height: 255px;
+    border: 1px solid darkblue;
+    --background-color: #b4b4b4;
+    --background-color: rgb(93, 128, 177);
+    background-color: rgb(149, 189, 227);
+  }
+
+* Fim da definição do image-card que passou para o Style.css */
+
+.filter-box{
+  border: 1px solid rgba(0, 0, 82, 0.4);
+  padding: 5px;
+  width: fit-content;
+  height: 50px;
+  border-radius: 0.25rem;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+/*Filter Buttons*/
+.filter-button{
+border: 1px solid #000052;
+color: #000052;
+height: 35px!important;
+width: 125px;
+padding:0em!important;
+--vertical-align: -5px!important;
+}
+
+.filter-button:hover{
+color: #007bff;
+cursor: pointer;
+}
+
+.filter-button-selected{
+border: none !important;
+background-color: #000052 !important;
+color: white !important;
+}
