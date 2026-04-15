@@ -1,1 +1,104 @@
-<p>leave-patient-care works!</p>
+<!--@author André Santana - fc49451-->
+
+<div class="d-flex justify-content-center flex-wrap">
+
+  <!--Leave Care Screen-->
+  @if (!hideLeaveCare) {
+    <div class="d-flex flex-column">
+
+      @if (!left) {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'leaveCareError' | translate}} {{convertPatientDisplayName(patient.displayName, patient.name)}}.
+        </div>
+      }
+
+      <div class="card blue-border">
+
+        @if (currentCaregiver.type === 'Formal') {
+          <h5 class="card-header card-header-blue">
+            {{'leaveCare' | translate}} {{'beneficiary' | translate}}
+          </h5>
+        }
+        @if (currentCaregiver.type === 'Informal') {
+          <h5 class="card-header card-header-blue">
+            {{'leaveCare' | translate}} {{'relative' | translate}}
+          </h5>
+        }
+
+        <div class="card-body">
+          <div class="d-flex justify-content-start flex-wrap">
+
+            <div class="p-2">
+              <img [src]="patient.profileImageURL" alt="Foto de Perfil"
+                   class="img-thumbnail patient-image">
+            </div>
+
+            <div class="p-2" style="width: 600px;">
+              <label class="input-label" style="font-weight: normal;">
+                {{'reallyLeaveCare' | translate}}
+                <strong style="font-weight: bolder;">
+                  {{convertPatientDisplayName(patient.displayName, patient.name)}}
+                </strong>?
+              </label>
+
+              <div class="p-2">
+                <button type="button" class="btn button button-neutral full-width"
+                        routerLink="/caregiver/person/info" style="margin-left: -10px;">
+                  {{'no' | translate}}
+                </button>
+              </div>
+
+              <div class="p-2">
+                <button type="button" class="btn button button-destructive full-width"
+                        (click)="leavePatientCare()" style="margin-left: -10px;">
+                  {{'yes' | translate}}
+                  @if (leavingCare) {
+                    <div class="spinner-border small-spinner-white" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  }
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!--Care Left Screen-->
+  @if (!hideCareLeft) {
+    <div class="card blue-border">
+
+      @if (currentCaregiver.type === 'Formal') {
+        <h5 class="card-header card-header-blue">
+          {{'leaveCare' | translate}} {{'beneficiary' | translate}}
+        </h5>
+      }
+      @if (currentCaregiver.type === 'Informal') {
+        <h5 class="card-header card-header-blue">
+          {{'leaveCare' | translate}} {{'relative' | translate}}
+        </h5>
+      }
+
+      <div class="card-body">
+        <div class="p-2">
+          {{'careLeft' | translate}}
+          <strong style="font-weight: bolder;">
+            {{convertPatientDisplayName(patient.displayName, patient.name)}}
+          </strong>.
+        </div>
+        <div class="p-2 full-width">
+          <button type="button" class="btn button button-action full-width"
+                  routerLink="/caregiver/persons">
+            <i class="bi bi-check-lg color-white"></i>
+            OK
+          </button>
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>

@@ -1,12 +1,9 @@
-<p>caregiver-images works!</p>
 <!--@author André Santana - fc49451-->
 
 <!--Image Search and Add-->
-<div *ngIf="!hideOptions">
-
+@if(!hideOptions) {
   <!--First Line of Options-->
   <div class="d-flex justify-content-start flex-wrap p-2">
-
     <!--Add Image Button-->
     <!--<div class="p-2"
       #Select Images (Hidden)
@@ -55,8 +52,7 @@
           placeholder="{{'searchDescription' | translate}}..." (keyup)="searchImageByDescription($event)">
       </div>
     </div>
-
-  </div>
+  </div>}
 
   <!--Second Line of Options-->
   <div class="d-flex justify-content-start flex-wrap p-2" style="margin-top: -30px !important;">
@@ -97,60 +93,49 @@
 
   </div>
 
-</div>
-
 <!--Image Filter-->
-<div *ngIf="!hideFilter" style="margin-bottom: 10px;">
-
-  <!--Categories to Select-->
-  <!-- <div class="d-flex justify-content-start flex-wrap p-2">
-    <div class="p-2" *ngFor="let category of categories">
-      <button class="btn button category-button" [class.category-button-selected]="isCategorySelected(category)"
-        (click)="categoryClick(category);searchImageByCategory()">
-        {{translateLabel(category)}}
-      </button>
-    </div>
-  </div> -->
-  <!--div *ngIf="translateCache=='en'">
+@if(!hideFilter) {
+  
+  <div style="margin-bottom: 10px;">
     <div class="d-flex justify-content-start flex-wrap p-2">
-      <div class="p-2" *ngFor="let category of categoriesENG">
-            <button class="btn button category-button" 
-                    [class.category-button-selected]="isCategorySelected(category)" 
-                    (click)="categoryClick(category);searchImageByCategory()">
-                {{category}}
-            </button>
+      @for(category of categories; track category) {
+        <div class="p-2">
+          <button class="btn button category-button" [class.category-button-selected]="isCategorySelected(category)"
+            (click)="categoryClick(category);searchImageByCategory()">
+            {{translateLabel(category)}}
+          </button>
         </div>
+      }
+    </div>
+
+    <div class="d-flex justify-content-start flex-wrap p-2" style="margin-top: -20px;">
+
+      <!--Clean Selection-->
+      <div class="p-2">
+        <button type="button" class="btn button button-neutral"
+          (click)="resetSelectedCategories();searchImageByCategory()">
+          <i class="bi bi-eraser-fill color-white"></i>
+          {{'clean' | translate}}
+        </button>
       </div>
-  </div-->
 
-  <div class="d-flex justify-content-start flex-wrap p-2" style="margin-top: -20px;">
+      <!--Confirm Selection-->
+      <div class="p-2">
+        <button type="button" class="btn button button-action" (click)="showOptions()">
+          <i class="bi bi-check-circle-fill color-white"></i>
+          {{'confirm' | translate}}
+        </button>
+      </div>
 
-    <!--Clean Selection-->
-    <div class="p-2">
-      <button type="button" class="btn button button-neutral"
-        (click)="resetSelectedCategories();searchImageByCategory()">
-        <i class="bi bi-eraser-fill color-white"></i>
-        {{'clean' | translate}}
-      </button>
+      <!--Filter Categories Hint-->
+      <div class="p-2" style="margin-top: 10px;">
+        <i class="bi bi-question-circle"></i>
+        {{'filterCategoriesHint' | translate}}
+      </div>
+
     </div>
-
-    <!--Confirm Selection-->
-    <div class="p-2">
-      <button type="button" class="btn button button-action" (click)="showOptions()">
-        <i class="bi bi-check-circle-fill color-white"></i>
-        {{'confirm' | translate}}
-      </button>
-    </div>
-
-    <!--Filter Categories Hint-->
-    <div class="p-2" style="margin-top: 10px;">
-      <i class="bi bi-question-circle"></i>
-      {{'filterCategoriesHint' | translate}}
-    </div>
-
-  </div>
-
-</div>
+  </div> 
+}
 
 <!--No Images-->
 <div class="p-2 page-message" style="margin-bottom: 40px !important;" *ngIf="collectionSize == 0 && 
@@ -168,44 +153,52 @@
 </div>
 
 <!--Images Loading-->
-<div *ngIf="loadingImages">
+@if (loadingImages) {
   <div class="p-2 spinner-border big-spinner-blue" role="status" style="margin-bottom: 30px !important;">
     <span class="sr-only">Loading...</span>
   </div>
-</div>
+}
 
 <!--Caregiver Images-->
 <div class="d-flex justify-content-center flex-wrap" style="margin-top: -20px;">
-  <div class="p-2" *ngFor="let img of images | slice: (page-1) * pageSize : page * pageSize">
+  @for(img of images.slice((page-1) * pageSize, page * pageSize); track img.image.id) {
+    <div class="p-2">
 
-    <div class="card long-image-card light-blue-border" (click)="goToImageDetails(img)">
-      <div class="space"></div>
-      <!--Image-->
-      <div class="d-flex justify-content-center align-items-center img-thumbnail image-square">
-        <i *ngIf="!img.image.isPrivate" class="bi bi-unlock-fill text-icon-blue image-locker"></i>
-        <i *ngIf="img.image.isPrivate" class="bi bi-lock-fill text-icon-blue image-locker"></i>
-        <i *ngIf="!img.isFavorite" class="bi bi-star text-icon-blue image-favorite"></i>
-        <i *ngIf="img.isFavorite" class="bi bi-star-fill text-icon-blue image-favorite"></i>
-        <img [src]="img.image.thumbnailPath" alt="{{img.image.description}}" class="image-card-inside">
-      </div>
+      <div class="card long-image-card light-blue-border" (click)="goToImageDetails(img)">
+        <div class="space"></div>
+        <!--Image-->
+        <div class="d-flex justify-content-center align-items-center img-thumbnail image-square">
+          @if(!img.image.isPrivate) {
+            <i class="bi bi-unlock-fill text-icon-blue image-locker"></i>
+          } @else {
+            <i class="bi bi-lock-fill text-icon-blue image-locker"></i>
+          }
+          @if(img.isFavorite) {
+            <i class="bi bi-star-fill text-icon-blue image-favorite"></i>
+          } @else {
+            <i class="bi bi-star text-icon-blue image-favorite"></i>
+          }
+          <img [src]="img.image.thumbnailPath" alt="{{img.image.description}}" class="image-card-inside">
+        </div>
 
-      <!--Image Description-->
-      <div class="p-1 image-description">
-        <i class="bi bi-tag"></i>
-        {{translateLabels(img.image.category)}}
-        <br>
-        <i class="bi bi-card-text"></i>
-        {{img.image.description}}
+        <!--Image Description-->
+        <div class="p-1 image-description">
+          <i class="bi bi-tag"></i>
+          {{translateLabels(img.image.category)}}
+          <br>
+          <i class="bi bi-card-text"></i>
+          {{img.image.description}}
+        </div>
+
       </div>
 
     </div>
-
-  </div>
+  }
 
 </div>
 
 <!--Pagination-->
-<div *ngIf="collectionSize != 0">
+@if(collectionSize != 0) {
   <div class="d-flex justify-content-center flex-wrap" style="margin-top: 10px;">
     <ngb-pagination [(page)]="page" [pageSize]="pageSize" [maxSize]="maxSize" [collectionSize]="collectionSize"
       [rotate]="true" [ellipses]="true">
@@ -216,4 +209,4 @@
       <ng-template ngbPaginationEllipsis>...</ng-template>
     </ngb-pagination>
   </div>
-</div>
+}

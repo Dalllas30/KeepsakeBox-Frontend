@@ -1,1 +1,87 @@
-<p>generate-request works!</p>
+<!--generate-request-->
+<div>
+  <div class="d-flex justify-content-start flex-wrap p-2" style="max-width: 1200px; text-align: left;">
+    <p>
+      {{'requestWillBeGenerated' | translate}}
+      {{'requestWillBeGenerated2' | translate}}
+      {{'requestWillBeGenerated3' | translate}}.
+    </p>
+  </div>
+
+  <div class="d-flex flex-row justify-content-start flex-wrap p-2">
+
+    <div class="d-flex flex-column">
+      <div class="d-flex flex-row" style="margin-top: 5px;">
+        <label style="margin-top: 3px; width: 350px;" for="duration">
+          {{'selectRequestExpiration' | translate}}:&nbsp;&nbsp;
+        </label>
+        <select class="custom-select mr-sm-2 input-text-select" id="duration" name="duration"
+                [(ngModel)]="selectedDuration" style="max-width: 150px; max-height: 40px;">
+          @for (o of options; track o.value) {
+            <option>{{o.name}}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column">
+      <button type="button" class="p-2 btn button button-action button-width" (click)="confirm()"
+              style="margin-left: 60px; width: 260px; height: 50px;">
+        {{'createRequest' | translate}}
+      </button>
+    </div>
+
+  </div>
+
+  @if (confirmed) {
+    <div style="margin-bottom: -20px;">
+      <div class="d-flex justify-content-start flex-wrap p-2 input-group mb-2 mr-sm-2 link-box">
+        <label for="fname" style="margin-right: 13px; margin-top: 7px;">
+          {{'requestGeneratedSuccessfully' | translate}}
+          ({{'validUntil' | translate}}: {{generatedDate}}):
+        </label>
+        <input type="text" class="form-control input-text-select" id="fname" name="fname"
+               value="localhost:4200/{{id}}"
+               style="width: 500px; height: 50px; border-radius: 0.25rem 0 0 0.25rem;" readonly>
+        <div class="input-group-append" (click)="copyLinkToClipboard()">
+          <div class="input-group-text input-icon-blue"
+               style="height: 50px; border-radius: 0 0.25rem 0.25rem 0;">
+            <i class="bi bi-clipboard-check color-white"></i>
+          </div>
+        </div>
+      </div>
+      @if (copiedLink) {
+        <div class="d-flex justify-content-center flex-wrap p-2">
+          <div class="alert alert-success"
+               style="width: 200px; font-size: 20px; margin-bottom: -10px; margin-top: -20px;">
+            {{'requestCopied' | translate}}
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="d-flex justify-content-center flex-wrap p-2" style="margin-top: 30px !important;">
+    @if (isRouteActive('caregiver/profile/images/method/generate-request')) {
+      <button type="button" class="btn button button-neutral" style="min-width: 300px;"
+              routerLink="/caregiver/profile/images/method">
+        <i class="bi bi-caret-left-fill color-white"></i>
+        {{'goBack' | translate}}
+      </button>
+    }
+    @if (isRouteActive('caregiver/person/images/method/generate-request')) {
+      <button type="button" class="btn button button-neutral" style="min-width: 300px;"
+              routerLink="/caregiver/person/images/method">
+        <i class="bi bi-caret-left-fill color-white"></i>
+        {{'goBack' | translate}}
+      </button>
+    }
+    @if (confirmed) {
+      <button type="button" class="btn button button-neutral" style="min-width: 300px; margin-left: 50px;"
+              (click)="copyLinkToClipboard()">
+        <i class="bi bi-clipboard-check color-white"></i>
+        {{'copyRequest' | translate}}
+      </button>
+    }
+  </div>
+</div>

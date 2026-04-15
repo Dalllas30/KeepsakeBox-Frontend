@@ -47,6 +47,18 @@
       "speciality": "",
       "token": "temp-token-1775572651037",
       "id": 4
+    },
+    {
+      "name": "teste_tdog",
+      "email": "teste3@gmail.com",
+      "phone": "",
+      "password": "ibjDrM2sAVrATzSfAwBVZg==",
+      "birthDate": "1965-03-10T00:00:00.000Z",
+      "profileImage": "/assets/profileimage-default.png",
+      "caregiverType": "Informal",
+      "speciality": "",
+      "token": "temp-token-1776268227649",
+      "id": 5
     }
   ],
   "patients": [],

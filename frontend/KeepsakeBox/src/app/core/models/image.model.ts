@@ -17,8 +17,8 @@ export class Image {
         public negativeIntensity: number,
         public neutralIntensity: number,
         public positiveIntensity: number,
-        public createdDate: Date,
-        public lastUpdatedDate: Date,
+        public createdDate: Date | null,
+        public lastUpdatedDate: Date | null,
         public thumbnailPath?: string,
     ){}
 }

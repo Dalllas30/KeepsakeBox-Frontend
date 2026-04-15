@@ -1,53 +1,54 @@
-<p>caregiver-validation works!</p>
 <!--Validation-->
-<div *ngIf="!awaitingValidation" style="margin-top: 30px; margin-bottom:30px">
-    {{'noImagesToValidate' | translate}}
-</div>
-<div *ngIf="awaitingValidation">
-    <div class="p-2">
-        <div *ngIf="imagesToValidate.length > 0 && imagesSorted.length > 0">
-            <div class="card" *ngFor="let imageGroup of imagesSorted; index as i" style="border:1px solid rgba(0, 0, 82, 0.4); margin: 20px;">
-                <div class="card-body d-flex justify-content-start flex-wrap">
+@if (awaitingValidation) {
+  <div class="p-2">
     
-                    <!--Nome de quem submeteu as imagens-->
-                    <div class="p-2" style="width: 200px;margin-top: 10px;">
-                        Submetido por:
-                    </div>
-                    <div class="p-2" style="font-weight: bold;margin-top: 10px;width: 200px">
-                        {{imageGroup[0].username.split("/")[0]}}
-                    </div>
+    @if (imagesToValidate.length > 0 && imagesSorted.length > 0) {
+      
+      @for (imageGroup of imagesSorted; track $index) {
+        <div class="card" style="border:1px solid rgba(0, 0, 82, 0.4); margin: 20px;">
+          <div class="card-body d-flex justify-content-start flex-wrap">
 
-                    <!--Para quem as imagens são-->
-                    <div class="p-2" style="width: 100px;margin-top: 10px;">
-                        Para:
-                    </div>
-                    <div class="p-2" style="font-weight: bold;margin-top: 10px; width: 200px">
-                        {{targets[i]}}
-                    </div>
-    
-                    <!--Data de submissao-->
-                    <div class="p-2" style="width: 180px;margin-top: 10px;">
-                        {{imageGroup[0].submissionDate.split(" ")[0]}}
-                    </div>
-    
-                    <!--Numero de imagens submetidas-->
-                    <div class="p-2" style="width: 180px;margin-top: 10px;">
-                        {{imageGroup.length}} {{'images' | translate}}
-                    </div>
-    
-                    <!--Iniciar validacao das imagens-->
-                    <div class="p-2" style="width: 250px;">
-                        <button type="button" style="margin-left: 10px !important;"
-                            class="btn button button-action full-width" (click)="goToValidationInterface(imageGroup)">
-                            {{'startValidation' | translate}}
-                        </button>
-                    </div>
-    
-                </div>
+            <div class="p-2" style="width: 200px; margin-top: 10px;">
+              {{ 'submittedBy' | translate }}:
             </div>
-        </div>    
-        <div *ngIf="!(imagesToValidate.length > 0 && imagesSorted.length > 0)" class="p-2 page-message">
-            Não tem imagens para validar de momento.
+            <div class="p-2" style="font-weight: bold; margin-top: 10px; width: 200px">
+              {{ imageGroup[0].username.split("/")[0] }}
+            </div>
+
+            <div class="p-2" style="width: 100px; margin-top: 10px;">
+              {{ 'for' | translate }}:
+            </div>
+            <div class="p-2" style="font-weight: bold; margin-top: 10px; width: 200px">
+              {{ targets[$index] }}
+            </div>
+
+            <div class="p-2" style="width: 180px; margin-top: 10px;">
+              {{ imageGroup[0].submissionDate.split(" ")[0] }}
+            </div>
+
+            <div class="p-2" style="width: 180px; margin-top: 10px;">
+              {{ imageGroup.length }} {{ 'images' | translate }}
+            </div>
+
+            <div class="p-2" style="width: 250px;">
+              <button 
+                type="button" 
+                style="margin-left: 10px !important;"
+                class="btn button button-action full-width" 
+                (click)="goToValidationInterface(imageGroup)">
+                {{ 'startValidation' | translate }}
+              </button>
+            </div>
+
+          </div>
         </div>
-    </div>
-</div>
+      }
+
+    } @else {
+      <div class="p-2 page-message">
+        {{ 'noImagesToValidate' | translate }}
+      </div>
+    }
+
+  </div>
+}

@@ -27,7 +27,7 @@ export class CaregiverImagesComponent implements OnInit {
   public collectionSize!: number;
   public loadingImage: boolean = false;
   public loadingFolder: boolean = false;
-  public categories: String[] = [];
+  public categories: string[] = [];
   public selectedCategories: string[] = [];
   public onlyFavorites: boolean = false;
   public caregiver!: Caregiver;
@@ -102,7 +102,7 @@ export class CaregiverImagesComponent implements OnInit {
           if (!this.images.includes(tempImg)) this.images.push(tempImg);
         }
       }
-      this.images = this.images.sort((a, b) => a.image.lastUpdatedDate < b.image.lastUpdatedDate ? 1 : -1);
+      this.images = this.images.sort((a, b) => (a.image.lastUpdatedDate?.getTime() ?? 0) < (b.image.lastUpdatedDate?.getTime() ?? 0) ? 1 : -1);
     } else {
       this.images = this.onlyFavorites ? this.imagesByFavorite : this.imagesCopy;
     }

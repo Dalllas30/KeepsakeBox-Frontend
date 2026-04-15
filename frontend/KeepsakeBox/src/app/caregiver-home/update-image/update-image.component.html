@@ -1,1 +1,228 @@
-<p>update-image works!</p>
+<!--@author André Santana - fc49451-->
+
+<div class="d-flex justify-content-center flex-wrap">
+
+  <!--Cancel Screen-->
+  @if (!hideCancelScreen) {
+    <app-cancel-screen
+      (answeredNo)="showUpdateScreen01()"
+      (answeredYes)="navigateToImage()">
+    </app-cancel-screen>
+  }
+
+  <!--Update Image Screen 01 - Category Selection-->
+  @if (!hideUpdateScreen01) {
+    <form (ngSubmit)="showUpdateScreen02()" #selectCategoriesForm="ngForm">
+      <div class="card blue-border">
+        <h5 class="card-header card-header-blue">
+          {{'updateImage' | translate}}: {{'step1of2' | translate}}
+        </h5>
+
+        <div class="card-body">
+          <div class="d-flex justify-content-start flex-wrap">
+
+            <!--Image to Update-->
+            <div class="p-2">
+              <div class="d-flex justify-content-center align-self-center img-thumbnail image-square">
+                <img [src]="currentImage.image.imageURL" alt="Foto a Adicionar" class="image-inside">
+              </div>
+            </div>
+
+            <!--Categories Selection-->
+            <div class="d-flex flex-column">
+              <div class="p-2" style="margin-top: 10px; margin-left: 10px;">
+                <i class="bi bi-question-circle"></i>
+                {{'categorySelectHint' | translate}}
+              </div>
+
+              <div class="d-flex justify-content-start flex-wrap p-2" style="width: 700px;">
+                @for (category of categories; track category) {
+                  <div class="p-2" style="margin-top: -10px;">
+                    <button type="button" class="btn button category-button"
+                            [class.category-button-selected]="isCategorySelected(category)"
+                            (click)="categoryClick(category)">
+                      {{translateLabel(category)}}
+                    </button>
+                  </div>
+                }
+                <div class="p-2" style="margin-top: -10px;">
+                  <button type="button" class="btn button button-neutral" (click)="resetSelectedCategories()">
+                    <i class="bi bi-eraser-fill color-white"></i>
+                    {{'clean' | translate}}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!--Buttons-->
+          <div class="d-flex justify-content-start flex-wrap-reverse">
+            <div class="p-2 half-width">
+              <button type="button" class="btn button button-neutral full-width" (click)="showCancelScreen()">
+                <i class="bi bi-caret-left-fill color-white"></i>
+                @if (isRouteActive('caregiver/person/image/update') && caregiver.type === 'Formal') {
+                  <span class="color-white"> {{'image' | translate}} {{'beneficiary' | translate}}</span>
+                }
+                @if (isRouteActive('caregiver/person/image/update') && caregiver.type === 'Informal') {
+                  <span class="color-white"> {{'image' | translate}} {{'relative' | translate}}</span>
+                }
+                @if (isRouteActive('caregiver/profile/image/update')) {
+                  <span class="color-white"> {{'image' | translate}} {{'caregiver' | translate}}</span>
+                }
+              </button>
+            </div>
+            <div class="p-2 half-width">
+              <button type="submit" class="btn button button-action full-width"
+                      [disabled]="selectedCategories.length === 0">
+                {{'proceed' | translate}}
+                <i class="bi bi-caret-right-fill color-white"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  }
+
+  <!--Update Image Screen 02 - Details-->
+  @if (!hideUpdateScreen02) {
+    <div class="d-flex flex-column">
+
+      @if (!updated) {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'imageEditError' | translate}}
+        </div>
+      }
+
+      <form (ngSubmit)="updateImage()" #updateImageForm="ngForm">
+        <div class="card blue-border">
+          <h5 class="card-header card-header-blue">
+            {{'updateImage' | translate}}: {{'step2of2' | translate}}
+          </h5>
+
+          <div class="card-body">
+            <div class="d-flex justify-content-start flex-wrap">
+
+              <!--Image Preview-->
+              <div class="p-2">
+                <div class="d-flex justify-content-center align-self-center img-thumbnail image-square">
+                  <img [src]="currentImage.image.imageURL" alt="Foto a Adicionar" class="image-inside">
+                </div>
+                @if (translateCache === 'pt') {
+                  <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                    Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+                  </small>
+                }
+                @if (translateCache === 'en') {
+                  <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                    All fields with <strong>*</strong> are <strong>Required</strong>.
+                  </small>
+                }
+              </div>
+
+              <!--Fields-->
+              <div class="p-2" style="width: 500px;">
+
+                <!--Description-->
+                <div class="p-2 form-group" style="margin-bottom: 15px;">
+                  <label for="description" class="input-label">
+                    <i class="bi bi-card-text"></i> {{'description' | translate}}:*
+                  </label>
+                  <textarea class="form-control input-text-select"
+                            id="description" required
+                            [(ngModel)]="currentImage.image.description"
+                            placeholder="{{'required' | translate}}" rows="3"
+                            name="description" #description="ngModel"></textarea>
+                </div>
+
+                <!--Favorite-->
+                <div class="p-2">
+                  <div class="d-flex justify-content-start select-box">
+                    <div class="input-radio" id="notFavorite">
+                      <input type="radio" id="option1" [value]="false" required
+                             [(ngModel)]="currentImage.isFavorite"
+                             name="favorite" #favorite="ngModel">
+                      <label for="option1">
+                        <i class="bi bi-star text-icon-yellow"></i> {{'notFavorite' | translate}}
+                      </label>
+                    </div>
+                    <div class="input-radio" id="favorite">
+                      <input type="radio" id="option2" [value]="true" required
+                             [(ngModel)]="currentImage.isFavorite"
+                             name="favorite">
+                      <label for="option2">
+                        <i class="bi bi-star-fill text-icon-yellow"></i> {{'favorite' | translate}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!--Private / Public-->
+                <div class="p-2">
+                  <div class="d-flex justify-content-start select-box">
+                    <div class="input-radio" id="private">
+                      <input type="radio" id="optionPrivate" [value]="true" required
+                             [(ngModel)]="currentImage.image.isPrivate"
+                             name="private" #private="ngModel">
+                      <label for="optionPrivate">
+                        <i class="bi bi-lock-fill text-icon-yellow"></i> {{'private' | translate}}
+                      </label>
+                    </div>
+                    <div class="input-radio" id="public">
+                      <input type="radio" id="optionPublic" [value]="false" required
+                             [(ngModel)]="currentImage.image.isPrivate"
+                             name="private">
+                      <label for="optionPublic">
+                        <i class="bi bi-unlock-fill text-icon-yellow"></i> {{'public' | translate}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!--Public hint-->
+                <small class="p-2 form-text text-info-message" style="margin-top: -5px;">
+                  {{'publicHint' | translate}}
+                  @if (caregiver.type === 'Formal') {
+                    <span class="text-info-message"> {{'beneficiaries' | translate}}.</span>
+                  }
+                  @if (caregiver.type === 'Informal') {
+                    <span class="text-info-message"> {{'relatives' | translate}}.</span>
+                  }
+                  {{'reversibleAction' | translate}}
+                </small>
+
+              </div>
+            </div>
+
+            <!--Buttons-->
+            <div class="d-flex justify-content-start flex-wrap-reverse">
+              <div class="p-2 half-width">
+                <button type="button" class="btn button button-neutral full-width"
+                        (click)="showUpdateScreen01()">
+                  <i class="bi bi-caret-left-fill color-white"></i>
+                  {{'goBack' | translate}}
+                </button>
+              </div>
+              <div class="p-2 half-width">
+                <button type="submit" class="btn button button-action full-width"
+                        [disabled]="!updateImageForm.valid">
+                  {{'submit' | translate}}
+                  @if (updating) {
+                    <div class="spinner-border small-spinner-white" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  }
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
+
+    </div>
+  }
+
+</div>

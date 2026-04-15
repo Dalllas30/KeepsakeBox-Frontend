@@ -1,1 +1,125 @@
-<p>only-share-patient works!</p>
+<!--@author André Santana - fc49451-->
+
+<div class="d-flex justify-content-center flex-wrap">
+
+  <!--Cancel Screen-->
+  @if (!hideCancel) {
+    <app-cancel-screen
+      (answeredNo)="showSharePatient()"
+      (answeredYes)="navigateToPatientInfo()">
+    </app-cancel-screen>
+  }
+
+  <!--Share Patient Screen-->
+  @if (!hideSharePatient) {
+    <div class="d-flex flex-column">
+
+      @if (!shared && currentCaregiver.email !== receiverEmail) {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'alreadyCaregiverOfThePerson' | translate}}
+        </div>
+      }
+      @if (!shared && currentCaregiver.email === receiverEmail) {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'cantUseYourEmailAlreadyCare' | translate}}
+        </div>
+      }
+
+      <form (ngSubmit)="notifySharePatient()" #sharePatientForm="ngForm">
+        <div class="card blue-border">
+          <h5 class="card-header card-header-blue">{{'shareCare' | translate}}</h5>
+
+          <div class="card-body">
+            <div class="d-flex justify-content-start flex-wrap">
+
+              <div class="p-2">
+                <img [src]="patient.profileImageURL" alt="Foto de Perfil"
+                     class="img-thumbnail patient-image">
+              </div>
+
+              <div class="p-2" style="width: 600px;">
+                <label for="receiverEmail" class="input-label" style="font-weight: normal;">
+                  {{'wannaShareCare' | translate}}
+                  <strong style="font-weight: bolder;">
+                    {{convertPatientDisplayName(patient.displayName, patient.name)}}
+                  </strong>?<br>
+                  {{'insertCaregiverEmail' | translate}}*
+                </label>
+                <input type="text" class="form-control input-text-select"
+                       id="receiverEmail" placeholder="{{'required' | translate}}" required
+                       [(ngModel)]="receiverEmail"
+                       name="email" #email="ngModel"
+                       pattern="(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+                       [class.input-text-select-error]="!validEmailInput"
+                       (change)="isValidEmailValue(email)">
+                @if (!validEmailInput) {
+                  <small class="form-text text-error-message" style="margin-top: 10px;">
+                    {{'emailInvalid' | translate}}
+                  </small>
+                }
+              </div>
+
+            </div>
+
+            @if (translateCache === 'pt') {
+              <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+              </small>
+            }
+            @if (translateCache === 'en') {
+              <small class="p-2 form-text text-info-message profile-image-help" style="margin-top: -10px;">
+                All fields with <strong>*</strong> are <strong>Required</strong>.
+              </small>
+            }
+
+            <div class="d-flex justify-content-start flex-wrap-reverse">
+              <div class="p-2 half-width">
+                <button type="button" class="btn button button-neutral full-width" (click)="showCancel()">
+                  <i class="bi bi-caret-left-fill color-white"></i>
+                  @if (currentCaregiver.type === 'Formal') {
+                    <span class="color-white"> {{'beneficiary' | translate}}</span>
+                  }
+                  @if (currentCaregiver.type === 'Informal') {
+                    <span class="color-white"> {{'relative' | translate}}</span>
+                  }
+                </button>
+              </div>
+              <div class="p-2 half-width">
+                <button type="submit" class="btn button button-action full-width"
+                        [disabled]="!sharePatientForm.valid">
+                  {{'sendRequest' | translate}}
+                  @if (sharingPatient) {
+                    <div class="spinner-border small-spinner-white" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  }
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!--Patient Shared Screen-->
+  @if (!hidePatientShared) {
+    <div class="card blue-border">
+      <h5 class="card-header card-header-blue">{{'shareCare' | translate}}</h5>
+      <div class="card-body">
+        <div class="p-2">
+          {{'requestSentTo' | translate}} {{receiverEmail}}.
+        </div>
+        <div class="p-2 full-width">
+          <button type="button" class="btn button button-action full-width"
+                  routerLink="/caregiver/person/info">
+            <i class="bi bi-check-lg color-white"></i>
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

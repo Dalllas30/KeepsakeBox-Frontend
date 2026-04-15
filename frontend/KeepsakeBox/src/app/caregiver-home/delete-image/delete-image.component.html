@@ -1,1 +1,103 @@
-<p>delete-image works!</p>
+<!--@author André Santana - fc49451-->
+
+<div class="d-flex justify-content-center flex-wrap">
+
+  <!--Delete Confirmation Screen-->
+  @if (!hideDeleteImage) {
+    <div>
+      @if (!deleted) {
+        <div class="alert alert-danger alert-box" role="alert">
+          {{'deleteImageError' | translate}}
+        </div>
+      }
+
+      <div class="card blue-border">
+        <h5 class="card-header card-header-blue">
+          {{'deleteImage' | translate}}
+        </h5>
+        <div class="card-body">
+          <div class="d-flex justify-content-center flex-wrap">
+            <div class="d-flex flex-column">
+
+              @if (isRouteActive('caregiver/person/image/delete')) {
+                <div class="p-2" style="margin-bottom: -5px;">
+                  {{'deleteImageBelongsText' | translate}}
+                  <strong style="font-weight: bolder;">
+                    {{convertPatientDisplayName(patient.displayName, patient.name)}}?
+                  </strong>
+                </div>
+              }
+              @if (isRouteActive('caregiver/profile/image/delete')) {
+                <div class="p-2" style="margin-bottom: -5px;">
+                  {{'deleteImageText' | translate}}
+                </div>
+              }
+
+              <div class="p-2 d-flex justify-content-center">
+                <div class="d-flex justify-content-center align-self-center img-thumbnail image-square">
+                  <img [src]="img.image.imageURL" alt="{{img.image.description}}" class="image-inside">
+                </div>
+              </div>
+
+              <div class="p-2">
+                <button type="button" class="btn button button-neutral full-width"
+                        (click)="navigateToImage()">
+                  {{'no' | translate}}
+                </button>
+              </div>
+
+              <div class="p-2">
+                <button type="submit" class="btn button button-destructive full-width"
+                        (click)="deleteImage()">
+                  <i class="bi bi-trash-fill color-white"></i>
+                  {{'yes' | translate}}
+                  @if (deleting) {
+                    <div class="spinner-border small-spinner-white" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  }
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!--Image Deleted Screen-->
+  @if (!hideImageDeleted) {
+    <div class="card blue-border">
+      <h5 class="card-header card-header-blue">
+        {{'deleteImage' | translate}}
+      </h5>
+      <div class="card-body">
+
+        @if (isRouteActive('caregiver/person/image/delete')) {
+          <div class="p-2">
+            {{'imageDeletedBelongsText' | translate}}
+            <strong style="font-weight: bolder;">
+              {{convertPatientDisplayName(patient.displayName, patient.name)}}?
+            </strong>
+          </div>
+        }
+        @if (isRouteActive('caregiver/profile/image/delete')) {
+          <div class="p-2">
+            {{'imageDeletedText' | translate}}
+          </div>
+        }
+
+        <div class="p-2 full-width">
+          <button type="button" class="btn button button-action full-width"
+                  (click)="navigateToImages()">
+            <i class="bi bi-check-lg color-white"></i>
+            OK
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

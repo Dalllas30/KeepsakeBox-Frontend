@@ -1,4 +1,3 @@
-<p>caregiver-info works!</p>
 <!--@author André Santana - fc49451-->
 
 <!--Patient Info Container-->
@@ -25,10 +24,12 @@
                 </div>
 
                 <!--Phone-->
-                <div *ngIf="caregiver.phone != 'null'" class="p-2 info-field">
-                    <strong><i class="bi bi-telephone-fill"></i> {{'mobilePhone' | translate}}</strong><br>
-                    {{caregiver.phone}}
-                </div>
+                @if(caregiver.phone != 'null') {
+                    <div class="p-2 info-field">
+                        <strong><i class="bi bi-telephone-fill"></i> {{'mobilePhone' | translate}}</strong><br>
+                        {{caregiver.phone}}
+                    </div>
+                }
 
                 <!--Birth Date-->
                 <div class="p-2 info-field">
@@ -43,11 +44,12 @@
                 </div>
 
                 <!--Caregiver Speciality-->
-                <div *ngIf="caregiver.type=='Formal'" class="p-2 info-field">
-                    <strong><i class="bi bi-award"></i> {{'speciality' | translate}}</strong><br>
-                    {{caregiver.speciality}}
-                </div>
-
+                @if(caregiver.type=='Formal') {
+                    <div class="p-2 info-field">
+                        <strong><i class="bi bi-award"></i> {{'speciality' | translate}}</strong><br>
+                        {{caregiver.speciality}}
+                    </div>
+                }
             </div>
 
         </div>

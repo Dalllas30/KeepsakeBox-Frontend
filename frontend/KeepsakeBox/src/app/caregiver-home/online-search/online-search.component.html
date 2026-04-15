@@ -1,1 +1,143 @@
-<p>online-search works!</p>
+<!--online-search-->
+<div>
+  @if (!findingImages) {
+    <div class="d-flex flex-row">
+
+      <!--Write Themes Column-->
+      <div class="d-flex flex-column justify-content-start">
+        <div class="p-2" style="margin-top: 10px; margin-left: 10px; text-align: left;">
+          {{'writeThemesOrSelectFromSuggested' | translate}}
+        </div>
+
+        <div class="d-flex justify-content-left flex-wrap p-2">
+          <div class="p-2" style="width: 530px;">
+            <div class="input-group mb-2 mr-sm-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text input-icon-blue" style="height: 50px;">
+                  <i class="bi bi-search color-white"></i>
+                </div>
+              </div>
+              <input id="categoryTextInput" [(ngModel)]="categoryTextInput"
+                     (keyup.enter)="onEnterCatTextInput()" type="text"
+                     class="form-control input-text-select" style="height: 50px;"
+                     placeholder="{{'category' | translate}}...">
+              <div class="input-group-append" (click)="onEnterCatTextInput()">
+                <span class="input-group-text"><i class="bi bi-arrow-right"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        @if (alertCategoryInput) {
+          <div class="d-flex justify-content-left flex-wrap p-2">
+            <div class="alert alert-warning"
+                 style="width: 450px; font-size: 20px; margin-bottom: 10px; margin-top: -20px; margin-left: 10px;">
+              {{'themeAlreadyAddedToSearch' | translate}}
+            </div>
+          </div>
+        }
+
+        <div class="d-flex flex-column">
+          <div class="p-2 d-flex flex-row" style="margin-top: 10px; margin-left: 10px;">
+            <b>{{'selectedThemes' | translate}}:</b>
+          </div>
+          <div class="d-flex flex-row justify-content-start">
+            <div class="d-flex flex-column justify-content-start" style="margin-left: 10px;">
+              @if (chosenCategories.length > 0) {
+                <div class="d-flex justify-content-start flex-wrap p-2"
+                     style="margin-left: -10px; max-width: 650px;">
+                  @for (category of chosenCategories; track category) {
+                    <div class="p-2" style="margin-top: -10px;">
+                      <button type="button" class="btn button category-button category-button-selected"
+                              (click)="removeFromChosenCategories(category)">
+                        <i class="bi bi-trash color-white" style="margin-right: 10px;"></i>
+                        <span style="color: white;">{{category}}</span>
+                      </button>
+                    </div>
+                  }
+                  <div class="p-2" style="margin-top: -10px;">
+                    <button type="button" class="btn button button-neutral"
+                            (click)="resetChosenCategories()">
+                      <i class="bi bi-eraser-fill color-white"></i>
+                      {{'clean' | translate}}
+                    </button>
+                  </div>
+                </div>
+              }
+              @if (chosenCategories.length === 0) {
+                <div class="p-2" style="margin-top: 10px; margin-left: 10px; color: #007bff;">
+                  {{'noThemesSelected' | translate}}
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Suggested Themes Column-->
+      <div class="d-flex flex-column justify-content-start" style="margin-left: 30px;">
+        <div class="p-2" style="margin-top: 10px; margin-left: 10px; text-align: left; margin-bottom: 10px;">
+          <i class="bi bi-question-circle"></i> {{'suggestedThemes' | translate}}
+        </div>
+        <div>
+          @if (categoriesCopy.length > 0) {
+            <div class="d-flex justify-content-start flex-wrap p-2" style="width: 600px;">
+              @for (category of categoriesCopy; track category) {
+                <div class="p-2" style="margin-top: -10px;">
+                  <button type="button" class="btn button category-button"
+                          (click)="categoryClick(category)">
+                    {{category}}
+                  </button>
+                </div>
+              }
+            </div>
+          }
+          @if (categoriesCopy.length === 0) {
+            <div class="p-2" style="margin-top: 10px; margin-left: 10px; color: #007bff;">
+              {{'noThemesSuggested' | translate}}
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <div class="d-flex flex-row">
+      <div class="p-2" style="margin-top: 10px; margin-left: 10px; text-align: left;">
+        {{'numberOfImagesToFind' | translate}}:
+        <input type="text" style="width: 100px;" value="10" id="numberOfImagesToSearch"
+               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center flex-wrap p-2" style="margin-top: 30px !important;">
+      @if (isRouteActive('caregiver/person/images/method/online-search')) {
+        <button type="button" class="btn button button-neutral" style="min-width: 300px;"
+                routerLink="/caregiver/person/images/method">
+          <i class="bi bi-caret-left-fill color-white"></i>
+          {{'goBack' | translate}}
+        </button>
+      }
+      @if (isRouteActive('caregiver/profile/images/method/online-search')) {
+        <button type="button" class="btn button button-neutral" style="min-width: 300px;"
+                routerLink="/caregiver/profile/images/method">
+          <i class="bi bi-caret-left-fill color-white"></i>
+          {{'goBack' | translate}}
+        </button>
+      }
+      <button type="button" class="p-2 btn button button-action button-width"
+              (click)="confirmSearch()"
+              style="margin-left: 50px; min-width: 260px; height: 50px;">
+        {{'startSearch' | translate}}
+      </button>
+    </div>
+  }
+
+  @if (findingImages) {
+    <div class="d-flex justify-content-center flex-wrap p-2"
+         style="margin-top: 10px; margin-left: 10px; text-align: left;">
+      {{'searchingImages' | translate}}...
+    </div>
+    <div class="loader"></div>
+  }
+</div>
