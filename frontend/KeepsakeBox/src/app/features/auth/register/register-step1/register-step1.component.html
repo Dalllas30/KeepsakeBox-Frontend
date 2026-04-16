@@ -117,7 +117,7 @@
                         (change)="arePasswordsValid(password,confirmPassword)"> 
 
                         <!--Error Message - Passwords Do Not Match-->
-                        ~@if(!validPasswordFields) {
+                        @if(!validPasswordFields) {
                         <small class="form-text text-error-message" style="margin-top: 10px;">
                             {{'difPasswords' | translate}}
                         </small>
