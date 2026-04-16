@@ -25,7 +25,7 @@
             <div class="card-body">
 
                 <!--Caregiver Name-->
-                <div class="p-2 form-group"
+                <div class="p-2 mb-3"
                     style="margin-bottom: 10px;">
                     <label for="name" class="input-label">
                         <i class="bi bi-person"></i> 
@@ -42,14 +42,14 @@
                     style="margin-bottom: -10px;">
 
                     <!--Birth Date-->
-                    <div class="p-2 form-group">
+                    <div class="p-2 mb-3">
                         <app-birth-date-input
                         [birthDate]="step1Data.birthDate">
                         </app-birth-date-input>
                     </div>
 
                     <!--Email-->
-                    <div class="p-2 form-group" style="width:385px;">
+                    <div class="p-2 mb-3" style="width:385px;">
                         <label for="email" class="input-label">
                             <i class="bi bi-envelope text-icon-blue"></i>
                             Email*
@@ -71,7 +71,7 @@
                     </div>
 
                     <!--Phone-->
-                    <div class="p-2 form-group" style="width:250px;">
+                    <div class="p-2 mb-3" style="width:250px;">
                         <label for="phone" class="input-label">
                             <i class="bi bi-telephone-fill"></i> 
                             {{'mobilePhone' | translate}}
@@ -88,7 +88,7 @@
                 <div class="d-flex justify-content-start flex-wrap">
                 
                     <!--Password-->
-                    <div class="p-2 form-group" 
+                    <div class="p-2 mb-3" 
                         style="padding-right:20px !important;
                                width:530px;">
                         <label for="password" class="input-label">
@@ -104,7 +104,7 @@
                     </div>
                     
                     <!--Password Confirm-->
-                    <div class="p-2 form-group" style="width:510px;">
+                    <div class="p-2 mb-3" style="width:510px;">
                         <label for="confirmPassword" class="input-label">
                             <i class="bi bi-key"></i>
                             {{'confirmPassword' | translate}}*
@@ -164,7 +164,7 @@
                             {{'proceed' | translate}}
                             @if(validatingEmail) {
                                 <div class="spinner-border small-spinner-white" role="status">
-                                    <span class="sr-only">Loading...</span>
+                                    <span class="visually-hidden">Loading...</span>
                                 </div>
                             }
                         </button>

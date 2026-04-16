@@ -42,8 +42,10 @@ export class CaregiverSessionsHistoryComponent implements OnInit {
   public patientsList: Patient[] = [];
   public symptomsList = ['joy_happiness', 'enthusiasm', 'communication', 'commitment', 'noSymptoms', 'anxiety', 'agitation_agression', 'irritability_lability', 'apathy'];
   public feedbackList = ['1', '2', '3', '4', '5'];
-  public selectedFilterSymptoms: string[] = [];
-  public selectedFilterFeedback: string[] = [];
+  // Pre-select all symptoms and feedback so buttons render dark-blue from the first paint,
+  // without depending on selectSortInicial() being reachable after the HTTP awaits.
+  public selectedFilterSymptoms: string[] = ['joy_happiness', 'enthusiasm', 'communication', 'commitment', 'noSymptoms', 'anxiety', 'agitation_agression', 'irritability_lability', 'apathy'];
+  public selectedFilterFeedback: string[] = ['1', '2', '3', '4', '5'];
   public selectedFilterNames: string[] = [];
   public symptomsNotSelected: string[] = [];
   public feedbackNotSelected: string[] = [];
@@ -77,18 +79,13 @@ export class CaregiverSessionsHistoryComponent implements OnInit {
   // apenas substituindo os imports no topo.
 
 
-  async selectSortInicial() {
-    for(let p = 0; p < this.patientsList.length; p++){
-      this.filterClick(this.patientsList[p].name)
-    }
-
-    for(let s = 0; s < this.symptomsList.length; s++){
-      this.symptomsFilterClick(this.symptomsList[s])
-    }
-
-    for(let f = 0; f < this.feedbackList.length; f++){
-      this.feedbackFilterClick(this.feedbackList[f])
-    }
+  selectSortInicial() {
+    // Symptoms and feedback are already pre-selected in the field declarations.
+    // Only patient names need to be set here, after patientsList is loaded.
+    // Use direct assignment instead of the toggle filterClick() to avoid
+    // double-toggle issues when the component is recreated (e.g. on tab switch).
+    this.selectedFilterNames = this.patientsList.map(p => p.name);
+    this.namesNotSelected = [];
   }
 
   /**
@@ -1821,12 +1818,12 @@ export class CaregiverSessionsHistoryComponent implements OnInit {
   }
 
 
-   /**
-   * Navigates to the summary of the selected session
-   */
-    async goTocaregiverSessionsummary(session: Session){
-      this.sessionService.resetCurrentSession();
-      await this.sessionService.setCurrentSession(session);
-      this.router.navigate(['caregiver/profile/history/summary']);
-    }
+  /**
+  * Navigates to the summary of the selected session
+  */
+  async goTocaregiverSessionsummary(session: Session){
+    this.sessionService.resetCurrentSession();
+    await this.sessionService.setCurrentSession(session);
+    this.router.navigate(['caregiver/profile/history/summary']);
   }
+}

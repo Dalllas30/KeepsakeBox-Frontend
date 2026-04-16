@@ -8,7 +8,7 @@
     <div *ngIf="AlertMessage"
       class="alert alert-warning alert-box" role="alert" style="position:fixed; top: 0.5em; Right: 1em; Left:1em; z-index: 998;">
       {{'saveBeforeNextImageMessage' | translate}}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
         (click)="AlertMessage=false;">
       <span aria-hidden="true">&times;</span>
       </button>

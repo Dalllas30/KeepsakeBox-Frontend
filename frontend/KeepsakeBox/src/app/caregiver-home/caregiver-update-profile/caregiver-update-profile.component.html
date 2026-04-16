@@ -34,7 +34,7 @@
           <div class="card-body">
 
             <!--Name-->
-            <div class="p-2 form-group" style="margin-bottom: 0px;">
+            <div class="p-2 mb-3" style="margin-bottom: 0px;">
               <label for="name" class="input-label">
                 <i class="bi bi-person text-icon-blue"></i> {{'name' | translate}}*
               </label>
@@ -49,7 +49,7 @@
             <app-birth-date-input [birthDate]="birthDate"></app-birth-date-input>
 
             <!--Email-->
-            <div class="p-2 form-group" style="margin-bottom: 0px;">
+            <div class="p-2 mb-3" style="margin-bottom: 0px;">
               <label for="email" class="input-label">
                 <i class="bi bi-envelope text-icon-blue"></i> Email*
               </label>
@@ -69,7 +69,7 @@
             </div>
 
             <!--Phone-->
-            <div class="p-2 form-group" style="margin-bottom: 0px;">
+            <div class="p-2 mb-3" style="margin-bottom: 0px;">
               <label for="phone" class="input-label">
                 <i class="bi bi-telephone-fill text-icon-blue"></i> {{'mobilePhone' | translate}}
               </label>
@@ -109,7 +109,7 @@
                   {{'advance' | translate}}
                   @if (loading) {
                     <div class="spinner-border small-spinner-white" role="status"></div>
-                    <span class="sr-only">Loading...</span>
+                    <span class="visually-hidden">Loading...</span>
                   }
                 </button>
               </div>
@@ -166,7 +166,7 @@
                   {{'save' | translate}}
                   @if (loading) {
                     <div class="spinner-border small-spinner-white" role="status"></div>
-                    <span class="sr-only">Loading...</span>
+                    <span class="visually-hidden">Loading...</span>
                   }
                 </button>
               </div>

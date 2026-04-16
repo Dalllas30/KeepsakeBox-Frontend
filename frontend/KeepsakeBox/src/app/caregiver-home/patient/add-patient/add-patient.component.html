@@ -51,7 +51,7 @@
                 @if (!advance) {
 
                   <!--Name-->
-                  <div class="p-2 form-group" style="margin-bottom: 5px;">
+                  <div class="p-2 mb-3" style="margin-bottom: 5px;">
                     <label for="name" class="input-label">
                       <i class="bi bi-person"></i> {{'name' | translate}}*
                     </label>
@@ -64,7 +64,7 @@
                   <div class="d-flex justify-content-start flex-wrap">
 
                     <!--Display Name-->
-                    <div class="p-2 form-group" style="margin-bottom: 10px;">
+                    <div class="p-2 mb-3" style="margin-bottom: 10px;">
                       <label for="displayName" class="input-label">
                         <i class="bi bi-file-person"></i> {{'nameToPresent' | translate}}
                       </label>
@@ -75,7 +75,7 @@
                     </div>
 
                     <!--Birth Date-->
-                    <div class="p-2 form-group" style="margin-right: -10px !important;">
+                    <div class="p-2 mb-3" style="margin-right: -10px !important;">
                       <app-birth-date-input [birthDate]="birthDate"></app-birth-date-input>
                     </div>
 
@@ -87,7 +87,7 @@
                       <i class="bi bi-book"></i> {{'education' | translate}}:*
                     </label><br>
                     @if (translateCache === 'pt') {
-                      <select class="custom-select mr-sm-2 input-text-select" id="education"
+                      <select class="form-select me-sm-2 input-text-select" id="education"
                         [(ngModel)]="caregiverPatientRegisterData.patient.education"
                         name="education" #education="ngModel">
                         <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
@@ -97,7 +97,7 @@
                       </select>
                     }
                     @if (translateCache === 'en') {
-                      <select class="custom-select mr-sm-2 input-text-select" id="education"
+                      <select class="form-select me-sm-2 input-text-select" id="education"
                         [(ngModel)]="caregiverPatientRegisterData.patient.education"
                         name="education" #education="ngModel">
                         <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
@@ -115,7 +115,7 @@
                         <i class="bi bi-person"></i> {{'relativeIsMy' | translate}}
                       </label><br>
                       @if (translateCache === 'pt') {
-                        <select class="custom-select mr-sm-2 input-text-select" id="patientRelation"
+                        <select class="form-select me-sm-2 input-text-select" id="patientRelation"
                           [(ngModel)]="caregiverPatientRegisterData.patientRelation"
                           name="patientRelation">
                           <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
@@ -125,7 +125,7 @@
                         </select>
                       }
                       @if (translateCache === 'en') {
-                        <select class="custom-select mr-sm-2 input-text-select" id="patientRelation"
+                        <select class="form-select me-sm-2 input-text-select" id="patientRelation"
                           [(ngModel)]="caregiverPatientRegisterData.patientRelation"
                           name="patientRelation">
                           <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
@@ -154,11 +154,9 @@
                       <div class="d-flex flex-column">
                         <div class="d-flex justify-content-left flex-wrap p-2">
                           <div class="p-2" style="width: 700px">
-                            <div class="input-group mb-2 mr-sm-2">
-                              <div class="input-group-prepend">
-                                <div class="input-group-text input-icon-blue" style="height:50px">
-                                  <i class="bi bi-search color-white"></i>
-                                </div>
+                            <div class="input-group mb-2 me-sm-2">
+                              <div class="input-group-text input-icon-blue" style="height:50px">
+                                <i class="bi bi-search color-white"></i>
                               </div>
                               <input [(ngModel)]="categoryTextInput" [ngModelOptions]="{standalone: true}"
                                 (keyup.enter)="onEnterCatTextInput()" type="text"
@@ -226,11 +224,9 @@
                         </div>
                         <div class="d-flex justify-content-left flex-wrap p-2">
                           <div class="p-2" style="width: 530px">
-                            <div class="input-group mb-2 mr-sm-2">
-                              <div class="input-group-prepend">
-                                <div class="input-group-text input-icon-blue" style="height:50px">
-                                  <i class="bi bi-search color-white"></i>
-                                </div>
+                            <div class="input-group mb-2 me-sm-2">
+                              <div class="input-group-text input-icon-blue" style="height:50px">
+                                <i class="bi bi-search color-white"></i>
                               </div>
                               <input [(ngModel)]="interestTextInput" [ngModelOptions]="{standalone: true}"
                                 (keyup.enter)="onEnterInterestTextInput()" type="text"
@@ -343,7 +339,7 @@
                     {{'submit' | translate}}
                     @if (addingPatient) {
                       <div class="spinner-border small-spinner-white" role="status"></div>
-                      <span class="sr-only">Loading...</span>
+                      <span class="visually-hidden">Loading...</span>
                     }
                   </button>
                 </div>

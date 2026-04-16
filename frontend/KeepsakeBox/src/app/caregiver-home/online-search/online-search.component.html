@@ -11,19 +11,15 @@
 
         <div class="d-flex justify-content-left flex-wrap p-2">
           <div class="p-2" style="width: 530px;">
-            <div class="input-group mb-2 mr-sm-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text input-icon-blue" style="height: 50px;">
-                  <i class="bi bi-search color-white"></i>
-                </div>
+            <div class="input-group mb-2 me-sm-2">
+              <div class="input-group-text input-icon-blue" style="height: 50px;">
+                <i class="bi bi-search color-white"></i>
               </div>
               <input id="categoryTextInput" [(ngModel)]="categoryTextInput"
                      (keyup.enter)="onEnterCatTextInput()" type="text"
                      class="form-control input-text-select" style="height: 50px;"
                      placeholder="{{'category' | translate}}...">
-              <div class="input-group-append" (click)="onEnterCatTextInput()">
-                <span class="input-group-text"><i class="bi bi-arrow-right"></i></span>
-              </div>
+              <span class="input-group-text" (click)="onEnterCatTextInput()"><i class="bi bi-arrow-right"></i></span>
             </div>
           </div>
         </div>

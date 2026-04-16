@@ -13,7 +13,7 @@
     <!--Birth Date - Day Selection-->
     <div class="p-2" style="padding-left: 0 !important;
                             margin-bottom: -20px !important;">
-        <select class="custom-select mr-sm-2 input-text-select"
+        <select class="form-select me-sm-2 input-text-select"
                 style="width: 80px;" 
                 [class.disabled-option]="birthDate.day==0"
                 [class.input-text-select-error]="!birthDate.validDate"
@@ -27,7 +27,7 @@
 
     <!--Birth Date - Month Selection-->
     <div *ngIf="translateCache=='pt'" class="p-2" style="margin-bottom: -20px !important;">
-        <select class="custom-select mr-sm-2 input-text-select"
+        <select class="form-select me-sm-2 input-text-select"
                 style="width: 150px;" required
                 [class.disabled-option]="birthDate.month==-1"
                 [class.input-text-select-error]="!birthDate.validDate"
@@ -39,7 +39,7 @@
     </div>
 
     <div *ngIf="translateCache=='en'" class="p-2" style="margin-bottom: -20px !important;">
-        <select class="custom-select mr-sm-2 input-text-select"
+        <select class="form-select me-sm-2 input-text-select"
                 style="width: 150px;" required
                 [class.disabled-option]="birthDate.month==-1"
                 [class.input-text-select-error]="!birthDate.validDate"
@@ -52,7 +52,7 @@
 
     <!--Birth Date - Year Selection-->
     <div class="p-2" style="margin-bottom: -20px !important;">
-        <select class="custom-select mr-sm-2 input-text-select"
+        <select class="form-select me-sm-2 input-text-select"
                 style="width: 100px;"
                 [class.disabled-option]="birthDate.year==0"
                 [class.input-text-select-error]="!birthDate.validDate"

@@ -43,6 +43,11 @@
   font-size: 16pt;
 }
 
+/* Bootstrap 5: .form-text lost display:block — restore Bootstrap 4 behaviour */
+.form-text {
+  display: block;
+}
+
 .three-width{
   width: 33.333%;
 }

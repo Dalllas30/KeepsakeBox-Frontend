@@ -37,7 +37,7 @@
               </div>
 
               <!--Observation-->
-              <div class="p-2 form-group" style="margin-bottom: 5px;">
+              <div class="p-2 mb-3" style="margin-bottom: 5px;">
                 <label for="observation" class="input-label">
                   <i class="bi bi-card-text"></i> {{'observationAbout' | translate}}:
                   {{convertPatientDisplayName(patient.displayName, patient.name)}}*
@@ -78,7 +78,7 @@
                   {{'submit' | translate}}
                   @if (addingObservation) {
                     <div class="spinner-border small-spinner-white" role="status"></div>
-                    <span class="sr-only">Loading...</span>
+                    <span class="visually-hidden">Loading...</span>
                   }
                 </button>
               </div>
