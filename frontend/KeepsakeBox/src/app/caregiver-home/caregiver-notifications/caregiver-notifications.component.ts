@@ -6,11 +6,12 @@ import { Caregiver } from '../../core/models/caregiver.model';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { CaregiverService } from '../../core/services/caregiver.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-caregiver-notifications',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, NgbPaginationModule],
   templateUrl: './caregiver-notifications.component.html',
   styleUrls: ['./caregiver-notifications.component.css']
 })

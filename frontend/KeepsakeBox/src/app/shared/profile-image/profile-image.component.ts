@@ -27,7 +27,7 @@ export class ProfileImageComponent implements OnInit {
   }
 
   loadDefaultProfileImage(): void {
-    this.http.get('/assets/profileimage-default.png', { responseType: 'blob' })
+    this.http.get('../../assets/profileimage-default.png', { responseType: 'blob' })
       .subscribe(res => {
         const reader = new FileReader();
         reader.readAsDataURL(res);

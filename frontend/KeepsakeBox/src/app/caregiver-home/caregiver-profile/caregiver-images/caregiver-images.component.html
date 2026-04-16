@@ -136,19 +136,21 @@
 }
 
 <!--No Images-->
-<div class="p-2 page-message" style="margin-bottom: 40px !important;" *ngIf="collectionSize == 0 && 
-     imagesCopy.length == 0">
-  {{'stillHaveNo' | translate}} {{'images' | translate}}.
-  <label for="addImage" class="btn btn-link full-width" style="font-size: 20pt" aria-expanded="true">
-    {{'startAddingNewF' | translate}}
-  </label>
-</div>
+@if(collectionSize == 0 && imagesCopy.length == 0 && !loadingImages) {
+  <div class="p-2 page-message" style="margin-bottom: 40px !important;">
+    {{'stillHaveNo' | translate}} {{'images' | translate}}.
+    <label for="addImage" class="btn btn-link full-width" style="font-size: 20pt" aria-expanded="true">
+      {{'startAddingNewF' | translate}}
+    </label>
+  </div>
+}
 
 <!--No Search Results-->
-<div class="p-2 page-message" style="margin-bottom: 40px !important;" *ngIf="collectionSize == 0 && 
-     imagesCopy.length != 0">
-  {{'noSearchResults' | translate}}
-</div>
+@if(collectionSize == 0 && imagesCopy.length != 0) {
+  <div class="p-2 page-message" style="margin-bottom: 40px !important;">
+    {{'noSearchResults' | translate}}
+  </div>
+}
 
 <!--Images Loading-->
 @if (loadingImages) {

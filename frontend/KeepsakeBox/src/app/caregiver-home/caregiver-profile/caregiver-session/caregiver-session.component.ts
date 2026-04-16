@@ -16,12 +16,14 @@ import { CaregiverService } from '../../../core/services/caregiver.service';
 import { RtSessionService } from '../../../core/services/rt-session.service';
 import { TemplateSessionService } from '../../../core/services/template-session.service';
 import { AppService } from '../../../core/services/app.service';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 //import { DialogService } from '../../../core/services/dialog.service';
 
 @Component({
   selector: 'app-caregiver-session',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, NgbPaginationModule, NgbTooltipModule],
   templateUrl: './caregiver-session.component.html',
   styleUrls: ['./caregiver-session.component.css']
 })

@@ -1,0 +1,151 @@
+<div>
+  <div class="d-flex justify-content-center caregiver-home-container">
+    <div class="p-2">
+      <button type="button" class="p-2 btn button button-action button-width" style="width: 17em;"
+        (click)="createAutomaticTemplateSession()">
+        <i class="bi bi-gear-fill color-white"></i>
+        {{'createSessionAutomatically' | translate}}
+      </button>
+    </div>
+
+    <div class="p-2">
+      <button type="button" class="btn button button-action button-width" style="width: 17em;"
+        (click)="createManualTemplateSession()">
+        <i class="bi bi-tools color-white"></i>
+        {{'createSessionManually' | translate}}
+      </button>
+    </div>
+
+    <div class="p-2">
+      <button type="button" class="btn button button-neutral button-width" style="width: 17em"
+        (click)="showFilter = !showFilter">
+        <i class="bi bi-funnel-fill color-white"></i>
+
+        @if (!showFilter) {
+          <span class="color-white">&nbsp;{{'showFilterList' | translate}}
+            @if (ToStart || Favorite || Shared) {
+              <span class="color-white">
+                (
+                @if (ToStart) { <i class="bi bi-play color-white"></i> }
+                @if (Favorite) { <i class="bi bi-star color-white"></i> }
+                @if (Shared) { <i class="bi bi-people color-white"></i> }
+                )
+              </span>
+            }
+          </span>
+        } @else {
+          <span class="color-white">&nbsp;{{'hideFilterList' | translate}}</span>
+        }
+      </button>
+    </div>
+  </div>
+
+  @if (showFilter) {
+    <div class="d-flex justify-content-center flex-wrap">
+      <div class="p-2">
+        <button class="btn button category-button" placement="bottom" tooltipClass="Help-tooltip"
+          ngbTooltip="{{ 'toStartToolTip' | translate }}" [class.category-button-selected]="ToStart"
+          (click)="ToStart = !ToStart; retrieveTemplateSession()">
+          <i class="bi-category-button bi-play"></i> {{'toStart' | translate}}
+        </button>
+      </div>
+      <div class="p-2">
+        <button class="btn button category-button" [class.category-button-selected]="Favorite"
+          (click)="Favorite = !Favorite; retrieveTemplateSession()">
+          <i class="bi-category-button bi-star"></i> {{'favorites' | translate}}
+        </button>
+      </div>
+      <div class="p-2">
+        <button class="btn button category-button" [class.category-button-selected]="Shared"
+          (click)="Shared = !Shared; retrieveTemplateSession()">
+          <i class="bi-category-button bi-people"></i> {{'sharedWithMe' | translate}}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (collectionSize === 0) {
+    <div class="p-2 page-message" style="margin-bottom: 40px !important;">
+      {{'noSessionstoShow' | translate}}
+    </div>
+  } @else {
+    <div class="p-2 page-message" style="margin-bottom: 20px;">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">
+              @if (caregiver.type === 'Formal') {
+                {{'beneficiaries' | translate}}
+              } @else {
+                {{'relatives' | translate}}
+              }
+            </th>
+            <th scope="col">{{'images' | translate}}</th>
+            <th scope="col">{{'date' | translate}}</th>
+            <th scope="col">{{'duration' | translate}}</th>
+            <th scope="col" colspan="2">{{'actions' | translate}}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (ts of templateSessions | slice: (page-1) * pageSize : page * pageSize; track ts.id) {
+            <tr>
+              <td class="table-text-fields bolder-text">
+                {{ ts.patient_name }}
+                @if (ts.patient_name === null) {
+                  <span> {{'N/A' | translate}}</span>
+                }
+              </td>
+              <td class="table-text-fields bolder-text">
+                @if (ts.current_image > 0) {
+                  {{ ts.current_image }} {{'of' | translate}}
+                }
+                {{ ts.total_images }}
+              </td>
+              <td class="table-text-fields bolder-text">
+                {{ ts.start_session_date | date:'shortDate' }}
+              </td>
+              <td class="table-text-fields bolder-text">
+                {{ ts.duration }}
+              </td>
+              <td colspan="2">
+                <div class="p-2 full-width">
+                  <button type="button" class="btn button button-action button-actions" (click)="manageSession(ts)">
+                    <i class="bi bi-eye-fill color-white"></i>
+                    {{'sessionDetail' | translate}}
+                  </button>
+
+                  @if (isCurrentCaregiver(ts)) {
+                    <button type="button" class="btn button button-destructive button-actions"
+                      (click)="removeTemplateSession(ts, ts.patient_id)">
+                      <i class="bi bi-trash-fill color-white"></i>
+                      {{'discardSession' | translate}}
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-center flex-wrap" style="margin-top: 10px;">
+      <ngb-pagination 
+        [(page)]="page" 
+        [pageSize]="pageSize" 
+        [maxSize]="maxSize" 
+        [collectionSize]="collectionSize"
+        [rotate]="true" 
+        [ellipses]="true">
+        <ng-template ngbPaginationPrevious>
+          <i class="bi bi-caret-left"></i>{{'previous' | translate}}
+        </ng-template>
+        <ng-template ngbPaginationNext>
+          {{'next' | translate}}<i class="bi bi-caret-right"></i>
+        </ng-template>
+        <ng-template ngbPaginationEllipsis>...</ng-template>
+      </ngb-pagination>
+    </div>
+  }
+</div>

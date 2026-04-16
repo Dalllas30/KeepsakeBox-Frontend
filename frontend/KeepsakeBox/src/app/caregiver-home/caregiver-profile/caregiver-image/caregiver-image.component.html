@@ -49,9 +49,6 @@
         } @else {
           <i class="bi bi-star-fill text-icon-yellow"></i> {{'favorite' | translate}}
         }
-        <div *ngIf="!img.isFavorite">
-          <i class="bi bi-star text-icon-yellow"></i> {{'notFavorite' | translate}}
-        </div>
 
         @if(!img.image.isPrivate) {
           <i class="bi bi-unlock-fill text-icon-yellow"></i> {{'public' | translate}}
