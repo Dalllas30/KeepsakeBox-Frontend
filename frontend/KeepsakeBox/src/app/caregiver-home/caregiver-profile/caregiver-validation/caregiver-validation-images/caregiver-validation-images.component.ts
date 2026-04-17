@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { NavigationExtras, Router, RouterLink } from '@angular/router';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { AddImageData } from '../../../../core/models/add-image-data.model';
 import { FoundImage, ImageToValidate } from '../../../../core/models/image.model';
@@ -13,7 +13,7 @@ import { PatientService } from '../../../../core/services/patient.service';
 @Component({
   selector: 'app-caregiver-validation-images',
   standalone: true,
-  imports: [CommonModule, TranslateModule, NgbPaginationModule],
+  imports: [CommonModule, TranslateModule, NgbPaginationModule, RouterLink],
   templateUrl: './caregiver-validation-images.component.html',
   styleUrls: ['./caregiver-validation-images.component.css']
 })

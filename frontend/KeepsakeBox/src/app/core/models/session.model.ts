@@ -20,6 +20,6 @@ export class Session {
       public duration: Time,
       public total_images: number,
       public patient_feedback: number,
-      public global_feedback: SessionFeedback 
+      public global_feedback: SessionFeedback // Rever mais tarde
   ){}
 }

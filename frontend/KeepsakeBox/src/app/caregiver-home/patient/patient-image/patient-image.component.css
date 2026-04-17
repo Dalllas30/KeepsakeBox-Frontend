@@ -1,0 +1,22 @@
+/**
+ * @author André Santana - fc49451
+ */
+
+.image-square{
+    width: 400px;
+    height: 300px;
+}
+
+.image-inside{
+    max-width: 385px;
+    max-height: 290px;
+}
+
+.image-info{
+    width: 550px;
+    text-align: left;
+}
+
+.buttons-min-width{
+    min-width: 200px;
+}

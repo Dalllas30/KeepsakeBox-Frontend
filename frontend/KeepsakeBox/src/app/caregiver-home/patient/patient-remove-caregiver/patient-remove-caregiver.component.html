@@ -1,1 +1,110 @@
 <p>patient-remove-caregiver works!</p>
+<!--@author André Santana - fc49451-->
+
+<!--Leave Care Component Container-->
+<div class="d-flex justify-content-center flex-wrap">
+  
+    <!--Leave Care Container-->
+    <div *ngIf="!hideRemove" class="d-flex flex-column">
+
+      <!--Error Alert - Leave Care Error-->
+      <div *ngIf="!removed" 
+            class="alert alert-danger alert-box" role="alert">
+            {{'removeCaregiverError' | translate}} {{caregiverToRemove.caregiver.name}}.
+      </div>
+  
+        <!--Leave Care Card-->
+        <div class="card blue-border">
+  
+          <!--Header-->
+          <h5 class="card-header card-header-blue" >
+              {{'removeCaregiver' | translate}}
+          </h5>
+  
+          <!--Leave Care Card Body-->
+          <div class="card-body">
+  
+            <div class="d-flex justify-content-start flex-wrap">
+  
+              <!--Patient Profile Image-->
+              <div class="p-2">
+                <img [src]="caregiverToRemove.caregiver.profileImageURL" alt="Foto a Adicionar" 
+                    class="img-thumbnail patient-image">
+              </div>
+  
+              <!--Caregiver Email To Share Patient-->
+              <div class="p-2" style="width: 600px">
+                <label for="name" class="input-label" style="font-weight: normal;">
+                    {{'doYouReallyWant' | translate}} 
+                    <strong style="font-weight: bolder;">{{caregiverToRemove.caregiver.name}}</strong> 
+                    {{'leaveTheCaresOf' | translate}} 
+                    <strong style="font-weight: bolder;">{{convertPatientDisplayName(patient.displayName, patient.name)}}</strong>?<br>
+                </label>
+                
+                <!--Only Share-->
+                <div class="p-2">
+                    <button type="button" 
+                            class="btn button button-neutral full-width" 
+                            routerLink="/caregiver/person/info"
+                            style="margin-left: -10px;">
+                      {{'no' | translate}} 
+                    </button>
+                </div>
+            
+                <!--Pass care-->
+                <div class="p-2">
+                    <button type="button" 
+                            class="btn button button-destructive full-width" 
+                            (click)="removeCaregiverCare()"
+                            style="margin-left: -10px;">
+                      {{'yes' | translate}}
+                    </button>
+                </div>
+
+              </div>
+            
+            </div>
+          
+          </div>
+        
+        </div>
+  
+    </div>
+  
+    <!--Care Left Container-->
+    <div *ngIf="!hideRemoved">
+  
+      <!--Leave Care Card-->
+      <div class="card blue-border">
+  
+        <!--Header-->
+        <h5 class="card-header card-header-blue">
+            {{'removeCaregiver' | translate}}
+        </h5>
+  
+        <!--Care Left Card Body-->
+        <div class="card-body">
+          <div class="p-2">
+            {{'theCaregiver' | translate}}
+            <strong style="font-weight: bolder;">{{caregiverToRemove.caregiver.name}}</strong> 
+            {{'wasRemoved' | translate}}
+            <strong style="font-weight: bolder;">{{convertPatientDisplayName(patient.displayName, patient.name)}}</strong>.
+          </div>
+  
+          <!--Ok-->
+          <div class="p-2 full-width">
+            <button type="button" 
+                    class="btn button button-action full-width"
+                    routerLink="/caregiver/person/info">
+                <i class="bi bi-check-lg color-white"></i>
+                OK
+            </button>
+          </div>
+  
+        </div>
+      
+      </div>
+  
+    </div>
+  
+</div>

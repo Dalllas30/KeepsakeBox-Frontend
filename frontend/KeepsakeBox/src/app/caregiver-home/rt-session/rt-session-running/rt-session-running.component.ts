@@ -21,7 +21,7 @@ import { ImageService } from '../../../core/services/image.service';
 @Component({
   selector: 'app-rt-session-running',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule], // RouterLink?
   templateUrl: './rt-session-running.component.html',
   styleUrls: ['./rt-session-running.component.css']
 })

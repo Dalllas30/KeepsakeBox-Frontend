@@ -1,0 +1,93 @@
+/**
+ * @author André Santana - fc49451
+ */
+
+.border {
+  border: 0.5px solid !important;
+  border-color: #b1b5b9 !important;
+  padding-left: 1em !important;
+  border-radius: .25rem .25rem .25rem .25rem;
+}
+
+.padding {
+  margin-top: 0.4em;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+td {
+    border-top: none !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.button-full-width{
+    width: 245px;
+    min-width: 245px;
+}
+
+.button-play{
+    width: 120px;
+    min-width: 120px;
+}
+
+.button-review{
+    width: 120px;
+    min-width: 120px;
+}
+
+.table-text-fields{
+    padding-top: 26px !important;
+}
+
+.emoji-no {
+  background: none !important;
+  border: none !important;
+  font-size: 1.5rem !important;
+}
+.emoji-yes {
+  background: none !important;
+  border: none !important;
+  font-size: 1.5rem !important;
+  padding: 0rem !important;
+}
+.font-red {
+  color: red !important;
+}
+.font-orange {
+  color:rgb(240, 100, 6) !important;
+}
+.font-grey {
+  color: grey !important;
+}
+.font-green {
+  color: green !important;
+}
+.font-blue {
+  color: blue !important;
+}
+.bi-emoji {
+  font-size: 1.5rem !important;
+  padding: 0.2rem !important;
+}
+
+.center-smiley{
+  padding-top: 18px!important;
+}
+
+.circleEmojiButton {
+  clip-path: circle();
+  background: white;
+  width: 31px;
+  height: 31px;
+}
+.emoji-options{
+  font-size: 1.5rem; 
+  display: flex;
+  align-items: center;
+}
+
+.height-table{
+  height: 5em;
+}

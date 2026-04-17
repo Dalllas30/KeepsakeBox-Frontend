@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgModel } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { CaregiverService } from '../../core/services/caregiver.service';
 import { EncryptionService } from '../../core/services/encryption.service';
@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, CancelScreenComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, CancelScreenComponent, RouterLink],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.css'
 })

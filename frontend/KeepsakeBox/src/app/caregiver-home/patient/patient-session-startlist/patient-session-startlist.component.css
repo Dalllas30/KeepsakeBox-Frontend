@@ -1,0 +1,42 @@
+td {
+    border-top: none !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.button-full-width{
+    width: 245px;
+    min-width: 245px;
+}
+
+.button-play{
+    width: 160px;
+    min-width: 160px;
+}
+
+.button-review{
+    width: 160px;
+    min-width: 160px;
+}
+
+.button-actions{
+    width: 160px;
+    margin-left: 5px;
+    min-width: 160px;
+}
+
+.table-text-fields{
+    padding-top: 26px !important;
+}
+
+.dropdown-button{
+  background-color: white;
+  color: black;
+}
+
+.dropdown-button:hover{
+  background-color: #003264;
+  --background-color: rgb(2, 75, 2);
+  color: #ffffff;
+  box-shadow: 0px 0px 7px 1px rgba(0,0,0,0.75);
+}
+

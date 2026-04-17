@@ -1,0 +1,46 @@
+/**
+ * @author André Santana - fc49451
+ */
+
+.observation-card{
+  text-align: left;
+  width: 424px;
+  height: 100%;
+}
+
+.button-obs{
+  height: 40px !important;
+  padding-top: 5px !important;
+}
+
+/*Pagination*/
+ngb-pagination ::ng-deep ul > li:not(.active) > a {
+  background-color: white !important;
+  border: 1px solid #000052 !important;
+  color: #000052 !important;
+  padding-top: 10px;
+  padding-left: 18px;
+  height: 50px;
+  min-width: 50px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+ngb-pagination ::ng-deep ul > li.active > a {
+  background-color: #004080 !important;
+  border: 1px solid #000052 !important;
+  color: white !important;
+  z-index: 0 !important;
+  padding-top: 10px;
+  padding-left: 18px;
+  height: 50px;
+  min-width: 50px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+ngb-pagination ::ng-deep .page-item.disabled {
+  opacity: 0.5;
+}

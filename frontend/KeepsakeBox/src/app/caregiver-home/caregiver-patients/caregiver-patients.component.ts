@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Patient } from '../../core/models/patient.model';
 import { Caregiver } from '../../core/models/caregiver.model';
 import { AppService } from '../../core/services/app.service';
@@ -14,7 +14,7 @@ import { CategoryService } from '../../core/services/category.service';
 @Component({
   selector: 'app-caregiver-patients',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, RouterLink],
   templateUrl: './caregiver-patients.component.html',
   styleUrls: ['./caregiver-patients.component.css']
 })

@@ -1,0 +1,83 @@
+/**
+ * @author André Santana - fc49451
+ * @author Pedro Afonso - fc46430
+ */
+
+.profile-image{
+    width: 200px;
+    min-width: 200px;
+    height: 200px;
+    min-height: 200px;
+}
+
+.info-field{
+    text-align: left !important;
+    margin-bottom: -12px !important;
+}
+
+.button-patient{
+    width: 240px;
+}
+
+.table-profile-image{
+    width: 50px;
+    height: 50px;
+    margin-top: 10px
+}
+
+.table-text-fields{
+    padding-top: 26px !important;
+}
+
+td {
+    border-top: none !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.button-full-width{
+    width: 295px;
+    min-width: 295px;
+}
+
+.button-half-width-first{
+    width: 150px;
+    min-width: 150px;
+}
+
+.button-half-width-second{
+    width: 120px;
+    margin-left: 20px;
+    min-width: 120px;
+}
+
+/*Pagination*/
+ngb-pagination ::ng-deep ul > li:not(.active) > a {
+    background-color: white !important;
+    border: 1px solid #000052 !important;
+    color: #000052 !important;
+    padding-top: 10px;
+    padding-left: 18px;
+    height: 50px;
+    min-width: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+  
+ngb-pagination ::ng-deep ul > li.active > a {
+    background-color: #004080 !important;
+    border: 1px solid #000052 !important;
+    color: white !important;
+    z-index: 0 !important;
+    padding-top: 10px;
+    padding-left: 18px;
+    height: 50px;
+    min-width: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+  
+ngb-pagination ::ng-deep .page-item.disabled {
+    opacity: 0.5;
+}

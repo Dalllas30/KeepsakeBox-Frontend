@@ -1,1 +1,233 @@
 <p>patient-sessions works!</p>
+<!--@author André Santana - fc49451, Pedro Neves - fc46430, Bruna Vieites - fc55792-->
+
+<div class="d-flex flex-column"> <!--p-2 page-message-->
+
+  <div >  
+    <!--Filter Options-->
+    <div class="column d-flex justify-content-start flex-wrap p-2">
+      <div class="p-2">
+        <b>{{ 'filterBy' | translate }}</b>
+      </div>
+    <div class="column border">
+      <div class="row">
+        <div class="p-2 padding" style="width: 7em;">
+          <b>{{ 'symptoms'| translate }}</b>
+        </div>
+
+        <div class="p-2">
+          <button type="button" 
+            class="btn button category-button" style="margin-right: 1em;"
+            [class.category-button-selected]="isSymptomsFilterSelected(s)"
+            (click)="symptomsFilterClick(s); retrieveSessions(isSymptomsFilterSelected(s), s)" 
+              *ngFor="let s of symptomsList | slice: 5">
+            {{ s | translate }}
+          </button>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="p-2 padding" style="width: 7em;">
+          
+        </div>
+
+        <div class="p-2">
+          <button type="button" 
+            class="btn button category-button" style="margin-right: 1em;"
+            [class.category-button-selected]="isSymptomsFilterSelected(s)"
+            (click)="symptomsFilterClick(s); retrieveSessions(isSymptomsFilterSelected(s), s)" 
+              *ngFor="let s of symptomsList | slice: 0:5">
+            {{ s | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="p-2 padding" style="width: 7em;">
+          <b>{{ 'reactions' | translate }}</b>
+        </div>
+        <div class="p-2">
+          <button type="button" 
+            class="btn button category-button" 
+            [class.category-button-selected]="isFeedbackFilterSelected('1')" 
+              (click)="feedbackFilterClick('1'); retrieveSessions(isFeedbackFilterSelected('1'), 1)">
+              <i class="bi bi-emoji-angry-fill font-red circleEmojiButton emoji-options"></i>
+          </button>
+        </div>
+        <div class="p-2">
+          <button type="button" 
+            class="btn button category-button"
+            [class.category-button-selected]="isFeedbackFilterSelected('2')" 
+            (click)="feedbackFilterClick('2'); retrieveSessions(isFeedbackFilterSelected('2'), 2)">
+            <i class="bi bi-emoji-frown-fill font-orange circleEmojiButton emoji-options"></i>
+          </button>
+        </div>
+        <div class="p-2">
+          <button type="button"
+            class="btn button category-button"
+            [class.category-button-selected]="isFeedbackFilterSelected('3')" 
+            (click)="feedbackFilterClick('3'); retrieveSessions(isFeedbackFilterSelected('3'), 3)">
+            <i class="bi bi-emoji-neutral-fill font-grey circleEmojiButton emoji-options"></i>
+          </button>
+        </div>
+        <div class="p-2">
+          <button type="button" 
+            class="btn button category-button"
+            [class.category-button-selected]="isFeedbackFilterSelected('4')" 
+            (click)="feedbackFilterClick('4'); retrieveSessions(isFeedbackFilterSelected('4'), 4)">
+            <i class="bi bi-emoji-smile-fill font-green circleEmojiButton emoji-options"></i>
+          </button>
+        </div>
+        <div class="p-2">
+          <button type="button" 
+            class="btn button category-button"
+            [class.category-button-selected]="isFeedbackFilterSelected('5')" 
+            (click)="feedbackFilterClick('5'); retrieveSessions(isFeedbackFilterSelected('5'), 5)">
+            <i class="bi bi-emoji-heart-eyes-fill font-blue circleEmojiButton emoji-options"></i>
+          </button>
+        </div>
+        <div class="p-2 padding">
+          <b> {{'caregiver' | translate}}</b>
+        </div>
+        <div class="p-2" > <!--*ngIf="patientsList.length < 4" -->
+          <button type="button" 
+            class="btn button category-button" style="margin-right: 1em;"
+            [class.category-button-selected]="isOptionFilterSelected(c)"
+            (click)="filterClick(c); retrieveSessions(isOptionFilterSelected(c), c)" 
+              *ngFor="let c of caregiversList">
+            {{c}}
+          </button>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!--Sort Options-->
+    <div class="d-flex justify-content-start flex-wrap p-2"  style="margin-top: -1em; margin-bottom: -0.5em;">
+      <div class="p-2">
+        <b>{{ 'sortBy' | translate }}</b>
+      </div>
+
+      <div class="p-2">
+        <select id="filtersMonth"
+        class="custom-select mr-sm-2 input-text-select bolder-text"
+        style="width: 245px;"
+        [(ngModel)]="selectSort"
+        (change)="convertSelectSort($event)">
+
+          <option *ngFor="let s of sortOptions" [value]="s.id">
+              {{s.name | translate}}
+          </option>
+
+      </select>
+      </div>
+    </div>
+
+    <!--No Search Results-->
+      <div class="p-2 page-message" 
+      *ngIf="patientCollectionSize == 0">
+        {{'noSessionsResearch' | translate}}
+      </div> 
+
+    <table class="table table-sm"  *ngIf="patientCollectionSize > 0">
+
+      <!--Table Header-->
+      <thead>
+          <tr>
+              <th scope="col" colspan="1">{{'caregiver' | translate}}</th>
+              <th scope="col" colspan="1">{{'date' | translate}}</th>
+              <th scope="col" colspan="1">{{'globalFeedback' | translate}}</th>
+              <th scope="col" colspan="1">{{'symptomsMostFelt' | translate}}</th>
+              <th scope="col" colspan="3">{{'actions' | translate}}</th>
+          </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let s of patientSessions | slice: (page-1) * pageSize : page * pageSize">
+          <!--Caregiver Name-->
+          <td class="table-text-fields bolder-text" style="width: 7em;">
+              {{s.caregiver_name}}
+          </td>
+
+          <!--Date-->
+          <td class="table-text-fields">
+            {{s.end_session | date:'shortDate'}}
+          </td>
+
+          <!--Reação Geral-->
+          <td class="table-text-fields bolder-text center-smiley">
+                <span *ngIf="s.patient_feedback==1">
+                  <i class="bi bi-emoji-angry-fill emoji-yes font-red"></i>
+                </span>
+                <span *ngIf="s.patient_feedback==2">
+                  <i class="bi bi-emoji-frown-fill emoji-yes font-orange"></i>
+                </span>
+                <span *ngIf="s.patient_feedback==3">
+                  <i class="bi bi-emoji-neutral-fill emoji-yes font-grey"></i>
+                </span>
+                <span *ngIf="s.patient_feedback==4">
+                  <i class="bi bi-emoji-smile-fill emoji-yes font-green"></i>
+                </span>
+                <span *ngIf="s.patient_feedback==5">
+                  <i class="bi bi-emoji-heart-eyes-fill emoji-yes font-blue"></i>
+                </span>
+          </td>
+
+          <!--Sintoma mais Sentido-->
+          <td class="table-text-fields text-left height-table" style="width: 20em; height: 6.1em;">
+            {{getFinalSymptom(s.global_feedback)}}
+          </td>
+
+          <!--Buttons-->
+          <td colspan="2">
+            <div class="p-2">
+              <!--Edit Reactions-->
+              <button type="button" 
+                class="btn button button-neutral height-table">
+                  <i class="bi bi-pencil-fill color-white"></i>
+                  {{'editReactions' | translate}}
+              </button>
+
+              <!--See Summary-->
+              <button type="button" 
+                class="btn button button-neutral" 
+                style="margin-left: 20px;"
+                (click)="goToPatientSessionSummary(s)">
+                <i class="bi bi-eye-fill color-white"></i>
+                  {{'viewSummary' | translate}}
+              </button>
+
+<!-- (click)="goToCurrentSession(s)" -->
+              <!--Share-->
+              <button type="button" 
+                class="btn button button-action"
+                  style="margin-left: 20px;">
+                  <i class="bi bi-people-fill color-white"></i>
+                  {{'shareSession' | translate}}
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+
+<!--Pagination-->
+<div *ngIf="patientCollectionSize != 0">
+  <div class="d-flex justify-content-center flex-wrap"
+       style="margin-top: 10px;">
+    <ngb-pagination
+        [(page)]="page"
+        [pageSize]="pageSize"
+        [maxSize]="maxSize"
+        [collectionSize]="patientCollectionSize"
+        [rotate]="true"
+        [ellipses]="true"
+        >
+        <ng-template ngbPaginationPrevious>
+          <i class="bi bi-caret-left"></i>{{'previous' | translate}}</ng-template>
+        <ng-template ngbPaginationNext>{{'next' | translate}}<i class="bi bi-caret-right"></i></ng-template>
+        <ng-template ngbPaginationEllipsis>...</ng-template>
+    </ngb-pagination>
+  </div>
+</div>

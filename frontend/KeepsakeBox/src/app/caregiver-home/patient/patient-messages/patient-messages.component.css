@@ -1,0 +1,62 @@
+
+/**
+ * @author André Santana - fc49451
+ */
+ 
+.messages-div{
+    height: 300px;
+    width: 850px;
+    overflow: scroll;
+}
+
+.myMessages{
+    float: right;
+    text-align: right;
+}
+
+.otherMessages{
+    float: left;
+    text-align: left;
+}
+
+.mySpanM{
+    border-radius: .25rem .25rem .25rem .25rem;
+    background-color: #004080;
+    color: white;
+    padding: 10px;
+}
+
+.otherSpanM{
+    border-radius: .25rem .25rem .25rem .25rem;
+    background-color: #4F4F4F;
+    color: white;
+    padding: 10px;
+}
+
+hr.hr-text {
+    position: relative;
+    border: none;
+    height: 1px;
+    background: #000052;
+}
+
+hr.hr-text::before {
+    content: attr(data-content);
+    display: inline-block;
+    background: #fff;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #000052;
+    border-radius: 30rem;
+    padding: 0.2rem 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.button-send{
+    width: 150px;
+    height: 40px !important;
+    line-height: 20px;
+}

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PersonalImage } from '../../../core/models/personal-image.model';
 import { Caregiver } from '../../../core/models/caregiver.model';
 import { AuthenticationService } from '../../../core/services/authentication.service';
@@ -13,7 +13,7 @@ import { CategoryService } from '../../../core/services/category.service';
 @Component({
   selector: 'app-caregiver-images',
   standalone: true,
-  imports: [CommonModule, TranslateModule, NgbPaginationModule],
+  imports: [CommonModule, TranslateModule, NgbPaginationModule, RouterLink],
   templateUrl: './caregiver-images.component.html',
   styleUrls: ['./caregiver-images.component.css']
 })

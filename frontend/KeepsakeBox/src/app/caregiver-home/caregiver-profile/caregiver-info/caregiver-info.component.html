@@ -32,10 +32,12 @@
                 }
 
                 <!--Birth Date-->
-                <div class="p-2 info-field">
-                    <strong><i class="bi bi-calendar-event"></i> {{'birthDate' | translate}}</strong><br>
-                    {{caregiver.birthDate | date:'shortDate'}}
-                </div>
+                @if(caregiver.type !='Informal') {
+                    <div class="p-2 info-field">
+                        <strong><i class="bi bi-calendar-event"></i> {{'birthDate' | translate}}</strong><br>
+                        {{caregiver.birthDate | date:'shortDate'}}
+                    </div>
+                }
 
                 <!--Caregiver Type-->
                 <div class="p-2 info-field">

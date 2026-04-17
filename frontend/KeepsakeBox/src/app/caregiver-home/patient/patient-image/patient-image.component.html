@@ -1,1 +1,107 @@
 <p>patient-image works!</p>
+<!--@author André Santana - fc49451-->
+
+<!--Image Container-->
+<div class="d-flex justify-content-start flex-wrap">
+
+    <!--Image-->
+    <div class="p-2">
+      <div class="d-flex justify-content-center align-self-center img-thumbnail image-square">
+        <img [src]="img.image.imageURL" alt="{{img.image.description}}" class="image-inside">
+      </div>
+    </div>
+
+    <!--Image Details-->
+    <div class="p-2 image-info">
+      
+      <!--Created by-->
+      <strong>{{'createdBy' | translate}}</strong>
+      <br>
+      <i class="bi bi-person"></i>
+      {{img.image.createdBy.name}}
+      <br>
+      <i class="bi bi-envelope-fill"></i>
+      {{img.image.createdBy.email}}
+      <br>
+
+      <!--Dates-->
+      <i class="bi bi-calendar-event"></i> 
+      <strong> {{'createdOn' | translate}}</strong> {{img.image.createdDate | date:'longDate'}}
+      <br>
+      <i class="bi bi-calendar-event"></i> 
+      <strong> {{'lastUpdateOn' | translate}}</strong> {{img.image.lastUpdatedDate | date:'longDate'}}
+
+      <!--Category and Description-->
+      <div class="div-separator-top-light-blue">
+
+        <i class="bi bi-tag"></i>
+        {{translateLabels(img.image.category)}}
+        <br>
+
+        <i class="bi bi-card-text"></i>
+        {{img.image.description}}
+
+      </div>
+
+      <!--Not Favorite/Favorite and Private/Public-->
+      <div class="div-separator-top-grey">
+
+        <div *ngIf="!img.isFavorite">
+          <i class="bi bi-star text-icon-yellow"></i> {{'notFavorite' | translate}}
+        </div>
+
+        <div *ngIf="img.isFavorite">
+          <i class="bi bi-star-fill text-icon-yellow"></i> {{'favorite' | translate}}
+        </div>
+
+        <div *ngIf="!img.image.isPrivate">
+          <i class="bi bi-unlock-fill text-icon-yellow"></i> {{'public' | translate}}
+        </div>
+
+        <div *ngIf="img.image.isPrivate">
+          <i class="bi bi-lock-fill text-icon-yellow"></i> {{'private' | translate}}
+        </div>
+
+      </div>
+
+    </div>
+    
+</div>
+
+<!--Image Edit Options-->
+<div *ngIf="caregiver.email == img.image.createdBy.email" 
+     class="d-flex justify-content-start flex-wrap-reverse">
+
+    <!--Edit Image-->
+    <div class="p-2 half-width buttons-min-width">
+        <button type="button" class="btn button button-action full-width" 
+                (click)="goToImageUpdate()">
+        <i class="bi bi-pencil-fill color-white"></i>
+        {{'edit' | translate}}
+        </button>
+    </div>
+
+    <!--Delete Image-->
+    <div class="p-2 half-width buttons-min-width">
+        <button class="btn app-button button-destructive full-width" 
+                (click)="goToImageDelete()">
+        <i class="bi bi-trash-fill color-white"></i>
+        {{'delete' | translate}}
+        </button>
+    </div>
+
+</div>
+
+<!--Return to Patient Images-->
+<div class="d-flex justify-content-start flex-wrap-reverse">
+    <div class="p-2 full-width buttons-min-width">
+        <button class="btn app-button button-neutral full-width" 
+                (click)="goToImages()">
+        <i class="bi bi-caret-left-fill color-white"></i>
+        <span class="color-white"
+              *ngIf="caregiver.type=='Formal'"> {{'images' | translate}} {{'beneficiary' | translate}}</span>
+        <span class="color-white"
+              *ngIf="caregiver.type=='Informal'"> {{'images' | translate}} {{'relative' | translate}}</span>
+        </button>
+    </div>
+</div>

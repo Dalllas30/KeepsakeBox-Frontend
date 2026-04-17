@@ -1,0 +1,53 @@
+.border-bottom {
+    border-bottom: 0.5px solid !important;
+    border-color: #b1b5b9 !important;
+}
+  
+.hr {
+    margin-top: 0 em;
+} 
+
+.txtBottomImage {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+}
+
+.profile-image{
+    width: 200px;
+    min-width: 200px;
+    height: 200px;
+    min-height: 200px;
+}
+
+td {
+    border-top: none !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.info-field{
+    text-align: left !important;
+}
+
+.emoji-yes {
+    background: none !important;
+    border: none !important;
+    font-size: 1.5rem !important;
+    padding: 0rem !important;
+}
+
+.font-red {
+    color: red !important;
+}
+.font-orange {
+    color: rgb(240, 100, 6) !important;
+}
+.font-grey {
+    color: grey !important;
+}
+.font-green {
+    color: green !important;
+}
+.font-blue {
+    color: blue !important;
+}

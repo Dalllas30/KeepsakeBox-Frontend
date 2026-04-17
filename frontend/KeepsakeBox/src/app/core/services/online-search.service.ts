@@ -9,7 +9,8 @@ import { FormObject, FoundImage } from '../models/image.model';
   providedIn: 'root',
 })
 export class OnlineSearchService {
-  private photoUrl = 'http://194.117.20.219:8081/api';
+  //private photoUrl = 'http://194.117.20.219:8081/api';
+  private photoUrl = 'localhost:8081/api';
   private headers : HttpHeaders = new HttpHeaders().set("content-type", "application/json").set('Access-Control-Allow-Origin', '*');;
 
   constructor(

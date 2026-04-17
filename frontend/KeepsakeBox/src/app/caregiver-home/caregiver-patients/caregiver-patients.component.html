@@ -24,10 +24,9 @@
                 class="btn button button-action full-width" 
                 routerLink="/caregiver/persons/add">
           <i class="bi bi-person-plus color-white"></i>
-          <span class="color-white"
-                *ngIf="caregiver.type=='Formal'"> {{'addBeneficiary' | translate}}</span>
-          <span class="color-white"
-                *ngIf="caregiver.type=='Informal'"> {{'addRelative' | translate}}</span>
+          <span class="color-white"> {{'addBeneficiary' | translate}}</span>
+          <!-- <span class="color-white" -->
+                <!-- *ngIf="caregiver.type=='Informal'"> {{'addRelative' | translate}}</span> -->
         </button>
       </div>
 
