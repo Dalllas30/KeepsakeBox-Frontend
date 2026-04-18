@@ -1,1 +1,144 @@
+<!--@author Bruna Vieites - fc55792-->
 
+@if (caregiverSessionsSize > 0) {
+  <div class="d-flex flex-column">
+    <div class="d-flex justify-content-start flex-wrap" style="margin-left: 20px; margin-top: 10px;">
+      <!-- PwD Selection-->
+      <div>
+        <select
+          id="filtersPwD"
+          class="form-select me-sm-2 input-text-select bolder-text"
+          (change)="onPwDChanged($event)"
+          style="width: 250px;">
+          @for (p of pwDArray; track p.id) {
+            <option [value]="p.id" [selected]="p.id === pwDSelected">{{ p.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Month Selection-->
+      <div style="margin-left: 30px;">
+        <select
+          id="filtersMonth"
+          class="form-select me-sm-2 input-text-select bolder-text"
+          (change)="onMonthChanged($event)"
+          style="width: 250px;">
+          @for (m of months; track m.id) {
+            <option [value]="m.id" [selected]="m.name === monthSelected">{{ m.name | translate }}</option>
+          }
+        </select>
+      </div>
+
+      <!--Year Selection-->
+      <div style="margin-left: 30px;">
+        <select
+          class="form-select me-sm-2 input-text-select bolder-text"
+          (change)="onYearChanged($event)"
+          style="width: 100px;">
+          @for (y of yearsArray; track y) {
+            <option [value]="y" [selected]="y.toString() === yearSelected">{{ y }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!--Charts-->
+    <div class="d-flex justify-content-center flex-wrap">
+      <!--No Sessions-->
+      @if (caregiverSessions.length === 0) {
+        <div class="p-2 page-message">
+          {{ 'noSessionsPeriod' | translate }}
+        </div>
+      }
+
+      @if (!open && caregiverSessions.length > 0) {
+        @for (t of tittleCharts; track t) {
+          <div class="card" style="border: 1px solid rgba(0, 0, 82, 0.4); margin: 1em; margin-top: 10px">
+            <div class="card-body d-flex justify-content-start flex-wrap">
+              <div class="d-flex flex-column">
+                <div class="row">
+                  <div class="column p-2" style="margin-left: 1em;">
+                    <strong>{{ t | translate }}</strong>
+                  </div>
+
+                  <div class="column p-2" style="margin-right: 1em; display: flex; justify-content: flex-end; width: 100%; padding: 0; margin-top: -70px;">
+                    <button
+                      type="button"
+                      class="btn button category-button"
+                      style="position: absolute;"
+                      (click)="openChart(t)">
+                      {{ 'open' | translate }}
+                      <i class="bi bi-zoom-in"></i>
+                    </button>
+                  </div>
+                </div>
+
+                @if (t === 'sessions') {
+                  <canvas id="stackedBarChart" width="450" height="300" style="margin: 0.5em; margin-bottom: -0.5em; margin-top: 0em"></canvas>
+                }
+                @if (t === 'mostCoveredThemes') {
+                  <canvas id="horizontalBarChart" width="450" height="300" style="margin: 0.5em; margin-bottom: -0.5em; margin-top: 0em"></canvas>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      }
+
+      <!--Chart Zoom In-->
+      @if (open && caregiverSessions.length > 0) {
+        <div class="card" style="border: 1px solid rgba(0, 0, 82, 0.4); margin: 0.5em;">
+          <div class="card-body justify-content-start">
+            <div class="d-flex flex-column">
+              <div class="row">
+                <div class="column p-2" style="margin-left: 1em">
+                  <strong>{{ zoomTittle | translate }}</strong>
+                </div>
+
+                <div class="column p-2" style="margin-right: 1em; display: flex; justify-content: flex-end; width: 100%; padding: 0; margin-top: -70px;">
+                  <button
+                    type="button"
+                    class="btn button category-button"
+                    style="position: absolute;"
+                    (click)="closeChart()">
+                    {{ 'close' | translate }}
+                    <i class="bi bi-zoom-out"></i>
+                  </button>
+                </div>
+              </div>
+
+              @if (zoomTittle === 'sessions') {
+                <canvas id="stackedBarChart" width="475" height="375" style="margin: 0.5em; margin-bottom: -0.5em; margin-top: 0em"></canvas>
+              }
+              @if (zoomTittle === 'mostCoveredThemes') {
+                <canvas id="horizontalBarChart" width="475" height="375" style="margin: 0.5em; margin-bottom: -0.5em; margin-top: 0em"></canvas>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (!open && caregiverSessions.length > 0) {
+      <div class="card" style="border: 1px solid rgba(0, 0, 82, 0.4); margin: 1em; margin-top: -0.5em; margin-bottom: 0.5em;">
+        <div class="card-body d-flex justify-content-start flex-wrap">
+          <div class="d-flex flex-column full-width" style="margin: -1em;">
+            <div class="row" style="margin-left: 1em">
+              <div class="p-2 text-start">
+                <strong>{{ 'numberSessions' | translate }}: </strong>
+                {{ numberSessions }}
+                <br />
+                <strong>{{ 'averageDurationSessions' | translate }}: </strong>
+                {{ finalAverageDurationsSessions }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="p-2 page-message">
+    {{ 'anySessions' | translate }}
+  </div>
+}

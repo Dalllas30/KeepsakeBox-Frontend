@@ -1,4 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+/**
+ * @author André Santana - fc49451
+ */
+
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { CaregiverNotification } from '../../core/models/caregiver-notification.model';
@@ -7,11 +11,41 @@ import { AuthenticationService } from '../../core/services/authentication.servic
 import { CaregiverService } from '../../core/services/caregiver.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { WaitingShareNotificationComponent } from './waiting-share-notification/waiting-share-notification.component';
+import { SharePatientNotificationComponent } from './share-patient-notification/share-patient-notification.component';
+import { AcceptedSharePatientNotificationComponent } from './accepted-share-patient-notification/accepted-share-patient-notification.component';
+import { DeniedSharePatientNotificationComponent } from './denied-share-patient-notification/denied-share-patient-notification.component';
+import { WaitingPrimaryCareTransferNotificationComponent } from './waiting-primary-care-transfer-notification/waiting-primary-care-transfer-notification.component';
+import { PrimaryCareTransferNotificationComponent } from './primary-care-transfer-notification/primary-care-transfer-notification.component';
+import { AcceptedPrimaryCareNotificationComponent } from './accepted-primary-care-notification/accepted-primary-care-notification.component';
+import { DeniedPrimaryCareNotificationComponent } from './denied-primary-care-notification/denied-primary-care-notification.component';
+import { RemovedFromPatientNotificationComponent } from './removed-from-patient-notification/removed-from-patient-notification.component';
+import { WaitingPrimaryLeaveCareNotificationComponent } from './waiting-primary-leave-care-notification/waiting-primary-leave-care-notification.component';
+import { PrimaryLeaveCareNotificationComponent } from './primary-leave-care-notitification/primary-leave-care-notitification.component';
+import { AcceptedPrimaryLeaveCareNotificationComponent } from './accepted-primary-leave-care-notification/accepted-primary-leave-care-notification.component';
+import { DeniedPrimaryLeaveCareNotificationComponent } from './denied-primary-leave-care-notification/denied-primary-leave-care-notification.component';
 
 @Component({
   selector: 'app-caregiver-notifications',
   standalone: true,
-  imports: [CommonModule, TranslateModule, NgbPaginationModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    NgbPaginationModule,
+    WaitingShareNotificationComponent,
+    SharePatientNotificationComponent,
+    AcceptedSharePatientNotificationComponent,
+    DeniedSharePatientNotificationComponent,
+    WaitingPrimaryCareTransferNotificationComponent,
+    PrimaryCareTransferNotificationComponent,
+    AcceptedPrimaryCareNotificationComponent,
+    DeniedPrimaryCareNotificationComponent,
+    RemovedFromPatientNotificationComponent,
+    WaitingPrimaryLeaveCareNotificationComponent,
+    PrimaryLeaveCareNotificationComponent,
+    AcceptedPrimaryLeaveCareNotificationComponent,
+    DeniedPrimaryLeaveCareNotificationComponent
+  ],
   templateUrl: './caregiver-notifications.component.html',
   styleUrls: ['./caregiver-notifications.component.css']
 })
@@ -20,15 +54,13 @@ export class CaregiverNotificationsComponent implements OnInit {
   @Input() pageSize = 3;
   @Input() maxSize = 3;
 
-  public collectionSize!: number;
+  public collectionSize: number = 0;
   public currentCaregiver!: Caregiver;
-  public notifications!: CaregiverNotification[];
+  public notifications: CaregiverNotification[] = [];
 
-  constructor(
-    private notificationService: NotificationService,
-    private authenticationService: AuthenticationService,
-    private caregiverService: CaregiverService
-  ) {}
+  private notificationService = inject(NotificationService);
+  private authenticationService = inject(AuthenticationService);
+  private caregiverService = inject(CaregiverService);
 
   ngOnInit(): void {
     this.currentCaregiver = this.caregiverService.getCurrentCaregiver()!;

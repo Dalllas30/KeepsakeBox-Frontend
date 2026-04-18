@@ -120,8 +120,12 @@
      await this.http.get<Caregiver>(`${getCaregiverURL}${token}`).toPromise()
      .then(response => {
        if (response) {
-         var caregiver: Caregiver = response;
-         this.setCurrentCaregiver(caregiver);
+         var caregiver: any = response;
+         // Normalize: API uses 'caregiverType', model property is 'type'
+         if (caregiver.caregiverType !== undefined && caregiver.type === undefined) {
+           caregiver.type = caregiver.caregiverType;
+         }
+         this.setCurrentCaregiver(caregiver as Caregiver);
        }
      }).catch(error => {
        caregiverRetrieved = false;

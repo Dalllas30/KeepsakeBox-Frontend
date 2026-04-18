@@ -1,0 +1,24 @@
+<!--@author André Santana - fc49451-->
+
+<!--Waiting Share Notification Container-->
+<div class="d-flex justify-content-start flex-wrap">
+
+    <!--Patient Profile Image-->
+    <div class="p-2">
+        <img [src]="notification.patient.profileImageURL"
+        alt="Foto de Perfil de {{notification.patient.name}}"
+        class="img-thumbnail notification-patient-image">
+    </div>
+
+    <!--Notification Description-->
+    <div class="p-2 notification-text">
+        <i class="bi bi-bell-fill"></i> {{notification.createdDate | date:'longDate'}}
+        • {{notification.createdDate | date:'shortTime'}} <br>
+        {{'waitingShare' | translate}}
+        <strong style="font-weight: bolder;">{{notification.receiver.name}}</strong>
+        {{'waitingShare2' | translate}}
+        <strong style="font-weight: bolder;">{{convertPatientDisplayName(
+            notification.patient.displayName, notification.patient.name)}}.</strong>
+    </div>
+
+</div>

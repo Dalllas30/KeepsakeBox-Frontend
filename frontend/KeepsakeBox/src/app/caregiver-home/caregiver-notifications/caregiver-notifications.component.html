@@ -5,136 +5,148 @@
     <div class="p-2 d-flex flex-column">
 
         <!--No Notifications-->
-        @if(collectionSize == 0) {
+        @if (collectionSize == 0) {
             <div class="caregiver-home-container p-2 page-message">
                 {{'noNotifications' | translate}}
             </div>
         }
 
          <!--Notifications-->
-        @if(collectionSize != 0) {
-            @for(n of notifications.slice((page - 1) * pageSize, page * pageSize); track n.id) {}
-        }
-        <!-- <div *ngIf="collectionSize != 0">
+        @if (collectionSize != 0) {
+            <!--Notification List-->
+            <div class="list-group">
+                @for (n of notifications.slice((page - 1) * pageSize, page * pageSize); track n.id) {
+                    <!--Share Patient Notification Sender-->
+                    @if (n.messageType=='SHARE_PATIENT' && n.sender.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2">
+                            <app-waiting-share-notification
+                            [notification]="n">
+                            </app-waiting-share-notification>
+                        </div>
+                    }
 
-            
-            <div class="list-group" *ngFor="let n of notifications | 
-                slice: (page-1) * pageSize : page * pageSize">
+                    <!--Share Patient Notification Receiver-->
+                    @if (n.messageType=='SHARE_PATIENT' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-new-notification">
+                            <app-share-patient-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-share-patient-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2"
-                    *ngIf="n.messageType=='SHARE_PATIENT' && n.sender.email == currentCaregiver.email">
-                    <app-waiting-share-notification
-                    [notification]="n">
-                    </app-waiting-share-notification>
-                </div>
+                    <!--Accepted Share Patient Notification Receiver-->
+                    @if (n.messageType=='ACCEPTED_SHARE_PATIENT' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-green-notification">
+                            <app-accepted-share-patient-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-accepted-share-patient-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2 list-new-notification"
-                    *ngIf="n.messageType=='SHARE_PATIENT' && n.receiver.email == currentCaregiver.email">
-                    <app-share-patient-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-share-patient-notification>
-                </div>
+                    <!--Denied Share Patient Notification Receiver-->
+                    @if (n.messageType=='DENIED_SHARE_PATIENT' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-red-notification">
+                            <app-denied-share-patient-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-denied-share-patient-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2 list-green-notification"
-                    *ngIf="n.messageType=='ACCEPTED_SHARE_PATIENT' && n.receiver.email == currentCaregiver.email">
-                    <app-accepted-share-patient-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-accepted-share-patient-notification>
-                </div>
+                    <!--Primary Transfer Notification Sender-->
+                    @if (n.messageType=='TRANSFER_PRIMARY' && n.sender.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2">
+                            <app-waiting-primary-care-transfer-notification
+                            [notification]="n">
+                            </app-waiting-primary-care-transfer-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2 list-red-notification"
-                    *ngIf="n.messageType=='DENIED_SHARE_PATIENT' && n.receiver.email == currentCaregiver.email">
-                    <app-denied-share-patient-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-denied-share-patient-notification>
-                </div>
+                    <!--Primary Transfer Notification Receiver-->
+                    @if (n.messageType=='TRANSFER_PRIMARY' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-new-notification">
+                            <app-primary-care-transfer-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-primary-care-transfer-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2"
-                    *ngIf="n.messageType=='TRANSFER_PRIMARY' && n.sender.email == currentCaregiver.email">
-                    <app-waiting-primary-care-transfer-notification
-                    [notification]="n">
-                    </app-waiting-primary-care-transfer-notification>
-                </div>
+                    <!--Accepted Primary Care Notification Receiver-->
+                    @if (n.messageType=='ACCEPTED_PRIMARY_CARE' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-green-notification">
+                            <app-accepted-primary-care-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-accepted-primary-care-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2 list-new-notification"
-                    *ngIf="n.messageType=='TRANSFER_PRIMARY' && n.receiver.email == currentCaregiver.email">
-                    <app-primary-care-transfer-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-primary-care-transfer-notification>
-                </div>
+                    <!--Denied Primary Care Notification Receiver-->
+                    @if (n.messageType=='DENIED_PRIMARY_CARE' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-red-notification">
+                            <app-denied-primary-care-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-denied-primary-care-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2 list-green-notification"
-                    *ngIf="n.messageType=='ACCEPTED_PRIMARY_CARE' && n.receiver.email == currentCaregiver.email">
-                    <app-accepted-primary-care-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-accepted-primary-care-notification>
-                </div>
+                    <!--Removed From Patient Notification Receiver-->
+                    @if (n.messageType=='REMOVED_FROM_PATIENT' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-red-notification">
+                            <app-removed-from-patient-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-removed-from-patient-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2 list-red-notification"
-                    *ngIf="n.messageType=='DENIED_PRIMARY_CARE' && n.receiver.email == currentCaregiver.email">
-                    <app-denied-primary-care-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-denied-primary-care-notification>
-                </div>
+                    <!--Primary Leave Care Notification Sender-->
+                    @if (n.messageType=='PRIMARY_LEAVE_CARE' && n.sender.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2">
+                            <app-waiting-primary-leave-care-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-waiting-primary-leave-care-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2 list-red-notification"
-                    *ngIf="n.messageType=='REMOVED_FROM_PATIENT' && n.receiver.email == currentCaregiver.email">
-                    <app-removed-from-patient-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-removed-from-patient-notification>
-                </div>
+                    <!--Primary Leave Care Notification Receiver-->
+                    @if (n.messageType=='PRIMARY_LEAVE_CARE' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-new-notification">
+                            <app-primary-leave-care-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-primary-leave-care-notification>
+                        </div>
+                    }
 
-                
-                <div class="list-group-item light-blue-border p-2"
-                    *ngIf="n.messageType=='PRIMARY_LEAVE_CARE' && n.sender.email == currentCaregiver.email">
-                    <app-waiting-primary-leave-care-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-waiting-primary-leave-care-notification>
-                </div>
+                    <!--Primary Leave Care Notification Accepted-->
+                    @if (n.messageType=='ACCEPTED_PRIMARY_LEAVE_CARE' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-green-notification">
+                            <app-accepted-primary-leave-care-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-accepted-primary-leave-care-notification>
+                        </div>
+                    }
 
-                <div class="list-group-item light-blue-border p-2 list-new-notification"
-                    *ngIf="n.messageType=='PRIMARY_LEAVE_CARE' && n.receiver.email == currentCaregiver.email">
-                    <app-primary-leave-care-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-primary-leave-care-notification>
-                </div>
-
-                <div class="list-group-item light-blue-border p-2 list-green-notification"
-                    *ngIf="n.messageType=='ACCEPTED_PRIMARY_LEAVE_CARE' && n.receiver.email == currentCaregiver.email">
-                    <app-accepted-primary-leave-care-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-accepted-primary-leave-care-notification>
-                </div>
-
-                <div class="list-group-item light-blue-border p-2 list-red-notification"
-                    *ngIf="n.messageType=='DENIED_PRIMARY_LEAVE_CARE' && n.receiver.email == currentCaregiver.email">
-                    <app-denied-primary-leave-care-notification
-                    [notification]="n"
-                    (notificationsChanged)="retrieveCaregiverNotifications()">
-                    </app-denied-primary-leave-care-notification>
-                </div>
-
+                    <!--Primary Leave Care Notification Denied-->
+                    @if (n.messageType=='DENIED_PRIMARY_LEAVE_CARE' && n.receiver.email == currentCaregiver.email) {
+                        <div class="list-group-item light-blue-border p-2 list-red-notification">
+                            <app-denied-primary-leave-care-notification
+                            [notification]="n"
+                            (notificationsChanged)="retrieveCaregiverNotifications()">
+                            </app-denied-primary-leave-care-notification>
+                        </div>
+                    }
+                }
             </div>
 
+            <!--Pagination-->
             <div style="margin-top: 20px;"
             class="d-flex justify-content-center flex-wrap">
                 <ngb-pagination
@@ -142,7 +154,7 @@
                     [pageSize]="pageSize"
                     [maxSize]="maxSize"
                     [collectionSize]="collectionSize"
-                    [rotate]="true" 
+                    [rotate]="true"
                     [ellipses]="true"
                     >
                     <ng-template ngbPaginationPrevious>
@@ -151,7 +163,7 @@
                     <ng-template ngbPaginationEllipsis>...</ng-template>
                 </ngb-pagination>
             </div>
-        </div> -->
+        }
 
     </div>
 </div>

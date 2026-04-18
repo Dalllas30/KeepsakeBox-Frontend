@@ -128,6 +128,10 @@ export class AuthenticationService {
       
       if (response && response.length > 0) {
         const caregiver = response[0];
+        // Normalize: API uses 'caregiverType', model property is 'type'
+        if (caregiver.caregiverType !== undefined && caregiver.type === undefined) {
+          caregiver.type = caregiver.caregiverType;
+        }
         this.setCurrentCaregiverToken(caregiver.token);
         localStorage.setItem('currentCaregiverId', caregiver.id);
         this.caregiverService.setCurrentCaregiver(caregiver);

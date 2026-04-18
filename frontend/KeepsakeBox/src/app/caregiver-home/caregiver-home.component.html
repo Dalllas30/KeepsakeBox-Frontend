@@ -25,7 +25,7 @@
           [class.nav-link-active]="isRouteActive('notifications')">
           <i class="bi bi-bell-fill color-white" 
           [class.color-blue]="isRouteActive('notifications')"></i>
-          <span>{{'notifications' | translate}}</span>
+          <span class="color-white" [class.color-blue]="isRouteActive('notifications')">{{'notifications' | translate}}</span>
         </a>
     </li>
 
@@ -35,12 +35,14 @@
             [class.nav-link-active]="isRouteActive('persons') || isRouteActive('person/info')">
             <i class="bi bi-card-list color-white"
             [class.color-blue]="isRouteActive('persons') || isRouteActive('person/info')"></i>
-            <span class="color-white"
-                  [class.color-blue]="isRouteActive('persons') || isRouteActive('person/info')"
-                  *ngIf="caregiver.type=='Formal'"> {{'beneficiaries' | translate}}</span>
-            <span class="color-white"
-                  [class.color-blue]="isRouteActive('persons') || isRouteActive('person/info')"
-                  *ngIf="caregiver.type=='Informal'">  {{'relatives' | translate}}</span>
+            @if(caregiver.type == 'Formal') {
+              <span class="color-white"
+                    [class.color-blue]="isRouteActive('persons') || isRouteActive('person/info')"> {{'beneficiaries' | translate}}</span>
+            }
+            @if(caregiver.type == 'Informal') {
+              <span class="color-white"
+                    [class.color-blue]="isRouteActive('persons') || isRouteActive('person/info')">  {{'relatives' | translate}}</span>
+            }
           </a>
       </li>
 

@@ -1,0 +1,35 @@
+<!--@author André Santana - fc49451-->
+
+<!--Accepted Share Patient Notification Container-->
+<div class="d-flex justify-content-start flex-wrap">
+
+    <!--Patient Profile Image-->
+    <div class="p-2">
+        <img [src]="notification.patient.profileImageURL"
+        alt="Foto de Perfil de {{notification.patient.name}}"
+        class="img-thumbnail notification-patient-image">
+    </div>
+
+    <!--Notification Description-->
+    <div class="p-2 notification-text">
+        <i class="bi bi-bell-fill"></i> {{notification.createdDate | date:'longDate'}}
+        • {{notification.createdDate | date:'shortTime'}} <br>
+        {{'theCaregiver' | translate}}
+        <strong style="font-weight: bolder">{{notification.sender.name}}</strong>
+        {{'acceptedSharePatient' | translate}}
+        <strong style="font-weight: bolder">{{convertPatientDisplayName(
+            notification.patient.displayName, notification.patient.name)}}.</strong>
+    </div>
+
+</div>
+
+<!--Confirm reception-->
+<div class="d-flex justify-content-start flex-wrap-reverse">
+    <div class="p-2 full-width">
+        <button type="button" class="btn button button-action full-width"
+                (click)="deleteNotification()">
+        <i class="bi bi-check-lg color-white"></i>
+        OK
+        </button>
+    </div>
+</div>

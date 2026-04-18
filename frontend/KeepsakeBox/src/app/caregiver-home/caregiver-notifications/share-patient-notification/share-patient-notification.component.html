@@ -1,0 +1,86 @@
+<!--@author André Santana - fc49451-->
+
+<!--Share Patient Notification Container-->
+<div class="d-flex justify-content-start flex-wrap">
+
+    <!--Patient Profile Image-->
+    <div class="p-2">
+        <img [src]="notification.patient.profileImageURL"
+        alt="Foto de Perfil de {{notification.patient.name}}"
+        class="img-thumbnail notification-patient-image">
+    </div>
+
+    <!--Notification Description-->
+    <div class="p-2 notification-text">
+        <i class="bi bi-bell-fill"></i> {{notification.createdDate | date:'longDate'}}
+        • {{notification.createdDate | date:'shortTime'}} <br>
+        {{'theCaregiver' | translate}}
+        <strong>{{notification.sender.name}}</strong>
+        {{'sharePatientNot' | translate}}
+        <strong>{{convertPatientDisplayName(
+            notification.patient.displayName, notification.patient.name)}}</strong>
+        {{'sharePatientNot2' | translate}}.
+
+        <!--Informal Caregiver Patient Relation-->
+        @if (caregiver.type=='Informal') {
+            <div class="p-2" style="margin-left: -10px !important; margin-bottom: -20px !important;">
+                <label for="nif" class="input-label">
+                    <i class="bi bi-person"></i>
+                    {{'relativeIsMy' | translate}}:*
+                </label><br>
+                @if (translateCache=='pt') {
+                    <select class="form-select me-sm-2 input-text-select"
+                            [(ngModel)]="associationData.patientRelation"
+                            [class.disabled-option]="associationData.patientRelation==''"
+                            name="patientRelation" #patientRelation="ngModel">
+                        <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
+                        @for (r of relationsPT; track r) {
+                            <option value={{r}}>{{r}}</option>
+                        }
+                    </select>
+                }
+                @if (translateCache=='en') {
+                    <select class="form-select me-sm-2 input-text-select"
+                            [(ngModel)]="associationData.patientRelation"
+                            [class.disabled-option]="associationData.patientRelation==''"
+                            name="patientRelation" #patientRelation="ngModel">
+                        <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
+                        @for (r of relationsENG; track r) {
+                            <option value={{r}}>{{r}}</option>
+                        }
+                    </select>
+                }
+            </div>
+        }
+    </div>
+
+</div>
+
+<!--Action Buttons-->
+<div class="d-flex justify-content-start flex-wrap-reverse">
+
+    <!--Deny Request-->
+    <div class="p-2 half-width">
+        <button class="btn app-button button-destructive full-width"
+                (click)="deleteNotification()">
+        <i class="bi bi-x-lg color-white"></i>
+        {{'decline' | translate}}
+        </button>
+    </div>
+
+    <!--Accept Request-->
+    <div class="p-2 half-width">
+        <button type="button" class="btn button button-action full-width"
+                [disabled]="caregiver.type=='Informal' && associationData.patientRelation==''"
+                (click)="acceptSharePatient()">
+        <i class="bi bi-check-lg color-white"></i>
+        {{'accept' | translate}}
+        @if (acceptingPatient) {
+            <div class="spinner-border small-spinner-white" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        }
+        </button>
+    </div>
+
+</div>

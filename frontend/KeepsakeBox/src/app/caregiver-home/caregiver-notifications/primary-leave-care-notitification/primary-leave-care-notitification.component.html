@@ -1,0 +1,53 @@
+<!--@author André Santana - fc49451-->
+
+<!--Share Patient Notification Container-->
+<div class="d-flex justify-content-start flex-wrap">
+
+    <!--Patient Profile Image-->
+    <div class="p-2">
+        <img [src]="notification.patient.profileImageURL"
+        alt="Foto de Perfil de {{notification.patient.name}}"
+        class="img-thumbnail notification-patient-image">
+    </div>
+
+    <!--Notification Description-->
+    <div class="p-2 notification-text">
+        <i class="bi bi-bell-fill"></i> {{notification.createdDate | date:'longDate'}}
+        • {{notification.createdDate | date:'shortTime'}} <br>
+        {{'theCaregiver' | translate}}
+        <strong>{{notification.sender.name}}</strong>
+        {{'primaryLeaveCareNotify' | translate}}
+        <strong>{{convertPatientDisplayName(
+            notification.patient.displayName, notification.patient.name)}}</strong>.
+        {{'primaryLeaveCareNotify2' | translate}}
+    </div>
+
+</div>
+
+<!--Action Buttons-->
+<div class="d-flex justify-content-start flex-wrap-reverse">
+
+    <!--Deny Request-->
+    <div class="p-2 half-width">
+        <button class="btn app-button button-destructive full-width"
+                (click)="deleteNotification()">
+        <i class="bi bi-x-lg color-white"></i>
+        {{'decline' | translate}}
+        </button>
+    </div>
+
+    <!--Accept Request-->
+    <div class="p-2 half-width">
+        <button type="button" class="btn button button-action full-width"
+                (click)="acceptPrimaryCare()">
+        <i class="bi bi-check-lg color-white"></i>
+        {{'accept' | translate}}
+        @if (executingRequest) {
+            <div class="spinner-border small-spinner-white" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        }
+        </button>
+    </div>
+
+</div>

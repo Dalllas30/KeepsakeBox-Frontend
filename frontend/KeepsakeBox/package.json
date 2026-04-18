@@ -29,6 +29,8 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.13.1",
+    "chart.js": "^4.5.1",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "crypto-js": "^4.2.0",
     "express": "^5.1.0",
     "ng2-img-max": "^2.2.9",
