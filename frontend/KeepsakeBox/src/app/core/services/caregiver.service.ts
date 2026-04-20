@@ -16,29 +16,31 @@
  //Request URLs
 //const serverURL = "194.117.20.219"
  const serverURL = "localhost"
- const getCaregiverURL = `http://${serverURL}:8080/caregiver?token=`
- const getCaregiverPatientsURL01 = `http://${serverURL}:8080/caregiver/patients?token=`
+//  const port = "8080"
+const port = "4200"
+ const getCaregiverURL = `http://${serverURL}:${port}/caregiver?token=`
+ const getCaregiverPatientsURL01 = `http://${serverURL}:${port}/caregiver/patients?token=`
  const getCaregiverPatientsURL02 = "&patientId="
- const addCaregiverPatientURL = `http://${serverURL}:8080/caregiver/patient?token=`
- const sharePatientURL = `http://${serverURL}:8080/caregiver/patient/share?token=`
- const caregiverUpdateURL = `http://${serverURL}:8080/caregiver/update?token=`
- const validatePasswordURL01 = `http://${serverURL}:8080/caregiver/password?token=`
+ const addCaregiverPatientURL = `http://${serverURL}:${port}/caregiver/patient?token=`
+ const sharePatientURL = `http://${serverURL}:${port}/caregiver/patient/share?token=`
+ const caregiverUpdateURL = `http://${serverURL}:${port}/caregiver/update?token=`
+ const validatePasswordURL01 = `http://${serverURL}:${port}/caregiver/password?token=`
  const validatePasswordURL02 = "&password="
- const changePasswordURL01 = `http://${serverURL}:8080/caregiver/password/update?token=`
+ const changePasswordURL01 = `http://${serverURL}:${port}/caregiver/password/update?token=`
  const changePasswordURL02 = "&password="
- const primaryCareTranferURL01 = `http://${serverURL}:8080/caregiver/patient/primary/transfer?token=`
+ const primaryCareTranferURL01 = `http://${serverURL}:${port}/caregiver/patient/primary/transfer?token=`
  const primaryCareTranferURL02 = "&oldPrimary="
  const primaryCareTranferURL03 = "&patientId="
- const leavePatientCareURL01 = `http://${serverURL}:8080/caregiver/patient/leave?token=`
+ const leavePatientCareURL01 = `http://${serverURL}:${port}/caregiver/patient/leave?token=`
  const leavePatientCareURL02 = "&patientId="
- const removeCaregiverFromPatientCareURL01 = `http://${serverURL}:8080/caregiver/patient/leave/forced?token=`
+ const removeCaregiverFromPatientCareURL01 = `http://${serverURL}:${port}/caregiver/patient/leave/forced?token=`
  const removeCaregiverFromPatientCareURL02 = "&caregiverId="
  const removeCaregiverFromPatientCareURL03 = "&patientId="
- const leavePrimaryCare01 = `http://${serverURL}:8080/caregiver/patient/primary/leave?token=`
+ const leavePrimaryCare01 = `http://${serverURL}:${port}/caregiver/patient/primary/leave?token=`
  const leavePrimaryCare02 = "&caregiverId="
  const leavePrimaryCare03 = "&patientId="
- const getCaregiversURL = `http://${serverURL}:8080/caregiver/list?token=`
- const getCaregiverOutsideURL = `http://${serverURL}:8080/caregiver/outside`
+ const getCaregiversURL = `http://${serverURL}:${port}/caregiver/list?token=`
+ const getCaregiverOutsideURL = `http://${serverURL}:${port}/caregiver/outside`
  
  @Injectable({
    providedIn: 'root'
