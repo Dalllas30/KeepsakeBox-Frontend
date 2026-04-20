@@ -1,106 +1,84 @@
-<p>patient-messages works!</p>
-<!--@author André Santana - fc49451-->
-
-<!--Messages Container-->
 <div class="d-flex justify-content-center flex-wrap">
-    <div class="d-flex flex-column">
+  <div class="d-flex flex-column">
 
-        <!--Chat Loading-->
-        <div *ngIf="loadingMessages">
-            <div class="p-2 spinner-border big-spinner-blue" 
-                role="status"
-                style="margin-top: 20px !important;margin-bottom: 20px !important;">
-                <span class="sr-only">Loading...</span>
+    @if (loadingMessages) {
+      <div class="text-center">
+        <div class="p-2 spinner-border big-spinner-blue" 
+             role="status"
+             style="margin-top: 20px !important; margin-bottom: 20px !important;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    } @else {
+      <div #messagesDiv class="messages-div flex-wrap">
+
+        @for (m of oldMessages; track m.id || $index) {
+          <div #messages class="p-2" style="width: 850px;"
+               [ngClass]="m.createdBy.email === currentCaregiver.email ? 'myMessages' : 'otherMessages'">
+
+            <div style="margin-bottom: 10px;">
+              {{ m.createdBy.name }} •
+              {{ m.createdDate | date:'shortDate' }} •
+              {{ m.createdDate | date:'shortTime' }}
             </div>
+
+            <span [ngClass]="m.createdBy.email === currentCaregiver.email ? 'mySpanM' : 'otherSpanM'">
+              {{ m.message }}
+            </span>
+          </div>
+        }
+
+        @if (newMessages.length > 0) {
+          <div class="row">
+            <div class="col-lg-11 mx-auto" style="margin-top:5px; margin-bottom: -10px;">
+              <div class="mb-4">
+                <hr [attr.data-content]="'newMessages' | translate" class="hr-text">
+              </div>
+            </div>
+          </div>
+        }
+
+        @for (m of newMessages; track m.id || $index) {
+          <div #messages class="p-2" style="width: 850px;"
+               [ngClass]="m.createdBy.email === currentCaregiver.email ? 'myMessages' : 'otherMessages'">
+
+            <div style="margin-bottom: 10px;">
+              {{ m.createdBy.name }} •
+              {{ m.createdDate | date:'shortDate' }} •
+              {{ m.createdDate | date:'shortTime' }}
+            </div>
+
+            <span [ngClass]="m.createdBy.email === currentCaregiver.email ? 'mySpanM' : 'otherSpanM'">
+              {{ m.message }}
+            </span>
+          </div>
+        }
+      </div>
+    }
+
+    <form #messageForm="ngForm">
+      <div class="d-flex justify-content-start" style="margin-top: 10px;">
+
+        <div class="p-2 form-group" style="width: 675px;">
+          <input type="text" 
+                 class="form-control input-text-select" 
+                 id="message" 
+                 [(ngModel)]="messageToSend.message" 
+                 name="message" 
+                 #message="ngModel" 
+                 required>
         </div>
 
-        <!--Chat Messages-->
-        <div [hidden]="loadingMessages" #messagesDiv class="messages-div flex-wrap">
-
-            <!--Old Messages-->
-            <div *ngFor="let m of oldMessages" #messages>
-
-                <div class="p-2" style="width: 850px;"
-                    [ngClass]="(m.createdBy.email == currentCaregiver.email) 
-                               ? 'myMessages' : 'otherMessages'">
-
-                    <!--Message Description-->
-                    <div style="margin-bottom: 10px;">
-                        {{m.createdBy.name}} •
-                        {{m.createdDate | date:'shortDate'}} •
-                        {{m.createdDate | date:'shortTime'}}
-                    </div>
-                    <span [ngClass]="(m.createdBy.email == currentCaregiver.email)  
-                                    ? 'mySpanM' : 'otherSpanM'">
-                        {{m.message}}
-                    </span>
-
-                </div>
-
-            </div>
-
-            <!--New Messages Div-->
-            <div *ngIf="newMessages.length > 0 && translateCache == 'pt'" class="row">
-                <div class="col-lg-11 mx-auto" style="margin-top:5px;margin-bottom: -10px;">
-                    <div class="mb-4">
-                        <hr data-content="Novas Mensagens" class="hr-text">
-                    </div>
-                </div>
-            </div>
-            <div *ngIf="newMessages.length > 0 && translateCache == 'en'" class="row">
-                <div class="col-lg-11 mx-auto" style="margin-top:5px;margin-bottom: -10px;">
-                    <div class="mb-4">
-                        <hr data-content="New Messages" class="hr-text">
-                    </div>
-                </div>
-            </div>
-
-            <!--New Messages-->
-            <div *ngFor="let m of newMessages" #messages>
-
-                <div class="p-2" style="width: 850px;"
-                    [ngClass]="(m.createdBy.email == currentCaregiver.email) 
-                               ? 'myMessages' : 'otherMessages'">
-
-                    <!--Message Description-->
-                    <div style="margin-bottom: 10px;">
-                        {{m.createdBy.name}} •
-                        {{m.createdDate | date:'shortDate'}} •
-                        {{m.createdDate | date:'shortTime'}}
-                    </div>
-                    <span [ngClass]="(m.createdBy.email == currentCaregiver.email)  
-                                    ? 'mySpanM' : 'otherSpanM'">
-                        {{m.message}}
-                    </span>
-
-                </div>
-
-            </div>
-
+        <div class="p-2">
+          <button class="btn button button-action button-send" 
+                  (click)="sendMessage()" 
+                  [disabled]="!messageForm.valid">
+            <i class="bi bi-arrow-up-circle color-white"></i> {{ 'send' | translate }}
+          </button>
         </div>
 
-        <!--Send Message Form-->
-        <form #messageForm=ngForm>
-            <div class="d-flex justify-content-start" style="margin-top: 10px;">
+      </div>
+    </form>
 
-                <!--Send Message Field-->
-                <div class="p-2 form-group" style="width: 675px;">
-                    <input type="text" class="form-control input-text-select" id="message" 
-                    [(ngModel)]="messageToSend.message" 
-                    name="message" #message="ngModel" required>
-                </div>
-
-                <!--Send Message Button-->
-                <div class="p-2">
-                    <button class="btn button button-action button-send" 
-                    (click)="sendMessage()" 
-                    [disabled]="!messageForm.valid">
-                        <i class="bi bi-arrow-up-circle color-white"></i> {{'send' | translate}}
-                    </button>
-                </div>
-
-            </div>
-        </form>
-
-    </div>
+  </div>
 </div>

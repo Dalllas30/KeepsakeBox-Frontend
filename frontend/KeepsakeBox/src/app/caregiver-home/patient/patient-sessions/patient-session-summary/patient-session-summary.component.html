@@ -1,136 +1,116 @@
-<p>patient-session-summary works!</p>
-<!--@author Bruna Vieites - fc55792-->
-
-<!--Summary Session-->
 <div class="flex-wrap">
-
-    <div class="row">
-        <div class="p-2 column">        
-            <div class="d-flex justify-content-start flex-wrap">
-
-                <!--Profile Image-->
-                <div class="p-2 bolder-text">
-                    <img [src]="patient.profileImageURL" 
-                    alt="Foto de Perfil de {{patient.name}}" 
-                    class="img-thumbnail profile-image">
-                    <br>
-                    <div style="margin-top: 0.5em;">
-                        {{patient.name}}
-                    </div>
-                </div>
-            </div>
+  <div class="row">
+    
+    <div class="p-2 column">        
+      <div class="d-flex justify-content-start flex-wrap">
+        <div class="p-2 bolder-text">
+          <img [src]="patient.profileImageURL" 
+               [alt]="'Foto de Perfil de ' + patient.name" 
+               class="img-thumbnail profile-image">
+          <br>
+          <div style="margin-top: 0.5em;">
+            {{ patient.name }}
+          </div>
         </div>
-
-        <div class="column flex-wrap" style="width: 80%">    
-            
-            <div class="row">
-                <div class="mr-auto p-2 full-width flex-wrap">
-                    <div class="d-flex justify-content-start flex-wrap border-bottom">
-                        <!--Caregiver Name and Type-->
-                        <div class="p-2 info-field col-3">
-                            <strong>{{'caregiver' | translate}}</strong><br>
-                            {{session.caregiver_name }} ({{caregiverType}})
-                        </div>
-
-                        <!--Session Date-->
-                        <div class="p-2 info-field col-2">
-                            <strong>{{'date' | translate}}</strong><br>
-                            {{session.end_session | date:'shortDate'}}
-                        </div>
-       
-                        <!--Duration-->
-                        <div class="p-2 info-field col-2">
-                            <strong>{{'duration' | translate}}</strong><br>
-                            {{session.duration}}
-                        </div>
-        
-                        <!--QuantantyImages-->
-                        <div class="p-2 info-field col-3">
-                            <strong>{{'numberImages' | translate}}</strong><br>
-                                {{session.total_images}}
-                        </div>
-        
-                        <!--GeneralReaction-->
-                        <div class="p-2 info-field col-2">
-                            <strong>{{'globalFeedback' | translate}}</strong><br>
-                                <span *ngIf="session.patient_feedback==1">
-                                    <i class="bi bi-emoji-angry-fill emoji-yes font-red"></i>
-                                </span>
-                                <span *ngIf="session.patient_feedback==2">
-                                    <i class="bi bi-emoji-frown-fill emoji-yes font-orange"></i>
-                                </span>
-                                <span *ngIf="session.patient_feedback==3">
-                                    <i class="bi bi-emoji-neutral-fill emoji-yes font-grey"></i>
-                                </span>
-                                <span *ngIf="session.patient_feedback==4">
-                                    <i class="bi bi-emoji-smile-fill emoji-yes font-green"></i>
-                                </span>
-                                <span *ngIf="session.patient_feedback==5">
-                                    <i class="bi bi-emoji-heart-eyes-fill emoji-yes font-blue"></i>
-                                </span>
-                        </div>
-                    </div>
-                </div>
-            </div>  
-            
-            <div class="row">
-                <div class="mr-auto p-2 full-width">        
-                    <div class="d-flex justify-content-start flex-wrap border-bottom">
-        
-                        <!--Sintomas Mais Sentidos-->
-                        <div class="p-2 info-field" style="margin-top: -0.5em; margin-bottom: 0.5em;">
-                            <strong>{{'symptomsMostFelt' | translate}}: </strong>
-                            {{getFinalSymptom()}}
-                        </div>
-                    </div>
-                </div>
-            </div>  
-
-            <div class="row">
-                <div class="mr-auto p-2 full-width">        
-                    <div class="d-flex justify-content-start flex-wrap border-bottom">
-                        <div class="p-2 info-field" style="margin-top: -0.5em; margin-bottom: 0.5em;">
-                        <strong>{{'themesCovered' | translate}}: </strong>
-                        {{themes}} 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-        </div>
+      </div>
     </div>
+
+    <div class="column flex-wrap" style="width: 80%">    
+      
+      <div class="row">
+        <div class="mr-auto p-2 full-width flex-wrap">
+          <div class="d-flex justify-content-start flex-wrap border-bottom">
+            
+            <div class="p-2 info-field col-3">
+              <strong>{{ 'caregiver' | translate }}</strong><br>
+              {{ session.caregiver_name }} ({{ caregiverType }})
+            </div>
+
+            <div class="p-2 info-field col-2">
+              <strong>{{ 'date' | translate }}</strong><br>
+              {{ session.end_session | date:'shortDate' }}
+            </div>
+
+            <div class="p-2 info-field col-2">
+              <strong>{{ 'duration' | translate }}</strong><br>
+              {{ session.duration }}
+            </div>
+
+            <div class="p-2 info-field col-3">
+              <strong>{{ 'numberImages' | translate }}</strong><br>
+              {{ session.total_images }}
+            </div>
+
+            <div class="p-2 info-field col-2">
+              <strong>{{ 'globalFeedback' | translate }}</strong><br>
+              @switch (session.patient_feedback) {
+                @case (1) { <i class="bi bi-emoji-angry-fill emoji-yes font-red"></i> }
+                @case (2) { <i class="bi bi-emoji-frown-fill emoji-yes font-orange"></i> }
+                @case (3) { <i class="bi bi-emoji-neutral-fill emoji-yes font-grey"></i> }
+                @case (4) { <i class="bi bi-emoji-smile-fill emoji-yes font-green"></i> }
+                @case (5) { <i class="bi bi-emoji-heart-eyes-fill emoji-yes font-blue"></i> }
+              }
+            </div>
+
+          </div>
+        </div>
+      </div>  
+
+      <div class="row">
+        <div class="mr-auto p-2 full-width">        
+          <div class="d-flex justify-content-start flex-wrap border-bottom">
+            <div class="p-2 info-field" style="margin-top: -0.5em; margin-bottom: 0.5em;">
+              <strong>{{ 'symptomsMostFelt' | translate }}: </strong>
+              {{ getFinalSymptom() }}
+            </div>
+          </div>
+        </div>
+      </div>  
+
+      <div class="row">
+        <div class="mr-auto p-2 full-width">        
+          <div class="d-flex justify-content-start flex-wrap border-bottom">
+            <div class="p-2 info-field" style="margin-top: -0.5em; margin-bottom: 0.5em;">
+              <strong>{{ 'themesCovered' | translate }}: </strong>
+              {{ themes }} 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-            
 <div class="row p-2">
-    <!--GeneralObservations-->
-    <div class="p-2 info-field">
-        <strong>{{'observations' | translate}}</strong><br>
-        <ng-template [ngIf]="session.global_feedback.patient_observation != '' && session.global_feedback.patient_observation != ' ' " [ngIfElse]="withOutObservation">
-            {{session.global_feedback.patient_observation}}
-        </ng-template>
-        <ng-template #withOutObservation>
-            {{'noneF' | translate}}
-        </ng-template>
-    </div>
+  <div class="p-2 info-field">
+    <strong>{{ 'observations' | translate }}</strong><br>
+    
+    @if (session.global_feedback.patient_observation?.trim()) {
+      {{ session.global_feedback.patient_observation }}
+    } @else {
+      {{ 'noneF' | translate }}
+    }
+  </div>
 </div>
 
 <div class="row">
-    <div class="col-sm-6">
-        <div class="text-left" style="margin: 0.5em;">
-            <button type="button text-left" 
-                class="btn button category-button"  
-                (click)="goToCaregiverSessionList()">
-                <i class="bi bi-caret-left"></i>
-                {{'backSessionList' | translate}}
-            </button>
-        </div>
+  <div class="col-sm-6">
+    <div class="text-left" style="margin: 0.5em;">
+      <button type="button" 
+              class="btn button category-button"  
+              (click)="goToCaregiverSessionList()">
+        <i class="bi bi-caret-left"></i>
+        {{ 'backSessionList' | translate }}
+      </button>
     </div>
-    <div class="col-sm-6"><div class="text-right" style="margin: 0.5em;">
-        <button type="button"
-            class="btn button button-neutral"
-            (click)="goToSessionImages()">
-            {{'viewImagesSession' | translate}} 
-        </button>
+  </div>
+  <div class="col-sm-6">
+    <div class="text-right" style="margin: 0.5em;">
+      <button type="button"
+              class="btn button button-neutral"
+              (click)="goToSessionImages()">
+        {{ 'viewImagesSession' | translate }} 
+      </button>
     </div>        
+  </div>    
 </div>

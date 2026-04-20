@@ -81,6 +81,8 @@
   "addBeneficiaryError": "An error occurred when adding the Beneficiary.",
   "addRelativeError": "An error occurred when adding the Relative",
   "nameToPresent": "Name to Present",
+  "citiesOfInterest": "Cities of interest",
+  "otherInterests": "Other interests",
   "education": "Education",
   "relativeIsMy": "The Relative is my",
   "confirmDiscardImage": "Do you really want to discard this Image?",

@@ -1,123 +1,94 @@
-<p>patient-observations works!</p>
-<!--@author André Santana - fc49451-->
-
-<!--Patient Observations Container-->
 <div class="d-flex justify-content-start flex-wrap p-2">
 
-  <!--Add Patient Button-->
   <div class="p-2" style="min-width: 290px;">
     <button type="button" 
             class="btn button button-action full-width" 
             routerLink="/caregiver/person/observations/add">
       <i class="bi bi-plus-circle color-white"></i>
-      {{'addObservation' | translate}}
+      {{ 'addObservation' | translate }}
     </button>
   </div>
   
-  <!--Search Bar-->
   <div class="p-2" style="width: 600px">
     <div class="input-group mb-2 mr-sm-2">
       <div class="input-group-prepend">
-        <div class="input-group-text input-icon-blue"
-            style="height:50px">
+        <div class="input-group-text input-icon-blue" style="height:50px">
           <i class="bi bi-search color-white"></i>
         </div>
       </div>
-      <input type="text" class="form-control input-text-select" 
-            style="height:50px"
-            placeholder="{{'searchObservation' | translate}}..." 
-            (keyup)="searchObservation($event)">
+      <input type="text" 
+             class="form-control input-text-select" 
+             style="height:50px"
+             [placeholder]="'searchObservation' | translate" 
+             (keyup)="searchObservation($event)">
     </div>
   </div>
 
 </div>
 
-<!--No Observations-->
-<div class="p-2 page-message"
-     style="margin-bottom: 20px;"
-     *ngIf="collectionSize == 0 && 
-     observationsCopy.length == 0">
-      {{'stillHaveNo' | translate}} {{'observations' | translate}}.
-      <button class="btn btn-link full-width"
-      style="font-size: 20pt"
-      aria-expanded="true" 
-      routerLink="/caregiver/person/observations/add">
-      {{'startAddingNewF' | translate}}
-      </button>
-</div>
+@if (collectionSize === 0 && observationsCopy.length === 0) {
+  <div class="p-2 page-message" style="margin-bottom: 20px;">
+    {{ 'stillHaveNo' | translate }} {{ 'observations' | translate }}.
+    <button class="btn btn-link full-width"
+            style="font-size: 20pt"
+            routerLink="/caregiver/person/observations/add">
+      {{ 'startAddingNewF' | translate }}
+    </button>
+  </div>
+} @else if (collectionSize === 0 && observationsCopy.length !== 0) {
+  <div class="p-2 page-message" style="margin-bottom: 20px;">
+    {{ 'noSearchResults' | translate }}
+  </div>
+}
 
-<!--No Search Results-->
-<div class="p-2 page-message" 
-     style="margin-bottom: 20px;"
-     *ngIf="collectionSize == 0 && 
-     observationsCopy.length != 0">
-    {{'noSearchResults' | translate}}
-</div>
+<div class="d-flex justify-content-start flex-wrap p-2" style="margin-top: -30px">
 
-<!--Observation List-->
-<div class="d-flex justify-content-start flex-wrap p-2"
-     style="margin-top: -30px">
+  @for (obs of (observations | slice: (page-1) * pageSize : page * pageSize); track obs.id || $index) {
+    <div class="p-2">
+      <div class="card light-blue-border observation-card flex-wrap">
+        <div class="card-body">
 
-  <!--Observation Card-->
-  <div class="p-2" *ngFor="let obs of observations | slice: (page-1) * pageSize : page * pageSize">
-
-    <div class="card light-blue-border observation-card flex-wrap">
-
-      <div class="card-body">
-
-        <!--Caregiver Name-->
-        <i class="bi bi-person"></i>
-        {{obs.caregiver.name}}<br>
-
-        <!--Caregiver Email-->
-        <i class="bi bi-envelope"></i>
-        {{obs.caregiver.email}}<br>
-
-        <!--Observation Last Updated Date-->
-        <i class="bi bi-calendar-event"></i>
-        {{obs.lastUpdatedDate | date:'longDate'}} • 
-        {{obs.lastUpdatedDate | date:'shortTime'}}<br>
-
-        <!--Clickable Options for Observations of the current Caregiver-->
-        <div *ngIf="obs.caregiver.email==currentCaregiver.email" 
-             class="d-flex justify-content-start div-separator-top-light-blue flex-wrap">
-
-          <!--Edit Observation-->
-          <div class="p-2 half-width">
-            <button type="button" class="btn button button-action full-width button-obs"
-                    (click)="goToEditObservation(obs)">
-                <i class="bi bi-pencil-fill color-white"></i>
-                {{'edit' | translate}}
-            </button>
+          <div class="mb-2">
+            <i class="bi bi-person"></i> {{ obs.caregiver.name }}<br>
+            <i class="bi bi-envelope"></i> {{ obs.caregiver.email }}<br>
+            <i class="bi bi-calendar-event"></i>
+            {{ obs.lastUpdatedDate | date:'longDate' }} • 
+            {{ obs.lastUpdatedDate | date:'shortTime' }}
           </div>
 
-          <!--Remove Observation-->
-          <div class="p-2 half-width">
-            <button type="button" class="btn button button-destructive full-width button-obs"
-                    (click)="goToDeleteObservation(obs)">
-              <i class="bi bi-trash-fill color-white"></i>
-              {{'remove' | translate}}
-            </button>
+          @if (obs.caregiver.email === currentCaregiver.email) {
+            <div class="d-flex justify-content-start div-separator-top-light-blue flex-wrap">
+              <div class="p-2 half-width">
+                <button type="button" class="btn button button-action full-width button-obs"
+                        (click)="goToEditObservation(obs)">
+                  <i class="bi bi-pencil-fill color-white"></i>
+                  {{ 'edit' | translate }}
+                </button>
+              </div>
+
+              <div class="p-2 half-width">
+                <button type="button" class="btn button button-destructive full-width button-obs"
+                        (click)="goToDeleteObservation(obs)">
+                  <i class="bi bi-trash-fill color-white"></i>
+                  {{ 'remove' | translate }}
+                </button>
+              </div>
+            </div>
+          }
+
+          <div class="div-separator-top-light-blue">
+            <i class="bi bi-card-text"></i>
+            {{ obs.observation }}
           </div>
-            
-        </div>
 
-        <!--Observation Text-->
-        <div class="div-separator-top-light-blue">
-          <i class="bi bi-card-text"></i>
-          {{obs.observation}}
         </div>
-
       </div>
-
     </div>
-
-  </div>
+  }
 
 </div>
 
-<!--Pagination-->
-<div *ngIf="collectionSize != 0">
+@if (collectionSize !== 0) {
   <div class="d-flex justify-content-center flex-wrap">
     <ngb-pagination
         [(page)]="page"
@@ -125,12 +96,14 @@
         [maxSize]="maxSize"
         [collectionSize]="collectionSize"
         [rotate]="true" 
-        [ellipses]="true"
-        >
-        <ng-template ngbPaginationPrevious>
-          <i class="bi bi-caret-left"></i>{{'previous' | translate}}</ng-template>
-        <ng-template ngbPaginationNext>{{'next' | translate}}<i class="bi bi-caret-right"></i></ng-template>
-        <ng-template ngbPaginationEllipsis>...</ng-template>
+        [ellipses]="true">
+      <ng-template ngbPaginationPrevious>
+        <i class="bi bi-caret-left"></i> {{ 'previous' | translate }}
+      </ng-template>
+      <ng-template ngbPaginationNext>
+        {{ 'next' | translate }} <i class="bi bi-caret-right"></i>
+      </ng-template>
+      <ng-template ngbPaginationEllipsis>...</ng-template>
     </ngb-pagination>
   </div>
-</div>
+}

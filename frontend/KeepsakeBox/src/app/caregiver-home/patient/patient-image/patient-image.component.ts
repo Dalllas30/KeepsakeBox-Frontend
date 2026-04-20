@@ -29,7 +29,7 @@ export class PatientImageComponent implements OnInit {
     private appService: AppService,
     private caregiverService: CaregiverService
   ) {
-    const state = this.router.getCurrentNavigation()?.extras?.state;
+    const state = this.router.currentNavigation()?.extras?.state;
     if (state) {
       this.img = state['image'];
     } else {

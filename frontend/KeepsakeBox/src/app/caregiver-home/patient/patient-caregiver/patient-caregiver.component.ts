@@ -26,7 +26,7 @@ export class PatientCaregiverComponent implements OnInit {
     private caregiverService: CaregiverService,
     private router: Router
   ) {
-    const state = this.router.getCurrentNavigation()?.extras?.state;
+    const state = this.router.currentNavigation()?.extras?.state;
     if (state) {
       this.currentCaregiver = state['caregiver'];
       this.isPrimaryCaregiver = state['isPrimary'];

@@ -1,114 +1,99 @@
-<p>patient-caregiver works!</p>
-<!--@author André Santana - fc49451-->
-
-<!--Caregiver Name-->
 <h5 class="p-2 caregiver-name">
-    <i class="bi bi-person"></i> {{'caregiver' | translate}}
-    {{currentCaregiver.caregiver.name}}
+  <i class="bi bi-person"></i> {{'caregiver' | translate}}
+  {{currentCaregiver.caregiver.name}}
 </h5>
 
-<!--Caregiver Info-->
 <div class="d-flex justify-content-start flex-wrap">
 
-    <!--Caregiver Profile Image-->
-    <div class="p-2">
-        <img [src]="currentCaregiver.caregiver.profileImageURL" 
-            alt="Foto de Perfil de {{currentCaregiver.caregiver.name}}" 
-            class="img-thumbnail profile-image">
+  <div class="p-2">
+    <img [src]="currentCaregiver.caregiver.profileImageURL" 
+         alt="Foto de Perfil de {{currentCaregiver.caregiver.name}}" 
+         class="img-thumbnail profile-image">
+  </div>
+
+  <div class="d-flex flex-column">
+
+    <div class="p-2 info-field">
+      <strong><i class="bi bi-envelope"></i> Email</strong><br>
+      {{currentCaregiver.caregiver.email}}
     </div>
 
-    <!--Caregiver Description 1/2-->
-    <div class="d-flex flex-column">
-
-        <!--Caregiver Email-->
-        <div class="p-2 info-field">
-            <strong><i class="bi bi-envelope"></i> Email</strong><br>
-            {{currentCaregiver.caregiver.email}}
-        </div>
-
-        <!--Phone-->
-        <div class="p-2 info-field">
-            <strong><i class="bi bi-telephone-fill"></i> {{'mobilePhone' | translate}}</strong><br>
-            <span *ngIf="currentCaregiver.caregiver.phone == 'null'">{{'notHave' | translate}}</span>
-            <span *ngIf="currentCaregiver.caregiver.phone != 'null'">{{currentCaregiver.caregiver.phone}}</span>
-        </div>
-
-        <!--Caregiver Birth Date-->
-        <div class="p-2 info-field">
-            <strong><i class="bi bi-calendar-event"></i> {{'birthDate' | translate}}</strong><br>
-            {{currentCaregiver.caregiver.birthDate | date:'shortDate'}}
-        </div>
-
+    <div class="p-2 info-field">
+      <strong><i class="bi bi-telephone-fill"></i> {{'mobilePhone' | translate}}</strong><br>
+      @if (currentCaregiver.caregiver.phone === 'null') {
+        <span>{{'notHave' | translate}}</span>
+      } @else {
+        <span>{{currentCaregiver.caregiver.phone}}</span>
+      }
     </div>
 
-    <!--Caregiver Description 2/2-->
-    <div class="d-flex flex-column">
-        
-        <!--Caregiver Type-->
-        <div class="p-2 info-field">
-            <strong><i class="bi bi-file-medical"></i> {{'caregiverType' | translate}}</strong><br>
-            {{currentCaregiver.caregiver.type}}
-        </div>
-
-        <!--Caregiver Speciality-->
-        <div *ngIf="currentCaregiver.caregiver.type=='Formal'" class="p-2 info-field">
-            <strong><i class="bi bi-file-medical"></i> {{'speciality' | translate}}</strong><br>
-            {{currentCaregiver.caregiver.speciality}}
-        </div>
-
-        <!--Patient Relation-->
-        <div class="p-2 info-field">
-            <strong><i class="bi bi-person"></i> {{'relationWithPerson' | translate}}</strong><br>
-            <span *ngIf="currentCaregiver.caregiver.type=='Informal'">
-                {{'isTheir' | translate}} {{currentCaregiver.patientRelation}}
-            </span>
-            <span *ngIf="currentCaregiver.caregiver.type=='Formal'">
-                {{'caregiver' | translate}}
-            </span>
-        </div>
-
+    <div class="p-2 info-field">
+      <strong><i class="bi bi-calendar-event"></i> {{'birthDate' | translate}}</strong><br>
+      {{currentCaregiver.caregiver.birthDate | date:'shortDate'}}
     </div>
+
+  </div>
+
+  <div class="d-flex flex-column">
+    
+    <div class="p-2 info-field">
+      <strong><i class="bi bi-file-medical"></i> {{'caregiverType' | translate}}</strong><br>
+      {{currentCaregiver.caregiver.type}}
+    </div>
+
+    @if (currentCaregiver.caregiver.type === 'Formal') {
+      <div class="p-2 info-field">
+        <strong><i class="bi bi-file-medical"></i> {{'speciality' | translate}}</strong><br>
+        {{currentCaregiver.caregiver.speciality}}
+      </div>
+    }
+
+    <div class="p-2 info-field">
+      <strong><i class="bi bi-person"></i> {{'relationWithPerson' | translate}}</strong><br>
+      @if (currentCaregiver.caregiver.type === 'Informal') {
+        <span>{{'isTheir' | translate}} {{currentCaregiver.patientRelation}}</span>
+      } @else {
+        <span>{{'caregiver' | translate}}</span>
+      }
+    </div>
+
+  </div>
 
 </div>
 
-<!--Not primary caregiver only show return button-->
-<div *ngIf=!isPrimaryCaregiver class="p-2 full-width">
-    <button type="button" class="btn button button-neutral full-width"
-            routerLink="/caregiver/person/info">
-        <i class="bi bi-caret-left-fill color-white"></i>
-        <span class="color-white"
-            *ngIf="loggedCaregiver.type=='Formal'"> {{'information' | translate}} {{'beneficiary' | translate}}</span>
-        <span class="color-white"
-            *ngIf="loggedCaregiver.type=='Informal'"> {{'information' | translate}} {{'relative' | translate}}</span>
+---
+
+@if (!isPrimaryCaregiver) {
+  <div class="p-2 full-width">
+    <button type="button" class="btn button button-neutral full-width" routerLink="/caregiver/person/info">
+      <i class="bi bi-caret-left-fill color-white"></i>
+      <span class="color-white">
+        {{'information' | translate}} 
+        {{ (loggedCaregiver.type === 'Formal' ? 'beneficiary' : 'relative') | translate }}
+      </span>
     </button>
-</div>
-
-<!--Primary caregiver options-->
-<div *ngIf=isPrimaryCaregiver>
+  </div>
+} @else {
+  <div>
     <div class="d-flex justify-content-start flex-wrap">
 
-        <!--------Return to Patient Information------------------------>
-        <div class="p-2 half-width fields-min-width">
-            <button type="button" class="btn button button-neutral full-width"
-                    routerLink="/caregiver/person/info">
-                <i class="bi bi-caret-left-fill color-white"></i>
-                <span class="color-white"
-                    *ngIf="loggedCaregiver.type=='Formal'"> {{'information' | translate}} {{'beneficiary' | translate}}</span>
-                <span class="color-white"
-                    *ngIf="loggedCaregiver.type=='Informal'"> {{'information' | translate}} {{'relative' | translate}}</span>
-            </button>
-        </div>
+      <div class="p-2 half-width fields-min-width">
+        <button type="button" class="btn button button-neutral full-width" routerLink="/caregiver/person/info">
+          <i class="bi bi-caret-left-fill color-white"></i>
+          <span class="color-white">
+            {{'information' | translate}} 
+            {{ (loggedCaregiver.type === 'Formal' ? 'beneficiary' : 'relative') | translate }}
+          </span>
+        </button>
+      </div>
 
-        <!-------Remove patient------------------------>
-        <div class="p-2 half-width fields-min-width">
-            <button type="button" class="btn button button-destructive full-width"
-                    (click)="goToPatientCaregiverRemove()">
-                <i class="bi bi-trash-fill color-white"></i>
-                {{'removeCaregiver' | translate}}
-            </button>
-        </div>
+      <div class="p-2 half-width fields-min-width">
+        <button type="button" class="btn button button-destructive full-width" (click)="goToPatientCaregiverRemove()">
+          <i class="bi bi-trash-fill color-white"></i>
+          {{'removeCaregiver' | translate}}
+        </button>
+      </div>
 
     </div>
-
-</div>
-
+  </div>
+}

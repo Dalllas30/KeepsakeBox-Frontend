@@ -1,195 +1,162 @@
-<p>patient-info works!</p>
-<!--@author André Santana - fc49451-->
-
-<!--Patient Info Container-->
 <div class="d-flex flex-wrap">
 
-    <!--Profile Image and Info-->
-    <div class="mr-auto p-2">
-        <div class="d-flex justify-content-start flex-wrap">
+  <div class="mr-auto p-2">
+    <div class="d-flex justify-content-start flex-wrap">
 
-            <!--Profile Image-->
-            <div class="p-2">
-                <img [src]="patient.profileImageURL" alt="Foto de Perfil de {{patient.name}}"
-                    class="img-thumbnail profile-image">
-            </div>
+      <div class="p-2">
+        <img [src]="patient.profileImageURL" [alt]="'Foto de Perfil de ' + patient.name"
+             class="img-thumbnail profile-image">
+      </div>
 
-            <!--Info-->
-            <div class="d-flex flex-column">
-
-                <!--Name-->
-                <div class="p-2 info-field">
-                    <strong> <i class="bi bi-person"></i> {{'fullName' | translate}}</strong><br>
-                    {{patient.name}}
-                </div>
-
-                <!--Birth Date-->
-                <div class="p-2 info-field">
-                    <strong><i class="bi bi-calendar-event"></i> {{'birthDate' | translate}}</strong><br>
-                    {{patient.birthDate | date:'shortDate'}}
-                </div>
-
-                <!--Education-->
-                <div class="p-2 info-field">
-                    <strong> <i class="bi bi-book"></i> {{'education' | translate}}</strong><br>
-                    {{patient.education}}
-                </div>
-
-            </div>
-
+      <div class="d-flex flex-column">
+        <div class="p-2 info-field">
+          <strong><i class="bi bi-person"></i> {{'fullName' | translate}}</strong><br>
+          {{ patient.name }}
         </div>
-    </div>
 
-    <!--Patient Action Buttons-->
+        <div class="p-2 info-field">
+          <strong><i class="bi bi-calendar-event"></i> {{'birthDate' | translate}}</strong><br>
+          {{ patient.birthDate | date:'shortDate' }}
+        </div>
+
+        <div class="p-2 info-field">
+          <strong><i class="bi bi-book"></i> {{'education' | translate}}</strong><br>
+          {{ patient.education }}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="p-2">
     <div class="p-2">
-
-        <!--Start Therapy Session-->
-        <div class="p-2">
-            <button type="button" class="btn button button-action button-patient"
-                (click)="navigateToSessionRT(patient.id)">
-                {{'beginTherapy' | translate}}
-            </button>
-        </div>
-
-        <!--Edit Patient Related Info-->
-        <div *ngIf="currentCaregiver.isPrimary" class="p-2">
-            <button type="button" class="btn button button-action button-patient"
-                routerLink="/caregiver/person/info/update">
-                {{'editInformation' | translate}}
-            </button>
-        </div>
-
-        <!--Share/Left Care of a Patient-->
-        <div *ngIf="currentCaregiver.isPrimary" class="p-2">
-            <button type="button" class="btn button button-action button-patient" routerLink="/caregiver/person/share">
-                {{'shareCare' | translate}}
-            </button>
-        </div>
-
+      <button type="button" class="btn button button-action button-patient"
+              (click)="navigateToSessionRT(patient.id)">
+        {{ 'beginTherapy' | translate }}
+      </button>
     </div>
+
+    @if (currentCaregiver.isPrimary) {
+      <div class="p-2">
+        <button type="button" class="btn button button-action button-patient"
+                routerLink="/caregiver/person/info/update">
+          {{ 'editInformation' | translate }}
+        </button>
+      </div>
+
+      <div class="p-2">
+        <button type="button" class="btn button button-action button-patient" 
+                routerLink="/caregiver/person/share">
+          {{ 'shareCare' | translate }}
+        </button>
+      </div>
+    }
+  </div>
 
 </div>
 
 <div class="d-flex flex-row">
-    <!--Cities of interest-->
-    <div class="p-2 info-field d-flex flex-column" style="margin-left: 20px;">
-        <strong> <i class="bi bi-building"></i> Cidades de interesse: </strong><br>
-        <div class="d-flex flex-row">
-            <button *ngFor="let city of cities" type="button"
-                class="btn button category-button category-button-selected"
+  <div class="p-2 info-field d-flex flex-column" style="margin-left: 20px;">
+    <strong><i class="bi bi-building"></i> {{ 'citiesOfInterest' | translate }}: </strong><br>
+    <div class="d-flex flex-row">
+      @for (city of cities; track city) {
+        <button type="button" class="btn button category-button category-button-selected"
                 style="position: relative; margin: 10px; width: 150px; margin-top: -20px;">
-                <span style="color: white;">{{city}}</span>
-            </button>
-        </div>
-
+          <span style="color: white;">{{ city }}</span>
+        </button>
+      }
     </div>
+  </div>
 
-    <!--Other interests-->
-    <div class="p-2 info-field d-flex flex-column" style="margin-left: 200px;">
-        <strong> <i class="bi bi-heart"></i> Outros interesses: </strong><br>
-        <div class="d-flex flex-row">
-            <button type="button" *ngFor="let interest of interests" class="btn button category-button category-button-selected"
+  <div class="p-2 info-field d-flex flex-column" style="margin-left: 200px;">
+    <strong><i class="bi bi-heart"></i> {{ 'otherInterests' | translate }}: </strong><br>
+    <div class="d-flex flex-row">
+      @for (interest of interests; track interest) {
+        <button type="button" class="btn button category-button category-button-selected"
                 style="position: relative; margin: 10px; width: 150px; margin-top: -20px;">
-                <span style="color: white;">{{interest}}</span>
-            </button>
-        </div>
-
+          <span style="color: white;">{{ interest }}</span>
+        </button>
+      }
     </div>
+  </div>
 </div>
 
-<!--Caregiver Table/List-->
 <table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col" colspan="2">{{ 'caregivers' | translate }}</th>
+      <th scope="col">{{ 'relation' | translate }}</th>
+      <th scope="col" colspan="2">{{ 'actions' | translate }}</th>
+    </tr>
+  </thead>
 
-    <!--Table Header-->
-    <thead>
-        <tr>
-            <th scope="col" colspan="2">{{'caregivers' | translate}}</th>
-            <th scope="col">{{'relation' | translate}}</th>
-            <th scope="col" colspan="2">{{'actions' | translate}}</th>
-        </tr>
-    </thead>
+  <tbody>
+    @for (c of patientCaregivers | slice: (page-1) * pageSize : page * pageSize; track c.caregiver.email) {
+      <tr>
+        <td>
+          <img [src]="c.caregiver.profileImageURL" [alt]="'Foto de Perfil de ' + c.caregiver.name"
+               class="rounded table-profile-image">
+        </td>
 
-    <!--Table Content-->
-    <tbody>
-        <tr *ngFor="let c of patientCaregivers | slice: (page-1) * pageSize : page * pageSize">
+        <td class="table-text-fields bolder-text">
+          {{ convertPatientDisplayName(c.caregiver.name, "") }}
+          @if (c.caregiver.email === currentCaregiver.caregiver.email) {
+            <span>({{ 'me' | translate }})</span>
+          }
+        </td>
 
-            <!--Caregiver Image-->
-            <td>
-                <img [src]="c.caregiver.profileImageURL" alt="Foto de Perfil de {{c.caregiver.name}}"
-                    class="rounded table-profile-image">
-            </td>
+        <td class="table-text-fields">
+          @if (c.caregiver.type === 'Formal') {
+            {{ (c.isPrimary ? 'primaryCaregiver' : 'caregiver') | translate }}
+          } @else {
+            {{ c.patientRelation }} @if (c.isPrimary) { ({{ 'primaryCaregiver' | translate }}) }
+          }
+        </td>
 
-            <!--Caregiver Name-->
-            <td class="table-text-fields bolder-text">
-                {{convertPatientDisplayName(c.caregiver.name,"")}}
-                <span *ngIf="c.caregiver.email==currentCaregiver.caregiver.email">
-                    {{'me' | translate}}
-                </span>
-            </td>
-
-            <!--Caregiver Relation-->
-            <td class="table-text-fields" *ngIf="c.isPrimary && c.caregiver.type == 'Formal'">
-                {{'primaryCaregiver' | translate}}
-            </td>
-            <td class="table-text-fields" *ngIf="!c.isPrimary && c.caregiver.type == 'Formal'">
-                {{'caregiver' | translate}}
-            </td>
-            <td class="table-text-fields" *ngIf="c.isPrimary && c.caregiver.type == 'Informal'">
-                {{c.patientRelation}} ({{'primaryCaregiver' | translate}})
-            </td>
-            <td class="table-text-fields" *ngIf="!c.isPrimary && c.caregiver.type == 'Informal'">
-                {{c.patientRelation}}
-            </td>
-
-            <!--Left Care Button for Current Caregiver-->
-            <td colspan="2" *ngIf="c.caregiver.email == currentCaregiver.caregiver.email">
-                <div class="p-2">
-                    <button type="button" class="btn button button-destructive button-full-width"
-                        (click)="goToLeftPatientCare(c)">
-                        {{'leaveTheCare' | translate}}
-                    </button>
-                </div>
-            </td>
-
-            <!--Current Not Primary Caregiver-->
-            <td colspan="2" *ngIf="!currentCaregiver.isPrimary && 
-                        c.caregiver.email != currentCaregiver.caregiver.email">
-                <div class="p-2">
-                    <button type="button" class="btn button button-action button-full-width"
+        <td colspan="2">
+          <div class="p-2 full-width">
+            @if (c.caregiver.email === currentCaregiver.caregiver.email) {
+              <button type="button" class="btn button button-destructive button-full-width"
+                      (click)="goToLeftPatientCare(c)">
+                {{ 'leaveTheCare' | translate }}
+              </button>
+            } @else {
+              @if (currentCaregiver.isPrimary) {
+                <button type="button" class="btn button button-action button-half-width-first"
                         (click)="goToPatientCaregiverDetails(c)">
-                        {{'viewProfile' | translate}}
-                    </button>
-                </div>
-            </td>
-
-            <!--Current Primary Caregiver-->
-            <td colspan="2" *ngIf="currentCaregiver.isPrimary && 
-                       c.caregiver.email != currentCaregiver.caregiver.email">
-                <div class="p-2 full-width">
-                    <button type="button" class="btn button button-action button-half-width-first"
-                        (click)="goToPatientCaregiverDetails(c)">
-                        {{'viewProfile' | translate}}
-                    </button>
-                    <button type="button" class="btn button button-destructive button-half-width-second"
+                  {{ 'viewProfile' | translate }}
+                </button>
+                <button type="button" class="btn button button-destructive button-half-width-second"
                         (click)="goToPatientCaregiverRemove(c)">
-                        {{'remove' | translate}}
-                    </button>
-                </div>
-            </td>
-
-        </tr>
-    </tbody>
-
+                  {{ 'remove' | translate }}
+                </button>
+              } @else {
+                <button type="button" class="btn button button-action button-full-width"
+                        (click)="goToPatientCaregiverDetails(c)">
+                  {{ 'viewProfile' | translate }}
+                </button>
+              }
+            }
+          </div>
+        </td>
+      </tr>
+    }
+  </tbody>
 </table>
 
-<!--Pagination-->
 <div class="d-flex justify-content-center flex-wrap">
-    <ngb-pagination [(page)]="page" [pageSize]="pageSize" [maxSize]="maxSize" [collectionSize]="collectionSize"
-        [rotate]="true" [ellipses]="true">
-        <ng-template ngbPaginationPrevious>
-            <i class="bi bi-caret-left"></i>{{'previous' | translate}}
-        </ng-template>
-        <ng-template ngbPaginationNext>{{'next' | translate}}<i class="bi bi-caret-right"></i></ng-template>
-        <ng-template ngbPaginationEllipsis>...</ng-template>
-    </ngb-pagination>
+  <ngb-pagination [(page)]="page" 
+                  [pageSize]="pageSize" 
+                  [maxSize]="maxSize" 
+                  [collectionSize]="collectionSize"
+                  [rotate]="true" 
+                  [ellipses]="true">
+    <ng-template ngbPaginationPrevious>
+      <i class="bi bi-caret-left"></i>{{ 'previous' | translate }}
+    </ng-template>
+    <ng-template ngbPaginationNext>
+      {{ 'next' | translate }}<i class="bi bi-caret-right"></i>
+    </ng-template>
+    <ng-template ngbPaginationEllipsis>...</ng-template>
+  </ngb-pagination>
 </div>

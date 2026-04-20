@@ -81,6 +81,8 @@
     "addBeneficiaryError": "Occoreu um erro ao adicionar Beneficiário.",
     "addRelativeError": "Occoreu um erro ao adicionar Familiar.",
     "nameToPresent": "Nome a Apresentar",
+    "citiesOfInterest": "Cidades de interesse",
+    "otherInterests": "Outros interesses",
     "education": "Escolaridade",
     "relativeIsMy": "O Familiar é minha/meu",
     "confirmDiscardImage": "Deseja mesmo descartar esta Imagem?",
