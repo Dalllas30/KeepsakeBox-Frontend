@@ -98,6 +98,7 @@ export const routes: Routes = [
       { path: 'notifications', loadComponent: () => import('./caregiver-home/caregiver-notifications/caregiver-notifications.component').then(m => m.CaregiverNotificationsComponent) },
       { path: 'logout', loadComponent: () => import('./caregiver-home/caregiver-logout/caregiver-logout.component').then(m => m.CaregiverLogoutComponent) },
       { path: 'help', loadComponent: () => import('./caregiver-home/caregiver-help/caregiver-help.component').then(m => m.CaregiverHelpComponent) },
+      { path: 'help/profile', loadComponent: () => import('./caregiver-home/caregiver-help/profile-help/profile-help.component').then(m => m.ProfileHelpComponent) },
     ]
   },
   { path: '**', redirectTo: 'login' }

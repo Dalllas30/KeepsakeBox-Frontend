@@ -1,1 +1,50 @@
 <p>profile-help works!</p>
+<div class="p-2 d-flex justify-content-center flex-wrap caregiver-home-container">
+    <div class="card blue-border">
+
+        <!--Add Image Screen 1 Card Header-->
+        <h5 class="card-header card-header-blue">
+            {{'helpAbout' | translate}}: {{'caregiverProfile' | translate}}
+        </h5>
+
+        <!--Add Image Screen 1 Card Body-->
+        <div class="card-body">
+        
+            <!--Image to Add-->
+            <div class="p-2 d-flex justify-content-center">
+                <img src="assets/screen1.png" alt="Ecrã de Perfil do Cuidador" 
+                     class="image-square img-thumbnail">
+            </div>
+
+            <div class="p-2" style="text-align: justify;">
+                {{'caregiverProfileHelp1' | translate}}
+                <strong>"{{'editProfile' | translate}}"</strong>.
+                {{'caregiverProfileHelp2' | translate}}<strong>"{{'changePassword' | translate}}"</strong>.
+                <br><br>
+                {{'caregiverProfileHelp3' | translate}}
+                <span *ngIf="caregiver.type=='Informal'"> {{'relatives' | translate}} </span>
+                <span *ngIf="caregiver.type=='Formal'"> {{'beneficiaries' | translate}} </span>
+                {{'caregiverProfileHelp4' | translate}} <strong>"{{'therapySessionsHeld' | translate}}"</strong>.
+                <br><br>
+                {{'caregiverProfileHelp5' | translate}}
+                <span *ngIf="caregiver.type=='Informal'"> {{'relatives' | translate}} </span>
+                <span *ngIf="caregiver.type=='Formal'"> {{'beneficiaries' | translate}} </span>
+                {{'caregiverProfileHelp6' | translate}}
+                <strong>"{{'myImages' | translate}}"</strong> 
+                {{'caregiverProfileHelp7' | translate}}
+            </div>
+
+            <div class="p-2">
+                <button type="button" 
+                        class="btn button button-neutral full-width" 
+                        routerLink="/caregiver/help">
+                    <i class="bi bi-caret-left-fill color-white"></i>
+                    {{'moreHelp' | translate}}
+                </button>
+            </div>
+
+        </div>
+        
+    </div>
+</div>
+
