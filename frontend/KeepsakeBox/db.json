@@ -71,6 +71,18 @@
       "speciality": "Geriatrics",
       "token": "temp-token-1776515015651",
       "id": 9
+    },
+    {
+      "name": "dev",
+      "email": "dev@gmail.com",
+      "phone": "",
+      "password": "ibjDrM2sAVrATzSfAwBVZg==",
+      "birthDate": "1980-06-02T23:00:00.000Z",
+      "profileImage": "/assets/profileimage-default.png",
+      "caregiverType": "Formal",
+      "speciality": "Geriatrics",
+      "token": "temp-token-1776783299336",
+      "id": 10
     }
   ],
   "patients": [
@@ -84,8 +96,13 @@
       "isActive": true,
       "lastSession": null,
       "chat": null,
-      "interests": ["music", "gardening"],
-      "cities": ["Lisbon"],
+      "interests": [
+        "music",
+        "gardening"
+      ],
+      "cities": [
+        "Lisbon"
+      ],
       "caregiverId": 4,
       "patientRelation": "Mother"
     },
@@ -99,10 +116,67 @@
       "isActive": true,
       "lastSession": null,
       "chat": null,
-      "interests": ["games", "building"],
-      "cities": ["Lisbon"],
+      "interests": [
+        "games",
+        "building"
+      ],
+      "cities": [
+        "Lisbon"
+      ],
       "caregiverId": 5,
       "patientRelation": "Father"
+    },
+    {
+      "name": "test pat",
+      "displayName": "pat",
+      "birthDate": "1937-02-01T00:00:00.000Z",
+      "education": "Primary School / Elementary School",
+      "profileImageURL": "/assets/profileimage-default.png",
+      "interests": "bowling",
+      "cities": "evora",
+      "caregiverId": 5,
+      "patientRelation": "Relative",
+      "isActive": true,
+      "id": 3
+    },
+    {
+      "name": "tdog",
+      "displayName": "t",
+      "birthDate": "2020-03-02T00:00:00.000Z",
+      "education": "Preparatory Cicle / 2nd Cycle of Basic Education",
+      "profileImageURL": "/assets/profileimage-default.png",
+      "interests": "kk",
+      "cities": "vora",
+      "caregiverId": 6,
+      "patientRelation": "",
+      "isActive": true,
+      "id": 4
+    },
+    {
+      "name": "tt",
+      "displayName": "tt2",
+      "birthDate": "1975-03-01T23:00:00.000Z",
+      "education": "General Secondary Education / 3rd Cycle of Basic Education",
+      "profileImageURL": "/assets/profileimage-default.png",
+      "interests": "ye",
+      "cities": "ok",
+      "caregiverId": 6,
+      "patientRelation": "",
+      "isActive": true,
+      "id": 5
+    },
+    {
+      "name": "pat1",
+      "displayName": "1",
+      "birthDate": "1974-12-31T23:00:00.000Z",
+      "education": "Higher Education",
+      "profileImageURL": "/assets/profileimage-default.png",
+      "interests": "",
+      "cities": "",
+      "caregiverId": 10,
+      "patientRelation": "",
+      "isActive": true,
+      "id": 6
     }
   ],
   "patientCaregivers": [

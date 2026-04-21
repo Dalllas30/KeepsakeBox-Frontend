@@ -183,6 +183,9 @@ const port = "4200"
        if (response) {
          patients = response.sort((a, b) => (a.name > b.name) ? 1 : -1);
        }
+     })
+     .catch(error => {
+       patients = [];
      });
      return patients;
    }
@@ -215,11 +218,11 @@ const port = "4200"
    async addPatient(token: string,
      caregiverPatientRegisterData: CaregiverPatientRegisterData): Promise<String | null>{
      let patientId = null;
-     const caregiverId = localStorage.getItem('currentCaregiverId');
+     const caregiverId = this.currentCaregiver.value?.id;
      const patientPayload = {
        ...caregiverPatientRegisterData.patient,
        profileImageURL: caregiverPatientRegisterData.patient.profileImageURL || '/assets/profileimage-default.png',
-       caregiverId: caregiverId ? Number(caregiverId) : null,
+       caregiverId: caregiverId ?? null,
        patientRelation: caregiverPatientRegisterData.patientRelation,
        isActive: true
      };

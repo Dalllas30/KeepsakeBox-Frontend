@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router, RouterLink } from '@angular/router';
@@ -10,11 +10,12 @@ import { CaregiverService } from '../../core/services/caregiver.service';
 import { PatientService } from '../../core/services/patient.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { CategoryService } from '../../core/services/category.service';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-caregiver-patients',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterLink],
+  imports: [CommonModule, TranslateModule, RouterLink, NgbPaginationModule],
   templateUrl: './caregiver-patients.component.html',
   styleUrls: ['./caregiver-patients.component.css']
 })
@@ -26,8 +27,8 @@ export class CaregiverPatientsComponent implements OnInit {
   public hasNewNotifications: boolean = false;
   public caregiver!: Caregiver;
   public pList: Patient[] = [];
-  public pListCopy!: Patient[];
-  public collectionSize!: number;
+  public pListCopy: Patient[] = [];
+  public collectionSize: number = 0;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -36,7 +37,8 @@ export class CaregiverPatientsComponent implements OnInit {
     private notificationService: NotificationService,
     private patientService: PatientService,
     private categoryService: CategoryService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -46,10 +48,10 @@ export class CaregiverPatientsComponent implements OnInit {
   }
 
   async retrievePatients(): Promise<void> {
-    await this.categoryService.getCategories();
     this.pList = await this.caregiverService.getCaregiverPatients(this.authenticationService.getCurrentCaregiverToken()!) ?? [];
     this.pListCopy = this.pList;
     this.collectionSize = this.pList.length;
+    this.cdr.detectChanges();
   }
 
   convertPatientDisplayName(displayName: string, name: string): string {
@@ -57,13 +59,17 @@ export class CaregiverPatientsComponent implements OnInit {
   }
 
   async checkNotifications() {
-    this.hasNewNotifications = false;
-    let notifications = await this.notificationService
-      .getCaregiverNotifications(this.authenticationService.getCurrentCaregiverToken()!);
-    for (let n of notifications) {
-      if (n.receiver.email == this.caregiver.email) {
-        this.hasNewNotifications = true;
+    try {
+      this.hasNewNotifications = false;
+      let notifications = await this.notificationService
+        .getCaregiverNotifications(this.authenticationService.getCurrentCaregiverToken()!);
+      for (let n of notifications) {
+        if (n.receiver.email == this.caregiver.email) {
+          this.hasNewNotifications = true;
+        }
       }
+    } catch {
+      this.hasNewNotifications = false;
     }
   }
 

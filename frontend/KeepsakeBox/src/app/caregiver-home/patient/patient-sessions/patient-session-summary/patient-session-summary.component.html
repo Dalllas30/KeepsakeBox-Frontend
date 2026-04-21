@@ -85,7 +85,7 @@
   <div class="p-2 info-field">
     <strong>{{ 'observations' | translate }}</strong><br>
     
-    @if (session.global_feedback.patient_observation?.trim()) {
+    @if (session.global_feedback.patient_observation.trim()) {
       {{ session.global_feedback.patient_observation }}
     } @else {
       {{ 'noneF' | translate }}
