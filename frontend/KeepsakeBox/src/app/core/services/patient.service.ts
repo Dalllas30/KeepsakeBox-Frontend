@@ -12,6 +12,7 @@
  import { PatientObservation } from '../models/patient-observation.model';
  import { PatientObservationList } from '../models/patient-observation-list.model';
  import { AddPatientObservationData } from '../models/add-patient-observation-data.model';
+  import { environment } from '../../../environments/environment';
 
  //Request URLs
  //const serverURL = "194.117.20.219"
@@ -85,7 +86,8 @@ private currentObservation: BehaviorSubject<PatientObservation | null>;
    async getPatientById(token: string, patientId: String): Promise<Patient>{
      let patient = null;
      await this.http.get<Patient>(
-       `${getPatientByIdURL01}${token}${getPatientByIdURL02}${patientId}`).toPromise()
+     //`${getPatientByIdURL01}${token}${getPatientByIdURL02}${patientId}`).toPromise()
+       `${environment.apiUrl}/patients/${patientId}`).toPromise()
      .then(async response => {
        if (response){
          patient = response;
@@ -106,11 +108,14 @@ private currentObservation: BehaviorSubject<PatientObservation | null>;
     */
     async getPatientNameById(token: string, patientId: String): Promise<ResponseBasic>{
      let patient = null;
-     await this.http.get<ResponseBasic>(
-       `${getPatientNameByIdURL01}${token}${getPatientNameByIdURL02}${patientId}`).toPromise()
+    //  await this.http.get<ResponseBasic>(
+    //    `${getPatientNameByIdURL01}${token}${getPatientNameByIdURL02}${patientId}`).toPromise()
+     await this.http.get<Patient>(
+       `${environment.apiUrl}/patients/${patientId}`).toPromise()
      .then(async response => {
        if (response){
-         patient = response.result;
+         //patient = response.result;
+         patient = response.name as any;
        }
      })
      .catch(error => {
@@ -128,11 +133,13 @@ private currentObservation: BehaviorSubject<PatientObservation | null>;
     */
    async getPatientCaregivers(token: string, patientId: String): Promise<PatientCaregiver[]> {
      let caregivers: PatientCaregiver[] = [];
-     await this.http.get<PatientCaregiverList>(
-       `${getPatientsCaregiversByIdURL01}${token}${getPatientsCaregiversByIdURL02}${patientId}`).toPromise()
+    //  await this.http.get<PatientCaregiverList>(
+    //    `${getPatientsCaregiversByIdURL01}${token}${getPatientsCaregiversByIdURL02}${patientId}`).toPromise()
+     await this.http.get<PatientCaregiver[]>(
+       `${environment.apiUrl}/patientCaregivers?patientId=${patientId}`).toPromise()
      .then(async response => {
        if (response) {
-         caregivers = response.caregivers.sort((a, b) => (a.caregiver.name > b.caregiver.name) ? 1 : -1);
+         caregivers = response.sort((a, b) => (a.caregiver.name > b.caregiver.name) ? 1 : -1);
        }
      });
      return caregivers;
@@ -147,8 +154,10 @@ private currentObservation: BehaviorSubject<PatientObservation | null>;
     */
    async updatePatient(token: string, patient: Patient): Promise<boolean>{
      let patientUpdated = true;
-     await this.http.post(
-       `${updatePatientURL}${token}`,patient).toPromise()
+    //  await this.http.post(
+    //    `${updatePatientURL}${token}`,patient).toPromise()
+     await this.http.put(
+       `${environment.apiUrl}/patients/${patient.id}`, patient).toPromise()
      .catch(error => {
        patientUpdated = false;
      });
@@ -192,12 +201,14 @@ private currentObservation: BehaviorSubject<PatientObservation | null>;
     */
    async getPatientObservations(token: string, patientId: string): Promise<PatientObservation[]> {
      let observations: PatientObservation[] = [];
-     await this.http.get<PatientObservationList>(
-       `${getObservationsURL01}${token}${getObservationsURL02}${patientId}`).toPromise()
+    //  await this.http.get<PatientObservationList>(
+    //    `${getObservationsURL01}${token}${getObservationsURL02}${patientId}`).toPromise()
+     await this.http.get<PatientObservation[]>(
+       `${environment.apiUrl}/observations?patientId=${patientId}`).toPromise()
      .then(response => {
        if (response) {
-         observations = response.observations.sort(
-           (a, b) => (b.lastUpdatedDate?.getTime() ?? 0) - (a.lastUpdatedDate?.getTime() ?? 0)
+         observations = response.sort(
+           (a, b) => new Date(b.lastUpdatedDate as any).getTime() - new Date(a.lastUpdatedDate as any).getTime()
          );
        }
      });
@@ -213,7 +224,8 @@ private currentObservation: BehaviorSubject<PatientObservation | null>;
    async addObservation(token: string, observationData: AddPatientObservationData): Promise<boolean> {
      let added = true;
      await this.http.post(
-       `${addObservationURL}${token}`, observationData).toPromise()
+     //`${addObservationURL}${token}`, observationData).toPromise()
+       `${environment.apiUrl}/observations`, observationData).toPromise()
      .catch(error => {
        added = false;
      });
@@ -228,8 +240,10 @@ private currentObservation: BehaviorSubject<PatientObservation | null>;
     */
    async updateObservation(token: string, observation: PatientObservation): Promise<boolean> {
      let updated = true;
-     await this.http.post(
-       `${updateObservationURL}${token}`, observation).toPromise()
+    //  await this.http.post(
+    //    `${updateObservationURL}${token}`, observation).toPromise()
+     await this.http.put(
+       `${environment.apiUrl}/observations/${observation.id}`, observation).toPromise()
      .catch(error => {
        updated = false;
      });
@@ -244,8 +258,8 @@ private currentObservation: BehaviorSubject<PatientObservation | null>;
     */
    async deleteObservation(token: string, observationId: string): Promise<boolean> {
      let deleted = true;
-     await this.http.get(
-       `${deleteObservationURL01}${token}${deleteObservationURL02}${observationId}`).toPromise()
+     await this.http.delete(
+       `${environment.apiUrl}/observations/${observationId}`).toPromise()
      .catch(error => {
        deleted = false;
      });

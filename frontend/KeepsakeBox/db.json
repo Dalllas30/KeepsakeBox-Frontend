@@ -1,18 +1,6 @@
 {
   "caregivers": [
     {
-      "id": 1,
-      "name": "Test Caregiver",
-      "email": "test@test.com",
-      "password": "encrypted-password",
-      "phone": "123456789",
-      "birthDate": "1990-01-01",
-      "profileImage": "",
-      "caregiverType": "Informal",
-      "speciality": "",
-      "token": "fake-jwt-token-123"
-    },
-    {
       "name": "daniel",
       "email": "teste@gmail.com",
       "phone": "",
@@ -85,8 +73,83 @@
       "id": 9
     }
   ],
-  "patients": [],
+  "patients": [
+    {
+      "id": 1,
+      "name": "Maria Silva",
+      "displayName": "Maria",
+      "birthDate": "1945-06-15T00:00:00.000Z",
+      "education": "Primary",
+      "profileImageURL": "/assets/profileimage-default.png",
+      "isActive": true,
+      "lastSession": null,
+      "chat": null,
+      "interests": ["music", "gardening"],
+      "cities": ["Lisbon"],
+      "caregiverId": 4,
+      "patientRelation": "Mother"
+    },
+    {
+      "id": 2,
+      "name": "Jão Pedro",
+      "displayName": "Jão",
+      "birthDate": "1955-12-23T00:00:00.000Z",
+      "education": "Primary",
+      "profileImageURL": "/assets/profileimage-default.png",
+      "isActive": true,
+      "lastSession": null,
+      "chat": null,
+      "interests": ["games", "building"],
+      "cities": ["Lisbon"],
+      "caregiverId": 5,
+      "patientRelation": "Father"
+    }
+  ],
+  "patientCaregivers": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "caregiver": {
+        "id": 4,
+        "name": "daniel",
+        "email": "teste@gmail.com",
+        "phone": "",
+        "birthDate": "2025-01-01T00:00:00.000Z",
+        "profileImage": "/assets/profileimage-default.png",
+        "caregiverType": "Informal",
+        "speciality": "",
+        "token": "temp-token-1775572651037"
+      },
+      "isPrimary": true,
+      "patientRelation": "Mother"
+    },
+    {
+      "id": 2,
+      "patientId": 2,
+      "caregiver": {
+        "id": 5,
+        "name": "teste_tdog",
+        "email": "teste3@gmail.com",
+        "phone": "",
+        "birthDate": "1965-03-10T00:00:00.000Z",
+        "profileImage": "/assets/profileimage-default.png",
+        "caregiverType": "Informal",
+        "speciality": "",
+        "token": "temp-token-1776268227649"
+      },
+      "isPrimary": true,
+      "patientRelation": "Father"
+    }
+  ],
   "messages": [],
-  "observations": [],
+  "observations": [
+    {
+      "id": 1,
+      "patientId": 1,
+      "caregiverId": 4,
+      "text": "Patient was calm and responsive today.",
+      "lastUpdatedDate": "2026-04-20T10:00:00.000Z"
+    }
+  ],
   "images": []
 }

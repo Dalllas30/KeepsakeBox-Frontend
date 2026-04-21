@@ -12,6 +12,7 @@
  import { CaregiverPatientRegisterData } from '../models/caregiver-patient-register-data.model';
  import { ResponseBasic } from '../models/response-basic.model';
  import { CaregiverList } from '../models/caregiver-list.model';
+ import { environment } from '../../../environments/environment';
  
  //Request URLs
 //const serverURL = "194.117.20.219"
@@ -176,10 +177,11 @@ const port = "4200"
     */
    async getCaregiverPatients(token: string): Promise<Patient[] | null> {
      let patients: Patient[] | null = null;
-     await this.http.get<PatientList>(`${getCaregiverPatientsURL01}${token}`).toPromise()
+     const caregiverId = localStorage.getItem('currentCaregiverId');
+     await this.http.get<Patient[]>(`${environment.apiUrl}/patients?caregiverId=${caregiverId}`).toPromise()
      .then(response => {
        if (response) {
-         patients = response.patients.sort((a, b) => (a.name > b.name) ? 1 : -1);
+         patients = response.sort((a, b) => (a.name > b.name) ? 1 : -1);
        }
      });
      return patients;
@@ -213,11 +215,19 @@ const port = "4200"
    async addPatient(token: string,
      caregiverPatientRegisterData: CaregiverPatientRegisterData): Promise<String | null>{
      let patientId = null;
-     await this.http.post<ResponseBasic>(
-       `${addCaregiverPatientURL}${token}`,caregiverPatientRegisterData).toPromise()
+     const caregiverId = localStorage.getItem('currentCaregiverId');
+     const patientPayload = {
+       ...caregiverPatientRegisterData.patient,
+       profileImageURL: caregiverPatientRegisterData.patient.profileImageURL || '/assets/profileimage-default.png',
+       caregiverId: caregiverId ? Number(caregiverId) : null,
+       patientRelation: caregiverPatientRegisterData.patientRelation,
+       isActive: true
+     };
+     await this.http.post<Patient>(
+       `${environment.apiUrl}/patients`, patientPayload).toPromise()
      .then(response => {
        if (response) {
-         patientId = response.result;
+         patientId = response.id as any;
        }
      })
      .catch(error => {
