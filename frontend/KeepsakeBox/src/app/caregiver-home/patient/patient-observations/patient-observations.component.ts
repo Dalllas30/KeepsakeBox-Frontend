@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -34,12 +34,14 @@ export class PatientObservationsComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private caregiverService: CaregiverService,
     private patientService: PatientService,
-    private observationService: ObservationService
+    private observationService: ObservationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
     this.currentCaregiver = this.caregiverService.getCurrentCaregiver()!;
-    this.retrieveObservations();
+    await this.retrieveObservations();
+    this.cdr.detectChanges();
   }
 
   async retrieveObservations(): Promise<void> {

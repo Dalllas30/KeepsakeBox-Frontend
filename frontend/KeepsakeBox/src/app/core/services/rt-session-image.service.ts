@@ -7,17 +7,7 @@ import { Injectable } from '@angular/core';
 import { RtSessionImage } from '../models/rt-session-image.model';
 import { RtSessionImageList } from '../models/rt-session-image-list.model';
 import { ImageService } from './image.service';
-
-//Request URLs
-//const serverURL = "194.117.20.219"
-const serverURL = "localhost"
-const getRtSessionImagesURL01 = `http://${serverURL}:8080/session/running/image?token=`;
-const getRtSessionImagesURL02 = '&sessionId=';
-const getRtSessionImagesURL03 = '&direction=';
-const updateRtSessionImageFeedbackURL = `http://${serverURL}:8080/session/running/image/feedback/update?token=`;
-const getSessionPatientImagesURL01 = `http://${serverURL}:8080/caregiver/history/summary?token=`;
-const getSessionPatientImagesURL02 = '&sessionId=';
-const getSessionPatientImagesURL03 = `http://${serverURL}:8080/caregiver/history/summary/images?token=`;
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +17,11 @@ export class RtSessionImageService {
   constructor(private http: HttpClient,
               private imageService: ImageService) {}
 
+  private async getRtSessionImages(sessionId: string): Promise<RtSessionImage[]> {
+    const response = await this.http.get<RtSessionImage[]>(`${environment.apiUrl}/rtSessionImages?sessionId=${sessionId}`).toPromise();
+    return (response ?? []).sort((a, b) => (a.image_id < b.image_id) ? 1 : -1);
+  }
+
 
   /**
    * Gets RT session images with the given session ID
@@ -35,16 +30,8 @@ export class RtSessionImageService {
    * @returns list with all PersonalImage that belongs to the patient
    */
   async getRtSessionImage(token: string, sessionId: String, direction: String): Promise<RtSessionImage | null>{
-    let rtSessionImage: RtSessionImage | null = null;
-    await this.http.get<RtSessionImage>(
-      `${getRtSessionImagesURL01}${token}${getRtSessionImagesURL02}${sessionId}${getRtSessionImagesURL03}${direction}`)
-    .toPromise()
-    .then(response => {
-      if (response) {
-        rtSessionImage = response;
-      }
-    });
-    return rtSessionImage;
+    const images = await this.getRtSessionImages(sessionId.toString());
+    return images.find(image => image.category === direction || image.current_image.toString() === direction.toString()) ?? images[0] ?? null;
   }
 
   async updateRtSessionImageFeedback(token: string, rtSessionImage: RtSessionImage): Promise<boolean> {
@@ -55,8 +42,8 @@ export class RtSessionImageService {
                 rtSessionImage.joy, rtSessionImage.enthusiasm, rtSessionImage.communication, rtSessionImage.apathy,
                 rtSessionImage.observation, rtSessionImage.patient_agressivity, rtSessionImage.patient_sadness, rtSessionImage.patient_isolation,
                 rtSessionImage.category); 
-      await this.http.post(
-        `${updateRtSessionImageFeedbackURL}${token}`,localrtSessionImage).toPromise()
+      await this.http.put(
+        `${environment.apiUrl}/rtSessionImages/${rtSessionImage.id}`,localrtSessionImage).toPromise()
         .catch(() => {
           rtSessionImageFeedbackUpdated = false;
         });
@@ -64,33 +51,14 @@ export class RtSessionImageService {
   }
 
   async getSessionPatientImageInformation(token: string, sessionId: String): Promise<RtSessionImage[]>{
-    let images: RtSessionImage[] = [];
-    await this.http.get<RtSessionImageList>(
-      `${getSessionPatientImagesURL01}${token}${getSessionPatientImagesURL02}${sessionId}`)
-    .toPromise()
-    .then(response => {
-      if (response) {
-        images = response.images.sort((a, b) =>
-          (a.image_id < b.image_id) ? 1 : -1);
-      }
-    });
-    images.forEach(async element => {
+    const images = await this.getRtSessionImages(sessionId.toString());
+    await Promise.all(images.map(async element => {
       element.thumbnailPath = await this.imageService.getThumbnailPath(element.image_id)
-    });
+    }));
     return images;
   }
 
   async getSessionImagesInformation(token: string, sessionId: String): Promise<RtSessionImage[]>{
-    let images: RtSessionImage[] = [];
-    await this.http.get<RtSessionImageList>(
-      `${getSessionPatientImagesURL03}${token}${getSessionPatientImagesURL02}${sessionId}`)
-    .toPromise()
-    .then(response => {
-      if (response) {
-        images = response.images.sort((a, b) =>
-          (a.image_id < b.image_id) ? 1 : -1);
-      }
-    });
-    return images;
+    return this.getRtSessionImages(sessionId.toString());
   }
 }

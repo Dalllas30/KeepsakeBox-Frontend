@@ -6,43 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CaregiverNotificationList } from '../models/caregiver-notification-list.model';
 import { CaregiverNotification } from '../models/caregiver-notification.model';
-
-//Request URLs
-//const serverURL = "194.117.20.219"
-const serverURL = "localhost"
-const getCaregiverNotificationsURL = `http://${serverURL}:8080/caregiver/notifications?token=`
-const notifySharePatientURL01 = `http://${serverURL}:8080/caregiver/notify/share?token=`
-const notifySharePatientURL02 = "&receiverEmail="
-const notifySharePatientURL03 = "&patientId="
-const notifyAcceptedSharePatientURL01 = `http://${serverURL}:8080/caregiver/notify/share/accept?token=`
-const notifyAcceptedSharePatientURL02 = "&senderEmail="
-const notifyAcceptedSharePatientURL03 = "&patientId="
-const notifyDeniedSharePatientURL01 = `http://${serverURL}:8080/caregiver/notify/share/deny?token=`
-const notifyDeniedSharePatientURL02 = "&senderEmail="
-const notifyDeniedSharePatientURL03 = "&patientId="
-const deleteNotificationURL01 = `http://${serverURL}:8080/caregiver/notification/delete?token=`
-const deleteNotificationURL02 = "&notificationId="
-const notifyPrimaryCareTransferURL01 = `http://${serverURL}:8080/caregiver/notify/primary/transfer?token=`
-const notifyPrimaryCareTransferURL02 = "&receiverEmail="
-const notifyPrimaryCareTransferURL03 = "&patientId="
-const notifyDeniedPrimaryCareURL01 = `http://${serverURL}:8080/caregiver/notify/primary/deny?token=`
-const notifyDeniedPrimaryCareURL02 = "&senderEmail="
-const notifyDeniedPrimaryCareURL03 = "&patientId="
-const notifyAcceptedPrimaryCareURL01 = `http://${serverURL}:8080/caregiver/notify/primary/accept?token=`
-const notifyAcceptedPrimaryCareURL02 = "&senderEmail="
-const notifyAcceptedPrimaryCareURL03 = "&patientId="
-const notifyRemovedFromCaregiver01 = `http://${serverURL}:8080/caregiver/notify/caregiver/removed?token=`
-const notifyRemovedFromCaregiver02 = "&receiverEmail="
-const notifyRemovedFromCaregiver03 = "&patientId="
-const notifyPrimaryLeaveCare01 = `http://${serverURL}:8080/caregiver/notify/primary/leave?token=`
-const notifyPrimaryLeaveCare02 = "&receiverEmail="
-const notifyPrimaryLeaveCare03 = "&patientId="
-const notifyAcceptedPrimaryLeaveCare01 = `http://${serverURL}:8080/caregiver/notify/primary/leave/accept?token=`
-const notifyAcceptedPrimaryLeaveCare02 = "&senderEmail="
-const notifyAcceptedPrimaryLeaveCare03 = "&patientId="
-const notifyDeniedPrimaryLeaveCare01 = `http://${serverURL}:8080/caregiver/notify/primary/leave/deny?token=`
-const notifyDeniedPrimaryLeaveCare02 = "&senderEmail="
-const notifyDeniedPrimaryLeaveCare03 = "&patientId="
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +14,29 @@ const notifyDeniedPrimaryLeaveCare03 = "&patientId="
 export class NotificationService {
 
   constructor(private http: HttpClient) {}
+
+  private async getCaregiverByToken(token: string): Promise<any | null> {
+    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?token=${token}`).toPromise();
+    return caregivers?.[0] ?? null;
+  }
+
+  private async getCaregiverByEmail(email: string): Promise<any | null> {
+    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?email=${email}`).toPromise();
+    return caregivers?.[0] ?? null;
+  }
+
+  private async getPatientById(patientId: string): Promise<any | null> {
+    return await this.http.get<any>(`${environment.apiUrl}/patients/${patientId}`).toPromise().catch(() => null);
+  }
+
+  private async createNotification(notification: Partial<CaregiverNotification>): Promise<boolean> {
+    try {
+      await this.http.post(`${environment.apiUrl}/notifications`, notification).toPromise();
+      return true;
+    } catch {
+      return false;
+    }
+  }
 
   /**
    * Gets all caregiver received and sent notifications pending
@@ -59,12 +46,13 @@ export class NotificationService {
    */
   async getCaregiverNotifications(token: string): Promise<CaregiverNotification[]> {
     let notifications: CaregiverNotification[] = [];
-    await this.http.get<CaregiverNotificationList>(
-      `${getCaregiverNotificationsURL}${token}`).toPromise()
+    const caregiver = await this.getCaregiverByToken(token);
+    await this.http.get<any[]>(
+      `${environment.apiUrl}/notifications?receiver.id=${caregiver?.id ?? ''}`).toPromise()
     .then(response => {
       if (response) {
-        notifications = response.notifications
-                .sort((a, b) => (a.createdDate < b.createdDate) ? 1 : -1);
+        notifications = (Array.isArray(response) ? response : (response as any).notifications ?? [])
+                .sort((a: any, b: any) => (a.createdDate < b.createdDate) ? 1 : -1);
       }
     });
     return notifications;
@@ -78,8 +66,7 @@ export class NotificationService {
   async deleteNotification(token: string,
     notificationId: string): Promise<boolean>{
     let deleted = true;
-    await this.http.get(
-      `${deleteNotificationURL01}${token}${deleteNotificationURL02}${notificationId}`)
+    await this.http.delete(`${environment.apiUrl}/notifications/${notificationId}`)
     .toPromise()
     .catch(error => {
       deleted = false;
@@ -96,14 +83,10 @@ export class NotificationService {
    */
   async notifySharePatient(token: string,
     receiverEmail: string, patientId: String): Promise<boolean>{
-    let notified = true;
-    await this.http.get(
-      `${notifySharePatientURL01}${token}${notifySharePatientURL02}${receiverEmail}${notifySharePatientURL03}${patientId}`)
-    .toPromise()
-    .catch(error => {
-      notified = false;
-    });
-    return notified;
+    const sender = await this.getCaregiverByToken(token);
+    const receiver = await this.getCaregiverByEmail(receiverEmail);
+    const patient = await this.getPatientById(patientId.toString());
+    return this.createNotification({ sender, receiver, patient, messageType: 'SHARE_PATIENT', createdDate: new Date() } as any);
   }
 
   /**
@@ -116,14 +99,10 @@ export class NotificationService {
    */
   async notifyAcceptSharePatient(token: string,
     senderEmail: string, patientId: String): Promise<boolean>{
-    let notified = true;
-    await this.http.get(
-      `${notifyAcceptedSharePatientURL01}${token}${notifyAcceptedSharePatientURL02}${senderEmail}${notifyAcceptedSharePatientURL03}${patientId}`)
-    .toPromise()
-    .catch(error => {
-      notified = false;
-    });
-    return notified;
+    const sender = await this.getCaregiverByEmail(senderEmail);
+    const receiver = await this.getCaregiverByToken(token);
+    const patient = await this.getPatientById(patientId.toString());
+    return this.createNotification({ sender, receiver, patient, messageType: 'ACCEPT_SHARE', createdDate: new Date() } as any);
   }
 
   /**
@@ -136,14 +115,10 @@ export class NotificationService {
    */
   async notifyDenySharePatient(token: string,
     senderEmail: string, patientId: String): Promise<boolean>{
-    let notified = true;
-    await this.http.get(
-      `${notifyDeniedSharePatientURL01}${token}${notifyDeniedSharePatientURL02}${senderEmail}${notifyDeniedSharePatientURL03}${patientId}`)
-    .toPromise()
-    .catch(error => {
-      notified = false;
-    });
-    return notified;
+    const sender = await this.getCaregiverByEmail(senderEmail);
+    const receiver = await this.getCaregiverByToken(token);
+    const patient = await this.getPatientById(patientId.toString());
+    return this.createNotification({ sender, receiver, patient, messageType: 'DENY_SHARE', createdDate: new Date() } as any);
   }
 
   /**
@@ -155,14 +130,10 @@ export class NotificationService {
    */
    async notifyPrimaryCareTransfer(token: string,
     receiverEmail: string, patientId: String): Promise<boolean>{
-    let notified = true;
-    await this.http.get(
-      `${notifyPrimaryCareTransferURL01}${token}${notifyPrimaryCareTransferURL02}${receiverEmail}${notifyPrimaryCareTransferURL03}${patientId}`)
-    .toPromise()
-    .catch(error => {
-      notified = false;
-    });
-    return notified;
+    const sender = await this.getCaregiverByToken(token);
+    const receiver = await this.getCaregiverByEmail(receiverEmail);
+    const patient = await this.getPatientById(patientId.toString());
+    return this.createNotification({ sender, receiver, patient, messageType: 'PRIMARY_TRANSFER', createdDate: new Date() } as any);
   }
 
   /**
@@ -174,14 +145,10 @@ export class NotificationService {
    * @returns TRUE if notification was added successfully
    */
   async notifyDenyPrimaryCarePatient(token: string, senderEmail: string, patientId: string) {
-    let notified = true;
-    await this.http.get(
-      `${notifyDeniedPrimaryCareURL01}${token}${notifyDeniedPrimaryCareURL02}${senderEmail}${notifyDeniedPrimaryCareURL03}${patientId}`)
-    .toPromise()
-    .catch(error => {
-      notified = false;
-    });
-    return notified;
+    const sender = await this.getCaregiverByEmail(senderEmail);
+    const receiver = await this.getCaregiverByToken(token);
+    const patient = await this.getPatientById(patientId);
+    return this.createNotification({ sender, receiver, patient, messageType: 'DENY_PRIMARY_TRANSFER', createdDate: new Date() } as any);
   }
 
   /**
@@ -193,14 +160,10 @@ export class NotificationService {
    * @returns TRUE if notification was added successfully
    */
   async notifyAcceptPrimaryCarePatient(token: string, senderEmail: string, patientId: string) {
-    let notified = true;
-    await this.http.get(
-      `${notifyAcceptedPrimaryCareURL01}${token}${notifyAcceptedPrimaryCareURL02}${senderEmail}${notifyAcceptedPrimaryCareURL03}${patientId}`)
-    .toPromise()
-    .catch(error => {
-      notified = false;
-    });
-    return notified;
+    const sender = await this.getCaregiverByEmail(senderEmail);
+    const receiver = await this.getCaregiverByToken(token);
+    const patient = await this.getPatientById(patientId);
+    return this.createNotification({ sender, receiver, patient, messageType: 'ACCEPT_PRIMARY_TRANSFER', createdDate: new Date() } as any);
   }
 
   /**
@@ -212,14 +175,10 @@ export class NotificationService {
    */
   async notifyRemovedFromPatient(token: string,
     receiverEmail: string, patientId: string) {
-      let notified = true;
-      await this.http.get(
-        `${notifyRemovedFromCaregiver01}${token}${notifyRemovedFromCaregiver02}${receiverEmail}${notifyRemovedFromCaregiver03}${patientId}`)
-      .toPromise()
-      .catch(error => {
-        notified = false;
-      });
-      return notified;
+      const sender = await this.getCaregiverByToken(token);
+      const receiver = await this.getCaregiverByEmail(receiverEmail);
+      const patient = await this.getPatientById(patientId);
+      return this.createNotification({ sender, receiver, patient, messageType: 'REMOVED_FROM_PATIENT', createdDate: new Date() } as any);
   }
 
   /**
@@ -230,14 +189,10 @@ export class NotificationService {
    * @param patientId - ID of the patient who wants to 
    */
   async notifyPrimaryLeaveCare(token: string, receiverEmail: string, patientId: string) {
-    let notified = true;
-    await this.http.get(
-      `${notifyPrimaryLeaveCare01}${token}${notifyPrimaryLeaveCare02}${receiverEmail}${notifyPrimaryLeaveCare03}${patientId}`)
-    .toPromise()
-    .catch(error => {
-      notified = false;
-    });
-    return notified;
+    const sender = await this.getCaregiverByToken(token);
+    const receiver = await this.getCaregiverByEmail(receiverEmail);
+    const patient = await this.getPatientById(patientId);
+    return this.createNotification({ sender, receiver, patient, messageType: 'PRIMARY_LEAVE', createdDate: new Date() } as any);
   }
 
   /**
@@ -248,14 +203,10 @@ export class NotificationService {
    * @param patientId - ID of the patient that will 
    */
   async notifyAcceptPrimaryLeaveCare(token: string, senderEmail: string, patientId: string) {
-    let notified = true;
-    await this.http.get(
-      `${notifyAcceptedPrimaryLeaveCare01}${token}${notifyAcceptedPrimaryLeaveCare02}${senderEmail}${notifyAcceptedPrimaryLeaveCare03}${patientId}`)
-    .toPromise()
-    .catch(error => {
-      notified = false;
-    });
-    return notified;
+    const sender = await this.getCaregiverByEmail(senderEmail);
+    const receiver = await this.getCaregiverByToken(token);
+    const patient = await this.getPatientById(patientId);
+    return this.createNotification({ sender, receiver, patient, messageType: 'ACCEPT_PRIMARY_LEAVE', createdDate: new Date() } as any);
   }
 
   /**
@@ -266,13 +217,9 @@ export class NotificationService {
    * @param patientId - ID of the patient that will 
    */
    async notifyDenyPrimaryLeaveCare(token: string, senderEmail: string, patientId: string) {
-    let notified = true;
-    await this.http.get(
-      `${notifyDeniedPrimaryLeaveCare01}${token}${notifyDeniedPrimaryLeaveCare02}${senderEmail}${notifyDeniedPrimaryLeaveCare03}${patientId}`)
-    .toPromise()
-    .catch(error => {
-      notified = false;
-    });
-    return notified;
+    const sender = await this.getCaregiverByEmail(senderEmail);
+    const receiver = await this.getCaregiverByToken(token);
+    const patient = await this.getPatientById(patientId);
+    return this.createNotification({ sender, receiver, patient, messageType: 'DENY_PRIMARY_LEAVE', createdDate: new Date() } as any);
   }
 }

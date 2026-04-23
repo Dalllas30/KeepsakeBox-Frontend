@@ -2,14 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ImageToValidate, ImageToValidateData, Request } from '../models/image.model';
 import { firstValueFrom } from 'rxjs';
-
-//const serverURL = "194.117.20.219";
-const serverURL = "localhost";
-//const createCaregiverRequestURL = `http://${serverURL}:8080/caregiver/image/personal?token=`;
-const getRequestURL = `http://${serverURL}:8080/request`
-const createRequestURL = `http://${serverURL}:8080/createrequest?token=`
-const sendToValidateURL = `http://${serverURL}:8080/validate`
-const getImagesToValidateByCaregiverIdURL = `http://${serverURL}:8080/validate/caregiver`
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +17,10 @@ export class ValidationService {
    async createUploadRequest(token: string, requestData: Request): Promise<string | null> {
     let requestId = null;
     const response = await firstValueFrom(
-      this.http.post(createRequestURL + token, requestData, { responseType: 'text' })
+      this.http.post<any>(`${environment.apiUrl}/requests`, requestData)
     );
     if (response) {
-      requestId = response;
+      requestId = response.id?.toString() ?? null;
     }
     return requestId; 
   }
@@ -41,7 +34,7 @@ export class ValidationService {
    async getRequestById(requestId: string): Promise<Request | null> {
     var retrievedRequest: Request | null = null;
     const response = await firstValueFrom(
-      this.http.get<Request>(getRequestURL + `/${requestId}`)
+      this.http.get<Request>(`${environment.apiUrl}/requests/${requestId}`)
     );
     if (response) {
       retrievedRequest = response;
@@ -55,10 +48,10 @@ export class ValidationService {
    async sendImageToValidate(imageToValidate: ImageToValidateData): Promise<string | null> {
     let imageId = null;
     const response = await firstValueFrom(
-      this.http.post(sendToValidateURL, imageToValidate, { responseType: 'text' })
+      this.http.post<any>(`${environment.apiUrl}/imagesToValidate`, imageToValidate)
     );
     if (response) {
-      imageId = response;
+      imageId = response.id?.toString() ?? null;
     }
     return imageId; 
   }
@@ -66,7 +59,7 @@ export class ValidationService {
   async getImagesToValidateByCaregiverId(caregiverId: string): Promise<ImageToValidate[]> {
     let imagesToValidate: ImageToValidate[] = [];
     const response = await firstValueFrom(
-      this.http.get<ImageToValidate[]>(getImagesToValidateByCaregiverIdURL + `/${caregiverId}`)
+      this.http.get<ImageToValidate[]>(`${environment.apiUrl}/imagesToValidate?caregiverID=${caregiverId}`)
     );
     if (response) {
       imagesToValidate = response;

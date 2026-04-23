@@ -36,6 +36,7 @@
     "ng2-img-max": "^2.2.9",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "uuid": "^14.0.0",
     "zone.js": "^0.16.1"
   },
   "devDependencies": {

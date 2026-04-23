@@ -9,14 +9,7 @@ import { CaregiverPatientChatList } from '../models/caregiver-patient-chat-list.
 import { CaregiverPatientChat } from '../models/caregiver-patient-chat.model';
 import { PatientChatMessageList } from '../models/patient-chat-message-list.model';
 import { PatientChatMessage } from '../models/patient-chat-message.model';
-
-//Request URLs
-//const serverURL = "194.117.20.219"
-const serverURL = "localhost"
-const getCaregiverPatientChatsURL = `http://${serverURL}:8080/caregiver/chats?token=`
-const getChatMessagesURL01 = `http://${serverURL}:8080/caregiver/chat/messages?token=`
-const getChatMessagesURL02 = "&chatId="
-const updateLastMessageReadURL = `http://${serverURL}:8080/caregiver/chat/messages/last/update?token=`
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +18,15 @@ export class MessageService {
 
   //Service constructor
   constructor(private http: HttpClient) {}
+
+  private async getCurrentCaregiverId(): Promise<string | null> {
+    const token = localStorage.getItem('currentCaregiverToken');
+    if (!token) {
+      return localStorage.getItem('currentCaregiverId');
+    }
+    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?token=${token}`).toPromise();
+    return caregivers?.[0]?.id?.toString() ?? localStorage.getItem('currentCaregiverId');
+  }
 
   /**
    * Gets all chats of patients associated to the
@@ -36,11 +38,12 @@ export class MessageService {
    */
   async getCaregiverPatientChats(token: string): Promise<CaregiverPatientChat[]> {
     let chats: CaregiverPatientChat[] = [];
-    await this.http.get<CaregiverPatientChatList>(`${getCaregiverPatientChatsURL}${token}`).toPromise()
+    const caregiverId = await this.getCurrentCaregiverId();
+    await this.http.get<CaregiverPatientChatList>(`${environment.apiUrl}/chats?caregiverId=${caregiverId ?? ''}`).toPromise()
     .then(response => {
       if (response) {
-        chats = response.chats
-                .sort((a, b) => (a.chat.lastMessageSentDate < b.chat.lastMessageSentDate) ? 1 : -1);
+        chats = (Array.isArray(response) ? response : (response as any).chats ?? [])
+                .sort((a: CaregiverPatientChat, b: CaregiverPatientChat) => (a.chat.lastMessageSentDate < b.chat.lastMessageSentDate) ? 1 : -1);
       }
     });
     return chats;
@@ -58,11 +61,11 @@ export class MessageService {
   async getPatientChatMessages(token: string, chatId: string): Promise<PatientChatMessage[]> {
     let messages: PatientChatMessage[] = [];
     await this.http.get<PatientChatMessageList>(
-      `${getChatMessagesURL01}${token}${getChatMessagesURL02}${chatId}`).toPromise()
+      `${environment.apiUrl}/messages?chatId=${chatId}`).toPromise()
     .then(response => {
       if (response) {
-        messages = response.messages
-                      .sort((a, b) => (a.createdDate > b.createdDate) ? 1 : -1);;
+        messages = (Array.isArray(response) ? response : (response as any).messages ?? [])
+                      .sort((a: PatientChatMessage, b: PatientChatMessage) => (a.createdDate > b.createdDate) ? 1 : -1);
       }
     });
     return messages;
@@ -78,9 +81,9 @@ export class MessageService {
    * @param lastReadDate - last read date for the update
    */
   updateLastMessageReadDate(token: string, caregiverId: string, chatId: string, lastReadDate: Date): void {
-    this.http.post(
-      `${updateLastMessageReadURL}${token}`,
-      new CaregiverLastMessageRead(caregiverId,chatId,lastReadDate))
-    .subscribe();
+    this.http.patch(`${environment.apiUrl}/chats/${chatId}`, {
+      lastMessageReadDate: lastReadDate,
+      caregiverId
+    }).subscribe();
   }
 }

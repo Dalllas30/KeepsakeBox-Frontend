@@ -8,6 +8,7 @@ export const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'upload', loadComponent: () => import('./outside-user-image-upload/outside-user-image-upload.component').then(m => m.OutsideUserImageUploadComponent) },
   {
     path: 'caregiver',
     component: CaregiverHomeComponent,

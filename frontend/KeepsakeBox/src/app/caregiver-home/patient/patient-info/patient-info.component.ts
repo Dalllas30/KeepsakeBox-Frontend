@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -36,7 +36,8 @@ export class PatientInfoComponent implements OnInit {
     private appService: AppService,
     private patientService: PatientService,
     private caregiverService: CaregiverService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -51,6 +52,7 @@ export class PatientInfoComponent implements OnInit {
     if (!this.currentCaregiver.isPrimary) {
       this.getReferenceToPrimaryCaregiver();
     }
+    this.cdr.detectChanges();
   }
 
   convertPatientDisplayName(displayName: string, name: string): string {

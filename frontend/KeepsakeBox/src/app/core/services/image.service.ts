@@ -16,33 +16,9 @@ import { ImagesFilterData } from '../models/images-filter-data.model';
 import { PersonalImageList } from '../models/personal-image-list.model';
 import { PersonalImage } from '../models/personal-image.model';
 import { AppService } from './app.service';
+import { environment } from '../../../environments/environment';
 
-// Request URLs
-const serverURL                = 'localhost';
-const addPatientImageURL01     = `http://${serverURL}:8080/patient/image/personal?token=`;
-const addPatientImageURL02     = '&patientId=';
-const addCaregiverImageURL     = `http://${serverURL}:8080/caregiver/image/personal?token=`;
-const getPatientImageURL01     = `http://${serverURL}:8080/patient/image/personal?token=`;
-const getPatientImageURL02     = '&patientId=';
-const getPatientImageURL03     = '&imageId=';
-const getImagesByCategoryURL   = `http://${serverURL}:8080/images?token=`;
-const getSessionPatientImagesURL01 = `http://${serverURL}:8080/patient/images/session?token=`;
-const getSessionPatientImagesURL02 = '&patientId=';
-const getSessionPatientImagesURL03 = '&direction=';
-const getCaregiverImageURL01   = `http://${serverURL}:8080/caregiver/image/personal?token=`;
-const getCaregiverImageURL02   = '&imageId=';
-const getPatientImagesURL01    = `http://${serverURL}:8080/patient/images/personal?token=`;
-const getPatientImagesURL02    = '&patientId=';
-const getCaregiverImagesURL    = `http://${serverURL}:8080/caregiver/images/personal?token=`;
-const updatePatientImageURL01  = `http://${serverURL}:8080/patient/image/personal/update?token=`;
-const updatePatientImageURL02  = '&patientId=';
-const updateCaregiverImageURL  = `http://${serverURL}:8080/caregiver/image/personal/update?token=`;
-const deletePatientImageURL01  = `http://${serverURL}:8080/patient/image/personal/delete?token=`;
-const deletePatientImageURL02  = '&patientId=';
-const deletePatientImageURL03  = '&imageId=';
-const deleteCaregiverImageURL01 = `http://${serverURL}:8080/caregiver/image/personal/delete?token=`;
-const deleteCaregiverImageURL02 = '&imageId=';
-const getThumbnailURL          = `http://${serverURL}:8080/thumbnail/id`;
+const apiUrl = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +44,28 @@ export class ImageService {
   constructor() {
     this.categoriesPT.push('Outra');
     this.categoriesENG.push('Other');
+  }
+
+  private normalizePersonalImage(image: any): PersonalImage {
+    return {
+      ...image,
+      image: image.image ?? image,
+      isFavorite: image.isFavorite ?? false,
+      associatedImageId: image.associatedImageId
+    } as PersonalImage;
+  }
+
+  private async getImageById(imageId: string): Promise<any | null> {
+    return await this.http.get<any>(`${apiUrl}/images/${imageId}`).toPromise().catch(() => null);
+  }
+
+  private async persistThumbnail(imageId: string, imagePath: string): Promise<void> {
+    const existing = await this.http.get<any[]>(`${apiUrl}/thumbnails?imageId=${imageId}`).toPromise();
+    if (existing && existing.length > 0) {
+      await this.http.put(`${apiUrl}/thumbnails/${existing[0].id}`, { ...existing[0], imagePath }).toPromise();
+      return;
+    }
+    await this.http.post(`${apiUrl}/thumbnails`, { imageId, imagePath }).toPromise();
   }
 
   // ─── Canvas-based image resize (replaces ng2-img-max) ───────────────────────
@@ -184,46 +182,93 @@ export class ImageService {
 
   async getThumbnail(imageId: string): Promise<Thumbnail | null> {
     let thumbnail: Thumbnail | null = null;
-    await this.http.post<Thumbnail>(getThumbnailURL, imageId).toPromise().then(response => {
-      if (response) thumbnail = response;
+    await this.http.get<any[]>(`${apiUrl}/thumbnails?imageId=${imageId}`).toPromise().then(response => {
+      if (response && response.length > 0) thumbnail = response[0];
     });
     return thumbnail;
   }
 
   async getThumbnailPath(imageId: string): Promise<string> {
     const thumbnail = await this.getThumbnail(imageId);
-    return thumbnail?.imagePath || '';
+    if (thumbnail?.imagePath) {
+      return thumbnail.imagePath;
+    }
+    const image = await this.getImageById(imageId);
+    return image?.image?.imageURL || image?.imageURL || '';
   }
 
   // ─── CRUD ────────────────────────────────────────────────────────────────────
 
   async addPatientImage(token: string, patientId: string, addImageData: AddImageData): Promise<boolean> {
     let ok = true;
-    await this.http.post(
-      `${addPatientImageURL01}${token}${addPatientImageURL02}${patientId}`,
-      addImageData).toPromise().catch(() => { ok = false; });
+    const createdBy = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise().then(response => response?.[0] ?? null);
+    const payload = {
+      patientId,
+      createdById: addImageData.createdById,
+      createdBy,
+      isFavorite: addImageData.isFavorite,
+      image: {
+        category: addImageData.category,
+        description: addImageData.description,
+        imageURL: addImageData.imageURL,
+        createdById: addImageData.createdById,
+        createdBy,
+        isPersonal: true,
+        isPrivate: addImageData.isPrivate,
+        negativeIntensity: 0,
+        neutralIntensity: 0,
+        positiveIntensity: 0,
+        createdDate: new Date().toISOString(),
+        lastUpdatedDate: new Date().toISOString()
+      }
+    };
+    const response = await this.http.post<any>(`${apiUrl}/images`, payload).toPromise().catch(() => null);
+    if (!response) {
+      ok = false;
+    } else {
+      await this.persistThumbnail(response.id.toString(), addImageData.imageURL);
+    }
     return ok;
   }
 
   async addCaregiverImage(token: string, addImageData: AddImageData): Promise<boolean> {
     let ok = true;
-    await this.http.post(
-      `${addCaregiverImageURL}${token}`,
-      addImageData).toPromise().catch(() => { ok = false; });
+    const createdBy = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise().then(response => response?.[0] ?? null);
+    const payload = {
+      createdById: addImageData.createdById,
+      createdBy,
+      isFavorite: addImageData.isFavorite,
+      image: {
+        category: addImageData.category,
+        description: addImageData.description,
+        imageURL: addImageData.imageURL,
+        createdById: addImageData.createdById,
+        createdBy,
+        isPersonal: false,
+        isPrivate: addImageData.isPrivate,
+        negativeIntensity: 0,
+        neutralIntensity: 0,
+        positiveIntensity: 0,
+        createdDate: new Date().toISOString(),
+        lastUpdatedDate: new Date().toISOString()
+      }
+    };
+    const response = await this.http.post<any>(`${apiUrl}/images`, payload).toPromise().catch(() => null);
+    if (!response) {
+      ok = false;
+    } else {
+      await this.persistThumbnail(response.id.toString(), addImageData.imageURL);
+    }
     return ok;
   }
 
   async getPatientImages(token: string, patientId: string): Promise<PersonalImage[]> {
     let images: PersonalImage[] = [];
-    await this.http.get<PersonalImageList>(
-      `${getPatientImagesURL01}${token}${getPatientImagesURL02}${patientId}`)
-      .toPromise()
-      .then(response => {
-        if (response) {
-          images = response.images.sort((a, b) =>
-            (a.image.lastUpdatedDate?.getTime() ?? 0) < (b.image.lastUpdatedDate?.getTime() ?? 0) ? 1 : -1);
-        }
-      });
+    await this.http.get<any[]>(`${apiUrl}/images?patientId=${patientId}`).toPromise().then(response => {
+      images = (response ?? []).map(image => this.normalizePersonalImage(image)).sort((a, b) =>
+        (a.image.lastUpdatedDate?.getTime?.() ?? new Date(a.image.lastUpdatedDate ?? 0).getTime()) <
+        (b.image.lastUpdatedDate?.getTime?.() ?? new Date(b.image.lastUpdatedDate ?? 0).getTime()) ? 1 : -1);
+    });
     await Promise.all(images.map(async el => {
       el.image.thumbnailPath = await this.getThumbnailPath(el.image.id);
     }));
@@ -231,43 +276,33 @@ export class ImageService {
   }
 
   async getImagesByCategory(token: string, imagesFilterData: ImagesFilterData): Promise<PersonalImage[]> {
-    let images: PersonalImage[] = [];
-    await this.http.post<PersonalImageList>(
-      `${getImagesByCategoryURL}${token}`, imagesFilterData)
-      .toPromise()
-      .then(response => {
-        if (response) {
-          images = response.images.sort((a, b) =>
-            (a.image.lastUpdatedDate?.getTime() ?? 0) < (b.image.lastUpdatedDate?.getTime() ?? 0) ? 1 : -1);
-        }
-      });
-    return images;
+    const allImages = await this.http.get<any[]>(`${apiUrl}/images`).toPromise();
+    const caregiverId = imagesFilterData.caregiverId;
+    const patientId = imagesFilterData.patientId;
+    const category = imagesFilterData.category;
+    const text = (imagesFilterData.description || '').toLowerCase();
+    return (allImages ?? [])
+      .filter(image => !category || category === 'All' || image.image?.category === category)
+      .filter(image => !text || `${image.image?.description ?? ''}`.toLowerCase().includes(text))
+      .filter(image => imagesFilterData.allPublicImage || image.image?.isPrivate === false || image.createdById === caregiverId || image.patientId === patientId)
+      .map(image => this.normalizePersonalImage(image))
+      .sort((a, b) => (new Date(a.image.lastUpdatedDate ?? 0).getTime()) < (new Date(b.image.lastUpdatedDate ?? 0).getTime()) ? 1 : -1);
   }
 
   async getSessionPatientImage(token: string, patientId: string, direction: string): Promise<PersonalImage[]> {
-    let images: PersonalImage[] = [];
-    await this.http.get<PersonalImageList>(
-      `${getSessionPatientImagesURL01}${token}${getSessionPatientImagesURL02}${patientId}${getSessionPatientImagesURL03}${direction}`)
-      .toPromise()
-      .then(response => {
-        if (response) {
-          images = response.images.sort((a, b) =>
-            (a.image.lastUpdatedDate?.getTime() ?? 0) < (b.image.lastUpdatedDate?.getTime() ?? 0) ? 1 : -1);
-        }
-      });
-    return images;
+    const response = await this.http.get<any[]>(`${apiUrl}/images?patientId=${patientId}`).toPromise();
+    return (response ?? []).map(image => this.normalizePersonalImage(image)).sort((a, b) =>
+      (new Date(a.image.lastUpdatedDate ?? 0).getTime()) < (new Date(b.image.lastUpdatedDate ?? 0).getTime()) ? 1 : -1);
   }
 
   async getCaregiverImages(token: string): Promise<PersonalImage[]> {
     let images: PersonalImage[] = [];
-    await this.http.get<PersonalImageList>(`${getCaregiverImagesURL}${token}`)
-      .toPromise()
-      .then(response => {
-        if (response) {
-          images = response.images.sort((a, b) =>
-            (a.image.lastUpdatedDate?.getTime() ?? 0) < (b.image.lastUpdatedDate?.getTime() ?? 0) ? 1 : -1);
-        }
-      });
+    const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise();
+    const caregiverId = caregivers?.[0]?.id?.toString();
+    await this.http.get<any[]>(`${apiUrl}/images?createdById=${caregiverId}`).toPromise().then(response => {
+      images = (response ?? []).map(image => this.normalizePersonalImage(image)).sort((a, b) =>
+        (new Date(a.image.lastUpdatedDate ?? 0).getTime()) < (new Date(b.image.lastUpdatedDate ?? 0).getTime()) ? 1 : -1);
+    });
     await Promise.all(images.map(async el => {
       el.image.thumbnailPath = await this.getThumbnailPath(el.image.id);
     }));
@@ -276,47 +311,43 @@ export class ImageService {
 
   async getPatientImage(token: string, patientId: string, imageId: string): Promise<PersonalImage | null> {
     let image: PersonalImage | null = null;
-    await this.http.get<PersonalImage>(
-      `${getPatientImageURL01}${token}${getPatientImageURL02}${patientId}${getPatientImageURL03}${imageId}`)
-      .toPromise().then(response => { if (response) image = response; });
+    await this.http.get<PersonalImage>(`${apiUrl}/images/${imageId}`).toPromise().then(response => {
+      if (response) image = this.normalizePersonalImage(response);
+    });
     return image;
   }
 
   async getCaregiverImage(token: string, imageId: string): Promise<PersonalImage | null> {
     let image: PersonalImage | null = null;
-    await this.http.get<PersonalImage>(
-      `${getCaregiverImageURL01}${token}${getCaregiverImageURL02}${imageId}`)
-      .toPromise().then(response => { if (response) image = response; });
+    await this.http.get<PersonalImage>(`${apiUrl}/images/${imageId}`).toPromise().then(response => {
+      if (response) image = this.normalizePersonalImage(response);
+    });
     return image;
   }
 
   async updatePatientImage(token: string, patientId: string, img: PersonalImage): Promise<boolean> {
     let ok = true;
-    await this.http.post(
-      `${updatePatientImageURL01}${token}${updatePatientImageURL02}${patientId}`, img)
-      .toPromise().catch(() => { ok = false; });
+    await this.http.put(`${apiUrl}/images/${img.image.id}`, { ...img, patientId }).toPromise().catch(() => { ok = false; });
     return ok;
   }
 
   async updateCaregiverImage(token: string, img: PersonalImage): Promise<boolean> {
     let ok = true;
-    await this.http.post(`${updateCaregiverImageURL}${token}`, img)
+    await this.http.put(`${apiUrl}/images/${img.image.id}`, img)
       .toPromise().catch(() => { ok = false; });
     return ok;
   }
 
   async deletePatientImage(token: string, patientId: string, imageId: string): Promise<boolean> {
     let ok = true;
-    await this.http.get(
-      `${deletePatientImageURL01}${token}${deletePatientImageURL02}${patientId}${deletePatientImageURL03}${imageId}`)
+    await this.http.delete(`${apiUrl}/images/${imageId}`)
       .toPromise().catch(() => { ok = false; });
     return ok;
   }
 
   async deleteCaregiverImage(token: string, imageId: string): Promise<boolean> {
     let ok = true;
-    await this.http.get(
-      `${deleteCaregiverImageURL01}${token}${deleteCaregiverImageURL02}${imageId}`)
+    await this.http.delete(`${apiUrl}/images/${imageId}`)
       .toPromise().catch(() => { ok = false; });
     return ok;
   }

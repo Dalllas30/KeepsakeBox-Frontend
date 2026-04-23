@@ -7,7 +7,7 @@
          and CategoryService.getCategories still uses .toPromise()
          update updateImage() to subscribe */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -63,6 +63,7 @@ export class UpdateImageComponent implements OnInit {
     this.categories         = await this.categoryService.getCategories();
     this.selectedCategories = this.currentImage.image.category.split(", ");
     this.caregiver          = this.caregiverService.getCurrentCaregiver()!;
+    inject(ChangeDetectorRef).detectChanges();
   }
 
   translateLabel(category: string): string {

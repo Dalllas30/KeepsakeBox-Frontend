@@ -3,12 +3,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
 import { CategoryList } from '../models/category-list.model';
 import { CategoryTranslation } from '../models/category-translation.model';
-
-//Request URLs
-//const serverURL = "194.117.20.219"
-const serverURL = "localhost"
-const getCategoriesURL = `http://${serverURL}:8080/categories?token=`
-const getCategoriesTranslationsURL = `http://${serverURL}:8080/categories/translations?token=`
+import { environment } from '../../../environments/environment';
 
 
 
@@ -20,6 +15,8 @@ export class CategoryService implements OnInit {
 
   //All existing categories to identify images
   private categories: string[] = [];
+  private readonly categoriesPT: string[] = ['Animais', 'Comida', 'Empregos', 'Locais', 'Pessoas', 'Veículos', 'Hábitos', 'Música', 'Cinema', 'Desportos', 'Objetos', 'Passatempos', 'Férias', 'Natureza', 'Outra'];
+  private readonly categoriesENG: string[] = ['Animals', 'Food', 'Jobs', 'Places', 'People', 'Vehicles', 'Habits', 'Music', 'Cinema', 'Sports', 'Objects', 'Hobbies', 'Vacations', 'Nature', 'Other'];
 
   private categoriesRetrieved: boolean = false;
   private categoriesTranslationsRetrieved: boolean = false;
@@ -39,18 +36,30 @@ export class CategoryService implements OnInit {
   async retrieveCategories(token: string): Promise<void>{
     this.categoriesRetrieved = true;
 
-    await this.http.get<CategoryList>(`${getCategoriesURL}${token}`).toPromise()
+    await this.http.get<any[]>(`${environment.apiUrl}/images`).toPromise()
     .then(response => {
-      if (response) {
+      if (response && response.length > 0) {
         this.categories = [];
         this.categoriesSize = new Map();
-        response.categories.forEach( el => {
-          const categoryName = el.name.toString();
-          this.categories.push(categoryName);
-          this.categoriesSize.set(categoryName, el.image_number);
+        const counts = new Map<string, number>();
+        response.forEach((image: any) => {
+          const categoryName = (image.image?.category ?? image.category ?? '').toString();
+          if (!categoryName) {
+            return;
+          }
+          counts.set(categoryName, (counts.get(categoryName) ?? 0) + 1);
         });
+        this.categories = Array.from(counts.keys()).sort((a, b) => (a > b) ? 1 : -1);
+        this.categories.forEach(category => this.categoriesSize.set(category, counts.get(category) ?? 0));
+      } else {
+        // Fallback: use predefined categories when no images exist
+        this.categories = this.categoriesPT;
+        this.categoriesSize = new Map();
       }
     }).catch(error => {
+      // Fallback: use predefined categories on error
+      this.categories = this.categoriesPT;
+      this.categoriesSize = new Map();
       this.categoriesRetrieved = false;
     });
   }
@@ -58,28 +67,16 @@ export class CategoryService implements OnInit {
   async retrieveCategoriesTranslations(token: string): Promise<void>{
     this.categoriesTranslationsRetrieved = true;
 
-    await this.http.get<CategoryTranslation>(`${getCategoriesTranslationsURL}${token}`).toPromise()
-    .then(response => {
-      if (response) {
-        this.translationCategoriesList = new Map();
-        response.categories.forEach( el => {
-          const trans = el.split(":");
-          const category = trans[0];
-          const language = trans[1];
-          const translation = trans[2];
-
-          if (!category || !language || translation === undefined) {
-            return;
-          }
-
-          const categoryTranslations = this.translationCategoriesList.get(category) ?? new Map<string, string>();
-          categoryTranslations.set(language, translation);
-          this.translationCategoriesList.set(category, categoryTranslations);
-        });
-      }
-    }).catch(error => {
+    try {
+      this.translationCategoriesList = new Map();
+      this.categoriesPT.forEach((category: string, index: number) => {
+        const english = this.categoriesENG[index] ?? category;
+        this.translationCategoriesList.set(category, new Map<string, string>([['pt', category], ['en', english]]));
+        this.translationCategoriesList.set(english, new Map<string, string>([['pt', category], ['en', english]]));
+      });
+    } catch (error) {
       this.categoriesTranslationsRetrieved = false;
-    });
+    }
   }
 
   /**
@@ -87,18 +84,18 @@ export class CategoryService implements OnInit {
    * @returns list of all categories defined
    */
   async getCategories(): Promise<string[]>{
-    // if (! this.categoriesRetrieved) {
-      const token = this.authenticationService.getCurrentCaregiverToken();
-      if (!token) {
-        this.categoriesRetrieved = false;
-        this.categoriesTranslationsRetrieved = false;
-        return this.categories;
-      }
+    const token = this.authenticationService.getCurrentCaregiverToken();
+    if (!token) {
+      this.categoriesRetrieved = false;
+      this.categoriesTranslationsRetrieved = false;
+      return this.categoriesPT; // Return predefined categories as fallback
+    }
 
-      await this.retrieveCategories(token);
-      await this.retrieveCategoriesTranslations(token);
-    //}
-    return this.categories;
+    await this.retrieveCategories(token);
+    await this.retrieveCategoriesTranslations(token);
+    
+    // Ensure we always return something
+    return this.categories && this.categories.length > 0 ? this.categories : this.categoriesPT;
   }
 
   categoryImagesNumber(category: string): number {
@@ -106,15 +103,13 @@ export class CategoryService implements OnInit {
   }
 
   categoryTranslation(category: string, language: string): string {
-    if (!this.categoriesRetrieved || !this.categoriesTranslationsRetrieved) {
-      return "No category available yet"
-    }
-
+    // Always have translations available (pre-initialized in constructor logic)
     const translatedCategory = this.translationCategoriesList.get(category)?.get(language);
     if (translatedCategory) {
       return translatedCategory;
     }
 
+    // Default to "Other" if category not found
     return this.translationCategoriesList.get("Outra")?.get(language) ?? category;
   }
 

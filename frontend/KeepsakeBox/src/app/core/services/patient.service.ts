@@ -12,26 +12,7 @@
  import { PatientObservation } from '../models/patient-observation.model';
  import { PatientObservationList } from '../models/patient-observation-list.model';
  import { AddPatientObservationData } from '../models/add-patient-observation-data.model';
-  import { environment } from '../../../environments/environment';
-
- //Request URLs
- //const serverURL = "194.117.20.219"
- const serverURL = "localhost"
- const getPatientByIdURL01= `http://${serverURL}:8080/patient?token=`
- const getPatientByIdURL02 = "&patientId="
- const getPatientNameByIdURL01= `http://${serverURL}:8080/patient/name?token=`
- const getPatientNameByIdURL02 = "&patientId="
- const getPatientsCaregiversByIdURL01= `http://${serverURL}:8080/patient/caregivers?token=`
- const getPatientsCaregiversByIdURL02 = "&patientId="
- const updatePatientURL = `http://${serverURL}:8080/patient/update?token=`
- const getObservationsURL01 = `http://${serverURL}:8080/patient/observations?token=`
- const getObservationsURL02 = "&patientId="
- const addObservationURL = `http://${serverURL}:8080/patient/observation?token=`
- const updateObservationURL = `http://${serverURL}:8080/patient/observation/update?token=`
- const deleteObservationURL01 = `http://${serverURL}:8080/patient/observation/delete?token=`
- const deleteObservationURL02 = "&observationId="
-
-  //change to localhost:4200 when testing
+import { environment } from '../../../environments/environment';
  
  @Injectable({
    providedIn: 'root'

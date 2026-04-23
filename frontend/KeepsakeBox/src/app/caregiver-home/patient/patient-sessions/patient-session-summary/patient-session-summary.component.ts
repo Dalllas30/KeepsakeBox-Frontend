@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -41,7 +41,8 @@ export class PatientSessionSummaryComponent implements OnInit {
     private patientService: PatientService,
     private caregiverService: CaregiverService,
     private rtSessionImageService: RtSessionImageService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -59,6 +60,7 @@ export class PatientSessionSummaryComponent implements OnInit {
       }
     }
     await this.getCategories();
+    this.cdr.detectChanges();
   }
 
   async getCurrentCaregiver(caregiver_id: string): Promise<string> {

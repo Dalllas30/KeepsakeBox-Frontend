@@ -14,34 +14,7 @@
  import { CaregiverList } from '../models/caregiver-list.model';
  import { environment } from '../../../environments/environment';
  
- //Request URLs
-//const serverURL = "194.117.20.219"
- const serverURL = "localhost"
-//  const port = "8080"
-const port = "4200"
- const getCaregiverURL = `http://${serverURL}:${port}/caregiver?token=`
- const getCaregiverPatientsURL01 = `http://${serverURL}:${port}/caregiver/patients?token=`
- const getCaregiverPatientsURL02 = "&patientId="
- const addCaregiverPatientURL = `http://${serverURL}:${port}/caregiver/patient?token=`
- const sharePatientURL = `http://${serverURL}:${port}/caregiver/patient/share?token=`
- const caregiverUpdateURL = `http://${serverURL}:${port}/caregiver/update?token=`
- const validatePasswordURL01 = `http://${serverURL}:${port}/caregiver/password?token=`
- const validatePasswordURL02 = "&password="
- const changePasswordURL01 = `http://${serverURL}:${port}/caregiver/password/update?token=`
- const changePasswordURL02 = "&password="
- const primaryCareTranferURL01 = `http://${serverURL}:${port}/caregiver/patient/primary/transfer?token=`
- const primaryCareTranferURL02 = "&oldPrimary="
- const primaryCareTranferURL03 = "&patientId="
- const leavePatientCareURL01 = `http://${serverURL}:${port}/caregiver/patient/leave?token=`
- const leavePatientCareURL02 = "&patientId="
- const removeCaregiverFromPatientCareURL01 = `http://${serverURL}:${port}/caregiver/patient/leave/forced?token=`
- const removeCaregiverFromPatientCareURL02 = "&caregiverId="
- const removeCaregiverFromPatientCareURL03 = "&patientId="
- const leavePrimaryCare01 = `http://${serverURL}:${port}/caregiver/patient/primary/leave?token=`
- const leavePrimaryCare02 = "&caregiverId="
- const leavePrimaryCare03 = "&patientId="
- const getCaregiversURL = `http://${serverURL}:${port}/caregiver/list?token=`
- const getCaregiverOutsideURL = `http://${serverURL}:${port}/caregiver/outside`
+ const apiUrl = environment.apiUrl;
  
  @Injectable({
    providedIn: 'root'
@@ -59,6 +32,28 @@ const port = "4200"
      //Stores the current caregiver token on cache
      this.currentCaregiver = new BehaviorSubject<Caregiver | null>(JSON.parse(localStorage.getItem('currentCaregiver') || 'null'));
      this.selectedCaregiver = new BehaviorSubject<Caregiver | null>(JSON.parse(localStorage.getItem('selectedCaregiver') || 'null'));
+   }
+
+   private normalizeCaregiver(caregiver: any): Caregiver {
+     return {
+       ...caregiver,
+       profileImageURL: caregiver.profileImageURL ?? caregiver.profileImage ?? '/assets/profileimage-default.png',
+       type: caregiver.type ?? caregiver.caregiverType ?? '',
+       isActive: caregiver.isActive ?? true
+     } as Caregiver;
+   }
+
+   private async getCaregiverByToken(token: string): Promise<Caregiver | null> {
+     const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise();
+     return caregivers?.[0] ? this.normalizeCaregiver(caregivers[0]) : null;
+   }
+
+   private async getPatientCaregivers(): Promise<any[]> {
+     return await this.http.get<any[]>(`${apiUrl}/patientCaregivers`).toPromise().then(response => response ?? []);
+   }
+
+   private async getPatients(): Promise<any[]> {
+     return await this.http.get<any[]>(`${apiUrl}/patients`).toPromise().then(response => response ?? []);
    }
  
    /**
@@ -120,15 +115,9 @@ const port = "4200"
    async getCaregiver(token: string): Promise<boolean>{
      let caregiverRetrieved = true;
      await this.resetCurrentCaregiver();
-     await this.http.get<Caregiver>(`${getCaregiverURL}${token}`).toPromise()
-     .then(response => {
-       if (response) {
-         var caregiver: any = response;
-         // Normalize: API uses 'caregiverType', model property is 'type'
-         if (caregiver.caregiverType !== undefined && caregiver.type === undefined) {
-           caregiver.type = caregiver.caregiverType;
-         }
-         this.setCurrentCaregiver(caregiver as Caregiver);
+     await this.getCaregiverByToken(token).then(caregiver => {
+       if (caregiver) {
+         this.setCurrentCaregiver(caregiver);
        }
      }).catch(error => {
        caregiverRetrieved = false;
@@ -144,10 +133,9 @@ const port = "4200"
     */
     async getCaregiverById(token: string, caregiverId: string): Promise<Caregiver | null >{
      var retrievedCareguiver: Caregiver | null = null;
-     await this.http.post<Caregiver>(`${getCaregiverURL}${token}`, caregiverId).toPromise()
-     .then(response => {
+     await this.http.get<Caregiver>(`${apiUrl}/caregivers/${caregiverId}`).toPromise().then(response => {
        if (response) {
-         retrievedCareguiver = response;
+         retrievedCareguiver = this.normalizeCaregiver(response);
        }
      });
      return retrievedCareguiver;
@@ -161,10 +149,9 @@ const port = "4200"
     */
     async getCaregiverOutsideById(caregiverId: string): Promise<Caregiver | null>{
       var retrievedCareguiver: Caregiver | null = null;
-      await this.http.post<Caregiver>(getCaregiverOutsideURL, caregiverId).toPromise()
-      .then(response => {
+      await this.http.get<Caregiver>(`${apiUrl}/caregivers/${caregiverId}`).toPromise().then(response => {
         if (response) {
-          retrievedCareguiver = response;
+          retrievedCareguiver = this.normalizeCaregiver(response);
         }
       });
       return retrievedCareguiver;
@@ -177,8 +164,9 @@ const port = "4200"
     */
    async getCaregiverPatients(token: string): Promise<Patient[] | null> {
      let patients: Patient[] | null = null;
-     const caregiverId = localStorage.getItem('currentCaregiverId');
-     await this.http.get<Patient[]>(`${environment.apiUrl}/patients?caregiverId=${caregiverId}`).toPromise()
+     const caregiver = await this.getCaregiverByToken(token);
+     const caregiverId = caregiver?.id ?? localStorage.getItem('currentCaregiverId');
+     await this.http.get<Patient[]>(`${apiUrl}/patients?caregiverId=${caregiverId}`).toPromise()
      .then(response => {
        if (response) {
          patients = response.sort((a, b) => (a.name > b.name) ? 1 : -1);
@@ -198,12 +186,11 @@ const port = "4200"
     */
    async getCaregiverPatientsByCaregiverId(token: string, caregiverId: string, patientId: string): Promise<Patient[]> {
      let patients: Patient[] = [];
-     await this.http.post<PatientList>(`${getCaregiverPatientsURL01}${token}${getCaregiverPatientsURL02}${patientId}`,caregiverId).toPromise()
-     .then(response => {
-       if (response) {
-         patients = response.patients.sort((a, b) => (a.name > b.name) ? 1 : -1);
-       }
-     });
+     const allPatients = await this.getPatients();
+     patients = allPatients
+       .filter((patient: any) => patient.caregiverId?.toString() === caregiverId.toString())
+       .filter((patient: any) => !patientId || patientId === 'all' || patient.id?.toString() === patientId.toString())
+       .sort((a, b) => (a.name > b.name) ? 1 : -1);
      return patients;
    }
    
@@ -226,11 +213,20 @@ const port = "4200"
        patientRelation: caregiverPatientRegisterData.patientRelation,
        isActive: true
      };
-     await this.http.post<Patient>(
-       `${environment.apiUrl}/patients`, patientPayload).toPromise()
-     .then(response => {
+     await this.http.post<any>(`${apiUrl}/patients`, patientPayload).toPromise()
+     .then(async response => {
        if (response) {
          patientId = response.id as any;
+         const caregiver = this.currentCaregiver.value;
+         if (caregiver) {
+           await this.http.post(`${apiUrl}/patientCaregivers`, {
+             patientId: response.id,
+             caregiver,
+             caregiverId: caregiver.id,
+             isPrimary: true,
+             patientRelation: caregiverPatientRegisterData.patientRelation
+           }).toPromise();
+         }
        }
      })
      .catch(error => {
@@ -249,10 +245,16 @@ const port = "4200"
    async sharePatient(token: string,
      caregiverPatientAssociationData: CaregiverPatientAssociationData): Promise<boolean>{
      let patientShared = true;
-     await this.http.post(
-       `${sharePatientURL}${token}`,
-       caregiverPatientAssociationData).toPromise()
-     .catch(error => {
+     const caregiver = await this.http.get<any>(`${apiUrl}/caregivers/${caregiverPatientAssociationData.caregiverId}`).toPromise().catch(() => null);
+     const patient = await this.http.get<any>(`${apiUrl}/patients/${caregiverPatientAssociationData.patientId}`).toPromise().catch(() => null);
+     await this.http.post(`${apiUrl}/patientCaregivers`, {
+       patientId: caregiverPatientAssociationData.patientId,
+       caregiver,
+       caregiverId: caregiverPatientAssociationData.caregiverId,
+       isPrimary: false,
+       patientRelation: caregiverPatientAssociationData.patientRelation,
+       patient
+     }).toPromise().catch(error => {
        patientShared = false;
      });
      return patientShared;
@@ -269,12 +271,20 @@ const port = "4200"
     */
    async newPrimaryCaregiver(token: string, oldPrimaryId: string, patientId: string): Promise<boolean> {
      let primaryCareTranferred = true;
-     await this.http.get(
-       `${primaryCareTranferURL01}${token}${primaryCareTranferURL02}${oldPrimaryId}${primaryCareTranferURL03}${patientId}`)
-     .toPromise()
-     .catch(error => {
-       primaryCareTranferred = false;
-     });
+     const currentCaregiver = await this.getCaregiverByToken(token);
+     const patientCaregivers = await this.getPatientCaregivers();
+     const existingPrimary = patientCaregivers.find((record: any) => record.patientId?.toString() === patientId.toString() && record.caregiver?.id?.toString() === oldPrimaryId.toString());
+     const currentRecord = patientCaregivers.find((record: any) => record.patientId?.toString() === patientId.toString() && record.caregiver?.id?.toString() === currentCaregiver?.id?.toString());
+     if (existingPrimary?.id) {
+       await this.http.patch(`${apiUrl}/patientCaregivers/${existingPrimary.id}`, { ...existingPrimary, isPrimary: false }).toPromise().catch(() => primaryCareTranferred = false);
+     }
+     if (currentCaregiver) {
+       if (currentRecord?.id) {
+         await this.http.patch(`${apiUrl}/patientCaregivers/${currentRecord.id}`, { ...currentRecord, isPrimary: true }).toPromise().catch(() => primaryCareTranferred = false);
+       } else {
+         await this.http.post(`${apiUrl}/patientCaregivers`, { patientId, caregiver: currentCaregiver, caregiverId: currentCaregiver.id, isPrimary: true, patientRelation: '' }).toPromise().catch(() => primaryCareTranferred = false);
+       }
+     }
      return primaryCareTranferred;
    }
  
@@ -288,10 +298,7 @@ const port = "4200"
    async caregiverUpdate(token: string,
      updatedCaregiver: Caregiver): Promise<boolean>{
      let caregiverUpdated = true;
-     await this.http.post(
-       `${caregiverUpdateURL}${token}`,
-       updatedCaregiver).toPromise()
-     .catch(error => {
+     await this.http.put(`${apiUrl}/caregivers/${updatedCaregiver.id}`, updatedCaregiver).toPromise().catch(error => {
        caregiverUpdated = false;
      });
      return caregiverUpdated;
@@ -304,14 +311,8 @@ const port = "4200"
     * @param password - password to validate
     */
    async validatePassword(token: string, password: string): Promise<boolean>{
-     let validatedPass = true;
-     await this.http.get(
-       `${validatePasswordURL01}${token}${validatePasswordURL02}${password}`)
-     .toPromise()
-     .catch(error => {
-       validatedPass = false;
-     });
-     return validatedPass;
+     const caregiver = await this.getCaregiverByToken(token);
+     return (caregiver as any)?.password === password;
    }
  
    /**
@@ -321,14 +322,12 @@ const port = "4200"
     * @param password - new password
     */
    async changePassword(token: string, newPassword: string): Promise<boolean>{
-     let changedPass = true;
-     await this.http.get(
-       `${changePasswordURL01}${token}${changePasswordURL02}${newPassword}`)
-     .toPromise()
-     .catch(error => {
-       changedPass = false;
-     });
-     return changedPass;
+     const caregiver = await this.getCaregiverByToken(token);
+     if (!caregiver?.id) {
+       return false;
+     }
+     await this.http.patch(`${apiUrl}/caregivers/${caregiver.id}`, { password: newPassword }).toPromise().catch(() => false);
+     return true;
    }
  
    /**
@@ -340,12 +339,12 @@ const port = "4200"
     */
    async leavePatientCare(token: string, patientId: string) {
      let leftCare = true;
-     await this.http.get(
-       `${leavePatientCareURL01}${token}${leavePatientCareURL02}${patientId}`)
-     .toPromise()
-     .catch(error => {
-       leftCare = false;
-     });
+     const caregiver = await this.getCaregiverByToken(token);
+     const patientCaregivers = await this.getPatientCaregivers();
+     const record = patientCaregivers.find((entry: any) => entry.patientId?.toString() === patientId.toString() && entry.caregiver?.id?.toString() === caregiver?.id?.toString());
+     if (record?.id) {
+       await this.http.delete(`${apiUrl}/patientCaregivers/${record.id}`).toPromise().catch(() => leftCare = false);
+     }
      return leftCare;
    }
  
@@ -358,12 +357,11 @@ const port = "4200"
     */
    async removeCaregiverFromPatientCare(token: string, caregiverId: string, patientId: string) {
      let removed = true;
-     await this.http.get(
-       `${removeCaregiverFromPatientCareURL01}${token}${removeCaregiverFromPatientCareURL02}${caregiverId}${removeCaregiverFromPatientCareURL03}${patientId}`)
-     .toPromise()
-     .catch(error => {
-       removed = false;
-     });
+     const patientCaregivers = await this.getPatientCaregivers();
+     const record = patientCaregivers.find((entry: any) => entry.patientId?.toString() === patientId.toString() && entry.caregiver?.id?.toString() === caregiverId.toString());
+     if (record?.id) {
+       await this.http.delete(`${apiUrl}/patientCaregivers/${record.id}`).toPromise().catch(() => removed = false);
+     }
      return removed;
    }
  
@@ -378,12 +376,20 @@ const port = "4200"
     */
    async leavePrimaryCare(token: string, caregiverId: string, patientId: string) {
      let left = true;
-     await this.http.get(
-       `${leavePrimaryCare01}${token}${leavePrimaryCare02}${caregiverId}${leavePrimaryCare03}${patientId}`)
-     .toPromise()
-     .catch(error => {
-       left = false;
-     });
+     const currentCaregiver = await this.getCaregiverByToken(token);
+     const patientCaregivers = await this.getPatientCaregivers();
+     const currentRecord = patientCaregivers.find((entry: any) => entry.patientId?.toString() === patientId.toString() && entry.caregiver?.id?.toString() === currentCaregiver?.id?.toString());
+     const oldPrimaryRecord = patientCaregivers.find((entry: any) => entry.patientId?.toString() === patientId.toString() && entry.caregiver?.id?.toString() === caregiverId.toString());
+     if (oldPrimaryRecord?.id) {
+       await this.http.patch(`${apiUrl}/patientCaregivers/${oldPrimaryRecord.id}`, { ...oldPrimaryRecord, isPrimary: false }).toPromise().catch(() => left = false);
+     }
+     if (currentCaregiver) {
+       if (currentRecord?.id) {
+         await this.http.patch(`${apiUrl}/patientCaregivers/${currentRecord.id}`, { ...currentRecord, isPrimary: true }).toPromise().catch(() => left = false);
+       } else {
+         await this.http.post(`${apiUrl}/patientCaregivers`, { patientId, caregiver: currentCaregiver, caregiverId: currentCaregiver.id, isPrimary: true, patientRelation: '' }).toPromise().catch(() => left = false);
+       }
+     }
      return left;
    }
  
@@ -394,11 +400,10 @@ const port = "4200"
     */
     async getCaregivers(token: string): Promise<Caregiver[]> {
      let caregivers: Caregiver[] = [];
-     await this.http.get<CaregiverList>(
-       `${getCaregiversURL}${token}`).toPromise()
+     await this.http.get<Caregiver[]>(`${apiUrl}/caregivers`).toPromise()
      .then(async response => {
        if (response) {
-         caregivers = response.caregivers;
+         caregivers = response.map(caregiver => this.normalizeCaregiver(caregiver));
        }
      });
      return caregivers;

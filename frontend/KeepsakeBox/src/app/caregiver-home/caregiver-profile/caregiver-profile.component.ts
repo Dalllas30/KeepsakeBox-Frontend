@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
@@ -24,11 +24,13 @@ export class CaregiverProfileComponent implements OnInit {
     private appService: AppService,
     private caregiverService: CaregiverService,
     private validationService: ValidationService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
+    this.cdr.detectChanges();
   }
 
   public isRouteActive(route: string): boolean {

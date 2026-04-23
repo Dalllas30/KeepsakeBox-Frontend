@@ -9,11 +9,7 @@ import { firstValueFrom } from 'rxjs'; // Importação essencial para Angular 21
 import { AddPatientObservationData } from '../models/add-patient-observation-data.model';
 import { PatientObservationList } from '../models/patient-observation-list.model';
 import { PatientObservation } from '../models/patient-observation.model';
-
-// Configuração centralizada para facilitar a manutenção
-//const SERVER_URL = "194.117.20.219";
-const SERVER_URL = "localhost";
-const BASE_API = `http://${SERVER_URL}:8080/patient`;
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -28,13 +24,10 @@ export class ObservationService {
    */
   async getPatientObservations(token: string, patientId: string): Promise<PatientObservation[]> {
     try {
-      const url = `${BASE_API}/observations?token=${token}&patientId=${patientId}`;
+      const response = await firstValueFrom(this.http.get<PatientObservation[]>(`${environment.apiUrl}/observations?patientId=${patientId}`));
       
-      // firstValueFrom substitui o antigo .toPromise()
-      const response = await firstValueFrom(this.http.get<PatientObservationList>(url));
-      
-      if (response?.observations) {
-        return response.observations.sort(
+      if (response) {
+        return response.sort(
           (a, b) => (b.lastUpdatedDate?.getTime() ?? 0) - (a.lastUpdatedDate?.getTime() ?? 0)
         );
       }
@@ -50,8 +43,7 @@ export class ObservationService {
    */
   async addPatientObservation(token: string, data: AddPatientObservationData): Promise<boolean> {
     try {
-      const url = `${BASE_API}/observation?token=${token}`;
-      await firstValueFrom(this.http.post(url, data));
+      await firstValueFrom(this.http.post(`${environment.apiUrl}/observations`, data));
       return true;
     } catch (error) {
       return false;
@@ -64,8 +56,7 @@ export class ObservationService {
    */
   async deletePatientObservation(token: string, observationId: string): Promise<boolean> {
     try {
-      const url = `${BASE_API}/observation/delete?token=${token}&observationId=${observationId}`;
-      await firstValueFrom(this.http.get(url));
+      await firstValueFrom(this.http.delete(`${environment.apiUrl}/observations/${observationId}`));
       return true;
     } catch (error) {
       return false;
@@ -77,8 +68,7 @@ export class ObservationService {
    */
   async updatePatientObservation(token: string, observation: PatientObservation): Promise<boolean> {
     try {
-      const url = `${BASE_API}/observation/update?token=${token}`;
-      await firstValueFrom(this.http.post(url, observation));
+      await firstValueFrom(this.http.put(`${environment.apiUrl}/observations/${observation.id}`, observation));
       return true;
     } catch (error) {
       return false;

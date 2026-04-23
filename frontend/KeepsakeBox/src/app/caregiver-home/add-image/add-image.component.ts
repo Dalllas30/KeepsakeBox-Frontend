@@ -6,7 +6,7 @@
          ImageService.addPatientImage and addCaregiverImage still use .toPromise()
          update updaloadImage() to subscribe */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -86,6 +86,7 @@ export class AddImageComponent implements OnInit {
       true, false
     );
     this.categories   = await this.categoryService.getCategories();
+    inject(ChangeDetectorRef).detectChanges();
   }
 
   translateLabel(category: string): string {

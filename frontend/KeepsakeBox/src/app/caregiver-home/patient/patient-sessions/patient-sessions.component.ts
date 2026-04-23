@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -81,7 +81,8 @@ export class PatientSessionsComponent implements OnInit {
               private caregiverService: CaregiverService,
               private sessionService: RtSessionService,
               private rtSessionService: RtSessionService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private cdr: ChangeDetectorRef) { }
 
   //Component Init
   async ngOnInit(): Promise<void> {
@@ -119,6 +120,7 @@ export class PatientSessionsComponent implements OnInit {
     this.patientCollectionSize = this.patientSessions.length
 
     this.selectSortInicial()
+    this.cdr.detectChanges();
   }
 
   //Names to Display in filter by Caregivers

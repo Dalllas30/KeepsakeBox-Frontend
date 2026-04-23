@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -50,7 +50,8 @@ export class PatientImagesComponent implements OnInit {
     private imageService: ImageService,
     private authenticationService: AuthenticationService,
     private caregiverService: CaregiverService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -62,7 +63,8 @@ export class PatientImagesComponent implements OnInit {
     this.onlyFavorites = false;
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
     this.patient = this.patientService.getCurrentPatient()!;
-    this.retrievePatientPersonalImages();
+    await this.retrievePatientPersonalImages();
+    this.cdr.detectChanges();
   }
 
   translateLabels(categories: string): string {

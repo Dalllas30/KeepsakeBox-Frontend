@@ -1,36 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Patient } from '../models/patient.model';
-import { Caregiver } from '../models/caregiver.model';
-import { Session } from '../models/session.model';
-import { SessionList } from '../models/session-list.model';
 import { BehaviorSubject } from 'rxjs';
+import { Caregiver } from '../models/caregiver.model';
+import { Patient } from '../models/patient.model';
+import { Session } from '../models/session.model';
 import { SessionFeedback } from '../models/session-feedback.model';
-
-//Request URLs
-//const serverURL = "194.117.20.219"
-const serverURL = "localhost"
-const getSessionListByCaregiverURL02= `http://${serverURL}:8080/caregiver/history?token=`
-const getSessionListByCaregiverURL03= "&filter="
-const getSessionListByCaregiverURL04= "&filterYear="
-const getSessionListByCaregiverURL06= "&patientId="
-const getSessionListByDateCaregiverURL05 = `http://${serverURL}:8080/caregiver/statistics?token=`
-
-const getSessionListByPatientURL03= "&filterMonth="
-const getSessionListByPatientURL04= "&filterYear="
-const getSessionListByPatientURL06= "&patientId="
-const getSessionListByDatePatientURL05 = `http://${serverURL}:8080/patient/statistics?token=`
-
-const getSessionListByPatientURL01= `http://${serverURL}:8080/session/patient?token=`
-const getSessionListURL02 = "&patientId="
-
-const updateSessionFeedbackURL01 = `http://${serverURL}:8080/session/update/feedback?token=`
-const getSessionFeedbackURL01 = `http://${serverURL}:8080/session/feedback?token=`
-const getSessionFeedbackURL02 = "&session_Id="
-const finishSessionURL01 = `http://${serverURL}:8080/session/finish?token=`
-const finishSessionURL02 = "&templateId="
-const finishSessionURL03 = "&patientId="
-const updateSessionDurationURL01 = `http://${serverURL}:8080/session/update/duration?token=`
+import { SessionList } from '../models/session-list.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +35,35 @@ export class RtSessionService {
     this.currentDuration = new BehaviorSubject<number | null>(
       JSON.parse(localStorage.getItem('currentDuration') || 'null')
     );
+  }
+
+  private async getSessions(): Promise<Session[]> {
+    return await this.http.get<Session[]>(`${environment.apiUrl}/sessions`).toPromise().then(response => response ?? []);
+  }
+
+  private async getCurrentCaregiverId(token: string): Promise<string | null> {
+    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?token=${token}`).toPromise();
+    return caregivers?.[0]?.id?.toString() ?? localStorage.getItem('currentCaregiverId');
+  }
+
+  private async upsertSessionFeedback(sessionFeedback: SessionFeedback): Promise<boolean> {
+    const response = await this.http.get<any[]>(`${environment.apiUrl}/sessionFeedbacks?session_id=${sessionFeedback.session_id}`).toPromise();
+    const existing = response?.[0];
+    if (existing?.id) {
+      await this.http.put(`${environment.apiUrl}/sessionFeedbacks/${existing.id}`, { ...existing, ...sessionFeedback }).toPromise();
+      return true;
+    }
+    await this.http.post(`${environment.apiUrl}/sessionFeedbacks`, sessionFeedback).toPromise();
+    return true;
+  }
+
+  private async upsertSession(session: Partial<Session> & { id?: string }): Promise<boolean> {
+    if (session.id) {
+      await this.http.put(`${environment.apiUrl}/sessions/${session.id}`, session).toPromise();
+      return true;
+    }
+    await this.http.post(`${environment.apiUrl}/sessions`, session).toPromise();
+    return true;
   }
 
   // ================= SESSION =================
@@ -128,29 +133,13 @@ export class RtSessionService {
   // ================= API =================
 
   async getSessionListByCaregiver(token: string): Promise<Session[]> {
-    let sessions: Session[] = [];
-
-    await this.http.get<SessionList>(
-      `${getSessionListByCaregiverURL02}${token}`
-    ).toPromise()
-    .then(response => {
-      if (response) sessions = response.sessions;
-    });
-
-    return sessions;
+    const caregiverId = await this.getCurrentCaregiverId(token);
+    const sessions = await this.getSessions();
+    return sessions.filter(session => session.caregiver_id?.toString() === caregiverId?.toString());
   }
 
   async getSessionListByCaregiverHistory(token: string): Promise<Session[]> {
-    let sessions: Session[] = [];
-
-    await this.http.get<SessionList>(
-      `${getSessionListByCaregiverURL02}${token}${getSessionListByCaregiverURL03}`
-    ).toPromise()
-    .then(response => {
-      if (response) sessions = response.sessions;
-    });
-
-    return sessions;
+    return this.getSessionListByCaregiver(token);
   }
 
   async getSessionListByDateCaregiver(
@@ -159,17 +148,16 @@ export class RtSessionService {
     filterYear: string,
     patientId: string
   ): Promise<Session[]> {
-
-    let sessions: Session[] = [];
-
-    await this.http.get<SessionList>(
-      `${getSessionListByDateCaregiverURL05}${token}${getSessionListByCaregiverURL03}${filter}${getSessionListByCaregiverURL04}${filterYear}${getSessionListByCaregiverURL06}${patientId}`
-    ).toPromise()
-    .then(response => {
-      if (response) sessions = response.sessions;
+    const caregiverId = await this.getCurrentCaregiverId(token);
+    const sessions = await this.getSessions();
+    return sessions.filter(session => {
+      const startDate = new Date(session.start_session as any);
+      const matchesCaregiver = session.caregiver_id?.toString() === caregiverId?.toString();
+      const matchesPatient = !patientId || patientId === 'all' || session.patient_id?.toString() === patientId.toString();
+      const matchesMonth = !filter || filter === 'all' || `${startDate.getMonth() + 1}` === filter;
+      const matchesYear = !filterYear || filterYear === 'all' || `${startDate.getFullYear()}` === filterYear;
+      return matchesCaregiver && matchesPatient && matchesMonth && matchesYear;
     });
-
-    return sessions;
   }
 
   async getSessionListByDatePatient(
@@ -178,58 +166,32 @@ export class RtSessionService {
     filterMonth: string,
     filterYear: string
   ): Promise<Session[]> {
-
-    let sessions: Session[] = [];
-
-    await this.http.get<SessionList>(
-      `${getSessionListByDatePatientURL05}${token}${getSessionListByPatientURL06}${patientId}${getSessionListByPatientURL03}${filterMonth}${getSessionListByPatientURL04}${filterYear}`
-    ).toPromise()
-    .then(response => {
-      if (response) sessions = response.sessions;
+    const sessions = await this.getSessions();
+    return sessions.filter(session => {
+      const startDate = new Date(session.start_session as any);
+      const matchesPatient = session.patient_id?.toString() === patientId.toString();
+      const matchesMonth = !filterMonth || filterMonth === 'all' || `${startDate.getMonth() + 1}` === filterMonth;
+      const matchesYear = !filterYear || filterYear === 'all' || `${startDate.getFullYear()}` === filterYear;
+      return matchesPatient && matchesMonth && matchesYear;
     });
-
-    return sessions;
   }
 
   async getSessionListByPatient(token: string, patientId: string): Promise<Session[]> {
-    let sessions: Session[] = [];
-
-    await this.http.get<SessionList>(
-      `${getSessionListByPatientURL01}${token}${getSessionListURL02}${patientId}`
-    ).toPromise()
-    .then(response => {
-      if (response) sessions = response.sessions;
-    });
-
-    return sessions;
+    const sessions = await this.getSessions();
+    return sessions.filter(session => session.patient_id?.toString() === patientId.toString());
   }
 
   async getSessionFeedback(token: string, session_Id: string): Promise<SessionFeedback | null> {
-    let sessionFeedback: SessionFeedback | null = null;
-
-    await this.http.get<SessionFeedback>(
-      `${getSessionFeedbackURL01}${token}${getSessionFeedbackURL02}${session_Id}`
-    ).toPromise()
-    .then(response => {
-      if (response) sessionFeedback = response;
-    })
-    .catch(() => {
-      sessionFeedback = null;
-    });
-
-    return sessionFeedback;
+    const response = await this.http.get<SessionFeedback[]>(`${environment.apiUrl}/sessionFeedbacks?session_id=${session_Id}`).toPromise().catch(() => []);
+    return response?.[0] ?? null;
   }
 
   async updateSessionFeedback(token: string, sessionFeedback: SessionFeedback): Promise<boolean> {
-    let success = true;
-
-    await this.http.post(
-      `${updateSessionFeedbackURL01}${token}`,
-      sessionFeedback
-    ).toPromise()
-    .catch(() => success = false);
-
-    return success;
+    try {
+      return await this.upsertSessionFeedback(sessionFeedback);
+    } catch {
+      return false;
+    }
   }
 
   async finishSession(
@@ -238,27 +200,49 @@ export class RtSessionService {
     patientId: string,
     sessionFeedback: SessionFeedback
   ): Promise<boolean> {
-
-    let success = true;
-
-    await this.http.post(
-      `${finishSessionURL01}${token}${finishSessionURL02}${templateSessionId}${finishSessionURL03}${patientId}`,
-      sessionFeedback
-    ).toPromise()
-    .catch(() => success = false);
-
-    return success;
+    try {
+      const sessions = await this.getSessions();
+      const existing = sessions.find(session => session.template_id?.toString() === templateSessionId.toString() && session.patient_id?.toString() === patientId.toString());
+      if (existing?.id) {
+        await this.upsertSession({
+          ...existing,
+          sessionFinished: true,
+          global_feedback: sessionFeedback
+        } as any);
+      } else {
+        await this.upsertSession({
+          template_id: templateSessionId,
+          patient_id: patientId,
+          sessionFinished: true,
+          global_feedback: sessionFeedback,
+          caregiver_id: localStorage.getItem('currentCaregiverId') ?? '',
+          caregiver_name: '',
+          patient_name: '',
+          full_name: '',
+          start_session: new Date(),
+          end_session: new Date(),
+          duration: null as any,
+          total_images: 0,
+          patient_feedback: sessionFeedback.patient_feedback,
+        } as any);
+      }
+      await this.upsertSessionFeedback(sessionFeedback);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async updateSessionDuration(token: string, sessionFeedback: SessionFeedback): Promise<boolean> {
-    let success = true;
-
-    await this.http.post(
-      `${updateSessionDurationURL01}${token}`,
-      sessionFeedback
-    ).toPromise()
-    .catch(() => success = false);
-
-    return success;
+    try {
+      const response = await this.http.get<any[]>(`${environment.apiUrl}/sessionFeedbacks?session_id=${sessionFeedback.session_id}`).toPromise();
+      const existing = response?.[0];
+      if (existing?.id) {
+        await this.http.patch(`${environment.apiUrl}/sessionFeedbacks/${existing.id}`, { duration: sessionFeedback.duration }).toPromise();
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

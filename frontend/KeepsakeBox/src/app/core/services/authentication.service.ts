@@ -2,24 +2,13 @@
  * @author André Santana - fc49451
  */
 
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
-import { LoginData } from '../models/login-data.model';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { ResponseBasic } from '../models/response-basic.model';
 import { CaregiverRegisterData } from '../models/caregiver-register-data.model';
+import { LoginData } from '../models/login-data.model';
 import { CaregiverService } from './caregiver.service';
-
 import { environment } from '../../../environments/environment';
-
-//Request URLs
-//const serverURL = "194.117.20.219"
-const serverURL = "localhost"
-const getCaregiverIdByEmailURL = `http://${serverURL}:8080/caregiver/id?email=`;
-const caregiverRegisterURL = `http://${serverURL}:8080/register`;
-const caregiverLoginURL = `http://${serverURL}:8080/login`;
-const caregiverLogoutURL = `http://${serverURL}:8080/logout?token=`;
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +57,15 @@ export class AuthenticationService {
     return this.getCurrentCaregiverToken() != null;
   }
 
+  private normalizeCaregiver(caregiver: any): any {
+    return {
+      ...caregiver,
+      profileImageURL: caregiver.profileImageURL ?? caregiver.profileImage ?? '/assets/profileimage-default.png',
+      type: caregiver.type ?? caregiver.caregiverType ?? '',
+      isActive: caregiver.isActive ?? true
+    };
+  }
+
   /**
    * Request that validates an email by verifying if it exists in database
    * @param email - email to validate with database
@@ -100,9 +98,11 @@ export class AuthenticationService {
           password: caregiver.password,
           birthDate: caregiver.birthDate,
           profileImage: caregiver.profileImageURL,
+          profileImageURL: caregiver.profileImageURL,
           caregiverType: caregiver.type,
           speciality: caregiver.speciality,
-          token: 'temp-token-' + Date.now()
+          token: 'temp-token-' + Date.now(),
+          isActive: true
         })
       );
       console.log('Registration successful:', response);
@@ -127,11 +127,7 @@ export class AuthenticationService {
       );
       
       if (response && response.length > 0) {
-        const caregiver = response[0];
-        // Normalize: API uses 'caregiverType', model property is 'type'
-        if (caregiver.caregiverType !== undefined && caregiver.type === undefined) {
-          caregiver.type = caregiver.caregiverType;
-        }
+        const caregiver = this.normalizeCaregiver(response[0]);
         this.setCurrentCaregiverToken(caregiver.token);
         localStorage.setItem('currentCaregiverId', caregiver.id);
         this.caregiverService.setCurrentCaregiver(caregiver);
@@ -148,9 +144,9 @@ export class AuthenticationService {
    * Logouts a caregiver from the application
    */
   async logout() {
-    //await this.http.get(`${caregiverLogoutURL}${this.getCurrentCaregiverToken()}`).toPromise();
-    await firstValueFrom(
-      this.http.get(`${environment.apiUrl}/auth/logout?token=${this.getCurrentCaregiverToken()}`)
-    );
+    this.resetCurrentCaregiverToken();
+    localStorage.removeItem('currentCaregiverId');
+    localStorage.removeItem('currentCaregiver');
+    this.caregiverService.resetCurrentCaregiver();
   }
 }

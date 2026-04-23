@@ -2,53 +2,23 @@
  * @author Pedro Neves - fc46430
  */
 
- import { HttpClient } from '@angular/common/http';
- import { Injectable } from '@angular/core';
- import { Router } from '@angular/router';
- import { Patient } from '../models/patient.model';
- import { Caregiver } from '../models/caregiver.model';
- import { TemplateSession } from '../models/template-session.model';
- import { TemplateSessionData } from '../models/template-session-data.model';
- import { TemplateSessionList } from '../models/template-session-list.model';
- import { ResponseBasic } from '../models/response-basic.model';
- import { RtSessionCreateData } from '../models/rt-session-create-data.model';
- import { RtSessionCreateDataList } from '../models/rt-session-create-data-list.model';
- import { BehaviorSubject } from 'rxjs';
- import { PersonalImage } from '../models/personal-image.model';
- import { PersonalImageList } from '../models/personal-image-list.model';
- import { PatientList } from '../models/patient-list.model';
- import { PatientCaregiver } from '../models/patient-caregiver.model';
- import { PatientCaregiverList } from '../models/patient-caregiver-list.model';
- 
- //Request URLs
- //const serverURL = "194.117.20.219"
- const serverURL = "localhost"
- const getTemplateSessionListURL01= `http://${serverURL}:8080/template/session/patient?token=`
- const getTemplateSessionListURL02 = "&patientId="
- const getTemplateSessionListURL03 = "&filter="
- const getTemplateSessionListURL04 = "&count="
- const getImagesByTemplateSessionIdURL01 = `http://${serverURL}:8080/template/session/images?token=`
- const getImagesByTemplateSessionIdURL02 = "&templateSessionId="
- const createTemplateSessionURL = `http://${serverURL}:8080/template/session/create?token=`
- const updateTemplateSessionURL01 = `http://${serverURL}:8080/template/session/update?token=`
- const updateTemplateSessionURL02 = "&templateSessionId="
- const selectImageList4TemplateSessionURL = `http://${serverURL}:8080/template/session/selectImageList?token=`
- const removeTemplateSessionURL01 = `http://${serverURL}:8080/template/session/remove?token=`
- const removeTemplateSessionURL02 = "&id="
- const removeTemplateSessionURL03 = "&patientId="
- const startSessionFromTemplateSessionURL01= `http://${serverURL}:8080/template/session/start?token=`
- const startSessionFromTemplateSessionURL02 = "&id="
- const startSessionFromTemplateSessionURL03 = "&patientId="
- const getCaregiverPatientsByCaregiverIdURL01 = `http://${serverURL}:8080/template/session/patients?token=`
- const getCaregiverPatientsByCaregiverIdURL02 = "&caregiverId="
- const getCaregiverPatientsByCaregiverIdURL03 = "&templateSessionId="
- const updateCaregiverPatientsByCaregiverIdURL01 = `http://${serverURL}:8080/template/session/patients?token=`
- const updateCaregiverPatientsByCaregiverIdURL02 = "&templateSessionId="
- const getCaregiversByTemplateSessionIdURL01 = `http://${serverURL}:8080/template/session/caregivers?token=`
- const getCaregiversByTemplateSessionIdURL02 = "&templateSessionId="
- const getCaregiversByTemplateSessionIdURL03 = "&patientId="
- const updateCaregiversByTemplateSessionIdURL01 = `http://${serverURL}:8080/template/session/caregivers?token=`
- const updateCaregiversByTemplateSessionIdURL02 = "&templateSessionId="
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { Caregiver } from '../models/caregiver.model';
+import { Patient } from '../models/patient.model';
+import { PatientCaregiver } from '../models/patient-caregiver.model';
+import { PatientCaregiverList } from '../models/patient-caregiver-list.model';
+import { PatientList } from '../models/patient-list.model';
+import { PersonalImage } from '../models/personal-image.model';
+import { PersonalImageList } from '../models/personal-image-list.model';
+import { ResponseBasic } from '../models/response-basic.model';
+import { RtSessionCreateData } from '../models/rt-session-create-data.model';
+import { RtSessionCreateDataList } from '../models/rt-session-create-data-list.model';
+import { TemplateSession } from '../models/template-session.model';
+import { TemplateSessionData } from '../models/template-session-data.model';
+import { TemplateSessionList } from '../models/template-session-list.model';
+import { environment } from '../../../environments/environment';
  
  
  @Injectable({
@@ -180,6 +150,14 @@
      getCurrentRtSessionData(): RtSessionCreateData[] | null {
        return this.currentRtSessionData.value;
      }
+
+     private async getTemplateSessions(): Promise<TemplateSession[]> {
+      return await this.http.get<TemplateSession[]>(`${environment.apiUrl}/templateSessions`).toPromise().then(response => response ?? []);
+     }
+
+     private async getImages(): Promise<any[]> {
+      return await this.http.get<any[]>(`${environment.apiUrl}/images`).toPromise().then(response => response ?? []);
+     }
   
  
     /**
@@ -192,14 +170,24 @@
      * @returns List of templeate sessions
      */
     async getTemplateSessionList(token: string, patientId: String, filter: String, count: String): Promise<TemplateSession[]>{
-      let templateSessions: TemplateSession[] = [];
-      await this.http.get<TemplateSessionList>(
-        `${getTemplateSessionListURL01}${token}${getTemplateSessionListURL02}${patientId}${getTemplateSessionListURL03}${filter}${getTemplateSessionListURL04}${count}`).toPromise()
-      .then(async response => {
-        if (response){
-          templateSessions = response.templateSessions;
+      let templateSessions = await this.getTemplateSessions();
+      if (patientId && patientId !== 'any' && patientId !== 'all') {
+        templateSessions = templateSessions.filter(templateSession => templateSession.patient_id?.toString() === patientId.toString());
+      }
+      if (filter && filter !== 'all') {
+        if (filter === 'ongoing') {
+          templateSessions = templateSessions.filter(templateSession => templateSession.isStarted);
+        } else if (filter === 'tostart') {
+          templateSessions = templateSessions.filter(templateSession => !templateSession.isStarted);
         }
-      });
+      }
+      templateSessions = templateSessions.sort((a, b) => new Date(b.last_updated_date as any).getTime() - new Date(a.last_updated_date as any).getTime());
+      if (count && count !== 'all') {
+        const limit = Number(count);
+        if (!Number.isNaN(limit)) {
+          templateSessions = templateSessions.slice(0, limit);
+        }
+      }
       return templateSessions;
     }
  
@@ -212,14 +200,13 @@
      */
      async createTemplateSession(token: string, templateSessionData: TemplateSessionData): Promise<string | null>{
        let templateSessionId: string | null = null;
-      await this.http.post<ResponseBasic>(
-        `${createTemplateSessionURL}${token}`,templateSessionData).toPromise()
+      await this.http.post<any>(`${environment.apiUrl}/templateSessions`, templateSessionData).toPromise()
       .then(async response => {
         if (response){
-          templateSessionId = response.result;
+          templateSessionId = response.id?.toString() ?? null;
         }
       })
-      .catch(error => {
+      .catch(() => {
         templateSessionId = null;
        });
       return templateSessionId;
@@ -234,14 +221,13 @@
      */
     async updateTemplateSession(token: string, templateSessionData: TemplateSessionData, templateSessionId: string): Promise<string | null>{
       let rtemplateSessionId: string | null = null;
-       await this.http.post<ResponseBasic>(
-         `${updateTemplateSessionURL01}${token}${updateTemplateSessionURL02}${templateSessionId}`,templateSessionData).toPromise()
+       await this.http.put<any>(`${environment.apiUrl}/templateSessions/${templateSessionId}`, templateSessionData).toPromise()
        .then(async response => {
          if (response){
-           rtemplateSessionId = response.result;
+           rtemplateSessionId = templateSessionId;
          }
        })
-       .catch(error => {
+       .catch(() => {
          rtemplateSessionId = null;
         });
        return rtemplateSessionId;
@@ -257,21 +243,14 @@
        */
      async selectImageList4TemplateSession(token: string, templateSessionData: TemplateSessionData): Promise<RtSessionCreateData[]>{
        let rtSessionCreateData: RtSessionCreateData[] = [];
-       await this.http.post<RtSessionCreateDataList>(
-         `${selectImageList4TemplateSessionURL}${token}`,templateSessionData).toPromise()
-       .then(async response => {
-         if (response){
-           response.rtSessionCreateData.forEach ( e => {
-             // Atenção: corrigir este bug. o serviço Java (eclipse) deveria devolver apenas um isFavorite, mas devolve favorite
-             // no Model do RtSessionCreateData => retirar o favorite
-             // retirar este foreach
-             // na criação do objeto => eliminar o parametro favorite !!!
-             e.isFavorite=e.favorite;
-           });
-           console.log(response.rtSessionCreateData);
-           rtSessionCreateData = response.rtSessionCreateData;
-         }
-       });
+       const images = await this.getImages();
+       const selectedImages = images.filter(image => templateSessionData.image_list.includes(image.id?.toString()));
+       rtSessionCreateData = selectedImages.map(image => ({
+         id: image.id?.toString(),
+         image: image.image ?? image,
+         favorite: image.isFavorite ?? false,
+         isFavorite: image.isFavorite ?? false
+       } as RtSessionCreateData));
        return rtSessionCreateData;
      }
  
@@ -284,10 +263,9 @@
      */
     async removeTemplateSession(token: string, templateSessionId: String, patientId: String) {
       let removed = true;
-      await this.http.get(
-        `${removeTemplateSessionURL01}${token}${removeTemplateSessionURL02}${templateSessionId}${removeTemplateSessionURL03}${patientId}`).toPromise()
-       .catch(error => {
-          removed = false;
+      await this.http.delete(`${environment.apiUrl}/templateSessions/${templateSessionId}`).toPromise()
+       .catch(() => {
+         removed = false;
        });
      return removed;
     }
@@ -302,16 +280,29 @@
      */
      async startSessionFromTemplateSession(token: string, templateSessionId: string, patientId: String): Promise<string | null>{
        let sessionId: string | null = null;
-      await this.http.get<ResponseBasic>(
-        `${startSessionFromTemplateSessionURL01}${token}${startSessionFromTemplateSessionURL02}${templateSessionId}${startSessionFromTemplateSessionURL03}${patientId}`).toPromise()
-      .then(async response => {
-        if (response){
-          sessionId = response.result;
-        }
-      })
-      .catch(error => {
+      const templateSession = await this.http.get<any>(`${environment.apiUrl}/templateSessions/${templateSessionId}`).toPromise().catch(() => null);
+      if (!templateSession) {
+        return null;
+      }
+      await this.http.post<any>(`${environment.apiUrl}/sessions`, {
+        template_id: templateSessionId,
+        caregiver_id: templateSession.caregiver_id,
+        caregiver_name: templateSession.caregiver_name,
+        patient_id: patientId,
+        patient_name: templateSession.patient_name,
+        full_name: `${templateSession.caregiver_name ?? ''} ${templateSession.patient_name ?? ''}`.trim(),
+        start_session: new Date().toISOString(),
+        end_session: null,
+        sessionFinished: false,
+        duration: null,
+        total_images: templateSession.total_images ?? 0,
+        patient_feedback: 0,
+        global_feedback: null
+      }).toPromise().then(response => {
+        sessionId = response?.id?.toString() ?? null;
+      }).catch(() => {
         sessionId = null;
-       });
+      });
       return sessionId;
     }
  
@@ -323,14 +314,11 @@
     */
       async getImagesByTemplateSessionId(token: string, templateSessionId: String): Promise<PersonalImage[]>{
        let images: PersonalImage[] = [];
-       await this.http.get<PersonalImageList>(
-         `${getImagesByTemplateSessionIdURL01}${token}${getImagesByTemplateSessionIdURL02}${templateSessionId}`)
-       .toPromise()
-       .then(response => {
-         if (response) {
-           images = response.images;
-         }
-       });
+       const templateSession = await this.http.get<any>(`${environment.apiUrl}/templateSessions/${templateSessionId}`).toPromise().catch(() => null);
+       const allImages = await this.getImages();
+       if (templateSession?.image_list) {
+         images = allImages.filter(image => templateSession.image_list.includes(image.id?.toString()));
+       }
        return images;
      }
  
@@ -343,10 +331,10 @@
     */
   async getCaregiverPatientsByTemplateSessionId(token: string, caregiverId: string, templateSessionId: string): Promise<Patient[]> {
     let patients: Patient[] = [];
-     await this.http.get<PatientList>(`${getCaregiverPatientsByCaregiverIdURL01}${token}${getCaregiverPatientsByCaregiverIdURL02}${caregiverId}${getCaregiverPatientsByCaregiverIdURL03}${templateSessionId}`).toPromise()
+     await this.http.get<Patient[]>(`${environment.apiUrl}/patients?caregiverId=${caregiverId}`).toPromise()
      .then(response => {
        if (response) {
-         patients = response.patients.sort((a, b) => (a.name > b.name) ? 1 : -1);
+         patients = response.sort((a, b) => (a.name > b.name) ? 1 : -1);
        }
      });
      return patients;
@@ -361,13 +349,9 @@
     */
   async updateCaregiverPatientsByTemplateSessionId(token: string, templateSessionId: string, patientList: string[]): Promise<string> {
     let rtemplateSessionId = "";
-     await this.http.post<ResponseBasic>(`${updateCaregiverPatientsByCaregiverIdURL01}${token}${updateCaregiverPatientsByCaregiverIdURL02}${templateSessionId}`,patientList).toPromise()
-     .then(async response => {
-       if (response){
-         rtemplateSessionId = response.result;
-       }
-     })
-    .catch(error => {
+     await this.http.patch(`${environment.apiUrl}/templateSessions/${templateSessionId}`, { patientList }).toPromise().then(() => {
+      rtemplateSessionId = templateSessionId;
+     }).catch(() => {
       rtemplateSessionId = "";
      });
      return rtemplateSessionId;
@@ -381,10 +365,10 @@
     */
     async getCaregiversByTemplateSessionId(token: string, templateSessionId: string, patientId: string): Promise<PatientCaregiver[]> {
      let patientCaregivers: PatientCaregiver[] = [];
-     await this.http.get<PatientCaregiverList>(`${getCaregiversByTemplateSessionIdURL01}${token}${getCaregiversByTemplateSessionIdURL02}${templateSessionId}${getCaregiversByTemplateSessionIdURL03}${patientId}`).toPromise()
+     await this.http.get<PatientCaregiver[]>(`${environment.apiUrl}/patientCaregivers?patientId=${patientId}`).toPromise()
      .then(response => {
        if (response) {
-         patientCaregivers = response.caregivers;
+         patientCaregivers = response.sort((a, b) => (a.caregiver.name > b.caregiver.name) ? 1 : -1);
        }
      });
      return patientCaregivers;
@@ -399,13 +383,9 @@
     */
       async updateCaregiversByTemplateSessionId(token: string, templateSessionId: string, caregiverList: string[]): Promise<string> {
        let rtemplateSessionId = "";
-       await this.http.post<ResponseBasic>(`${updateCaregiversByTemplateSessionIdURL01}${token}${updateCaregiversByTemplateSessionIdURL02}${templateSessionId}`,caregiverList).toPromise()
-       .then(async response => {
-         if (response){
-           rtemplateSessionId = response.result;
-         }
-       })
-      .catch(error => {
+       await this.http.patch(`${environment.apiUrl}/templateSessions/${templateSessionId}`, { caregiverList }).toPromise().then(() => {
+        rtemplateSessionId = templateSessionId;
+       }).catch(() => {
         rtemplateSessionId = "";
        });
        return rtemplateSessionId;
