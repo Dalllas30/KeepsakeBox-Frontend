@@ -169,6 +169,7 @@ export class PatientImagesComponent implements OnInit {
     if (event.target.files && event.target.files[0]) {
       this.imageService.addImagesURLToUpload(event.target.files);
     }
+    this.cdr.detectChanges();
   }
 
   async addImagesFolder(event: any): Promise<void> {

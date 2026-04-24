@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
@@ -58,7 +58,8 @@ export class CaregiverSessionsHistoryComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private caregiverService: CaregiverService,
     private sessionService: RtSessionService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -69,6 +70,7 @@ export class CaregiverSessionsHistoryComponent implements OnInit {
     this.caregiverCollectionSize = this.caregiverSessions.length;
     this.selectSort(0);
     this.selectSortInicial();
+    this.cdr.detectChanges();
   }
 
   // Mantém todos os métodos do original — são lógica de negócio, não mudam

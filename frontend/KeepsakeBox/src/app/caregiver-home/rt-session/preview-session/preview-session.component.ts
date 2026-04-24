@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, HostListener } from '@angular/core';
+import { Component, Input, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -49,7 +49,8 @@ export class PreviewSessionComponent implements OnInit {
     private patientService: PatientService,
     private categoryService: CategoryService,
     private authenticationService: AuthenticationService,
-    private templateSessionService: TemplateSessionService
+    private templateSessionService: TemplateSessionService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +58,7 @@ export class PreviewSessionComponent implements OnInit {
     this.selectedImages = this.templateSessionService.getCurrentRtSessionData()!;
     console.log("id:" + this.selectedImages[0].id + "   >> img.id:" + this.selectedImages[0].image.id);
     this.selectedCategories = this.appService.getSelectedCategories();
+    this.cdr.detectChanges();
   }
 
   @HostListener('document:keydown.backspace', ['$event'])

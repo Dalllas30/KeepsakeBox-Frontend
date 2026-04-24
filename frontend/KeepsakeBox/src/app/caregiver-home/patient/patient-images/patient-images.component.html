@@ -121,7 +121,7 @@
         <div class="d-flex justify-content-center align-items-center img-thumbnail image-square">
           <i class="bi text-icon-blue image-locker" [class.bi-lock-fill]="img.image.isPrivate" [class.bi-unlock-fill]="!img.image.isPrivate"></i>
           <i class="bi text-icon-blue image-favorite" [class.bi-star-fill]="img.isFavorite" [class.bi-star]="!img.isFavorite"></i>
-          <img [src]="img.image.thumbnailPath" [alt]="img.image.description" class="image-card-inside">
+          <img [src]="img.image.imageURL" [alt]="img.image.description" class="image-card-inside">
         </div>
 
         <div class="p-1 image-description">

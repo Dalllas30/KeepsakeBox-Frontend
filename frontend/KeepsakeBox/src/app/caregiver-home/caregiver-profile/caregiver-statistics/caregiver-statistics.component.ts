@@ -8,7 +8,7 @@
          RtSessionImageService.getSessionPatientImageInformation still uses .toPromise()
          update these methods to subscribe */
 
-import { Component, inject, OnInit, AfterViewInit } from '@angular/core';
+import { Component, inject, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -37,6 +37,7 @@ export class CaregiverStatisticsComponent implements OnInit, AfterViewInit {
   private caregiverService = inject(CaregiverService);
   private rtSessionImageService = inject(RtSessionImageService);
   private categoryService = inject(CategoryService);
+  private cdr = inject(ChangeDetectorRef);
 
   translateCache = navigator.language.startsWith('pt') ? 'pt' : 'en';
 
@@ -123,6 +124,7 @@ export class CaregiverStatisticsComponent implements OnInit, AfterViewInit {
     this.aferLabelPatientNegative = [];
 
     this.open = false;
+    this.cdr.detectChanges();
     this.close = true;
 
     this.yearsArray = [];

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -46,7 +46,8 @@ export class CreateSessionAutomaticComponent implements OnInit {
     private caregiverService: CaregiverService,
     private patientService: PatientService,
     private authenticationService: AuthenticationService,
-    private appService: AppService
+    private appService: AppService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -54,6 +55,7 @@ export class CreateSessionAutomaticComponent implements OnInit {
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
     this.patient = this.patientService.getCurrentPatient()!;
     this.selectedCategories = this.appService.getSelectedCategories();
+    this.cdr.detectChanges();
   }
 
   translateLabel(category: string): string {

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,6 +30,7 @@ export class AddPatientComponent implements OnInit {
   private caregiverService      = inject(CaregiverService);
   private patientService        = inject(PatientService);
   private categoryService       = inject(CategoryService);
+  private cdr                   = inject(ChangeDetectorRef);
 
   translateCache = navigator.language.startsWith('pt') ? 'pt' : 'en';
 
@@ -88,6 +89,7 @@ export class AddPatientComponent implements OnInit {
     this.birthDate    = new BirthDate(0, -1, 0, true);
     this.categories   = await this.categoryService.getCategories();
     this.categoriesCopy = [...this.categories];
+    this.cdr.detectChanges();
   }
 
   showCancel():      void { this.hideCancel = false; this.hideAddPatient = true; }

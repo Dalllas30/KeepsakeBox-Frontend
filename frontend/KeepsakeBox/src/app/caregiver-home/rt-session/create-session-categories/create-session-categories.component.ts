@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,13 +31,15 @@ export class CreateSessionCategoriesComponent implements OnInit {
     private imageService: ImageService,
     private templateSessionService: TemplateSessionService,
     private appService: AppService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
     this.appContext = this.appService.getAppContext()!;
     this.categories = await this.categoryService.getCategories();
     this.selectedCategories = this.appService.getSelectedCategories();
+    this.cdr.detectChanges();
   }
 
   categoryClick(category: string): void {

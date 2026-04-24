@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -67,7 +67,9 @@ export class CreateSessionImagesComponent implements OnInit {
     private patientService: PatientService,
     private authenticationService: AuthenticationService,
     private templateSessionService: TemplateSessionService,
-    private appService: AppService
+    private appService: AppService,
+    private cdr: ChangeDetectorRef
+
   ) {}
 
   ngOnInit(): void {
@@ -152,6 +154,7 @@ export class CreateSessionImagesComponent implements OnInit {
     this.imagesCopy = this.images;
     this.loadingImages = false;
     this.collectionSize = this.images.length;
+    this.cdr.detectChanges();
   }
 
   formGoToNextStep() {

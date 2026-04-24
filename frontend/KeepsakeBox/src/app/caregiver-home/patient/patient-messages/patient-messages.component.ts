@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewChildren, ElementRef, QueryList, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, ElementRef, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -44,7 +44,8 @@ export class PatientMessagesComponent implements OnInit, AfterViewInit {
     private authenticationService: AuthenticationService,
     private messageService: MessageService,
     private patientService: PatientService,
-    private caregiverService: CaregiverService
+    private caregiverService: CaregiverService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -59,6 +60,7 @@ export class PatientMessagesComponent implements OnInit, AfterViewInit {
     );
     this.messageToSend = new PatientChatMessageData(this.currentCaregiver.id, "", new Date());
     this.connect();
+    this.cdr.detectChanges();
   }
 
   ngAfterViewInit(): void {

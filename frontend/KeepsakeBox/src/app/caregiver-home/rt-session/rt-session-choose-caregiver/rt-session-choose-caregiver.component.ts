@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -40,7 +40,8 @@ export class RtSessionChooseCaregiverComponent implements OnInit {
     private router: Router,
     private templateSessionService: TemplateSessionService,
     private caregiverService: CaregiverService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -58,6 +59,7 @@ export class RtSessionChooseCaregiverComponent implements OnInit {
     }
     this.collectionSize = this.patientCaregivers.length;
     this.patientCaregiversCopy = this.patientCaregivers;
+    this.cdr.detectChanges();
   }
 
   searchCaregiverByName(event: Event) {

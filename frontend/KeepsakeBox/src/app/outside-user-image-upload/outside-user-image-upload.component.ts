@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -61,7 +61,8 @@ export class OutsideUserImageUploadComponent implements OnInit {
     private router: Router,
     private categoryService: CategoryService,
     private appService: AppService,
-    private validationService: ValidationService
+    private validationService: ValidationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -73,6 +74,7 @@ export class OutsideUserImageUploadComponent implements OnInit {
     } else {
       this.defineTargetCaregiver(this.request.caregiverID);
     }
+    this.cdr.detectChanges();
     this.imagesToValidate = [];
     this.showAddImage1();
     this.imageCounter = 1;

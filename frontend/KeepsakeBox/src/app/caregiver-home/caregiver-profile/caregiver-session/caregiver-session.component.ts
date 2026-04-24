@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
@@ -62,7 +62,8 @@ export class CaregiverSessionComponent implements OnInit {
     private rtSessionService: RtSessionService,
     private authenticationService: AuthenticationService,
     // private dialogService: DialogService,
-    private appService: AppService
+    private appService: AppService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -72,6 +73,7 @@ export class CaregiverSessionComponent implements OnInit {
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
     this.sessionFeedback = new SessionFeedback("", "", "", new Date(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0);
     await this.retrieveTemplateSession();
+    this.cdr.detectChanges();
   }
 
   async retrieveTemplateSession(): Promise<void> {

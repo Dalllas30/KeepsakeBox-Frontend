@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -46,7 +46,8 @@ export class RtSessionFeedbackComponent implements OnInit {
     private rtSessionService: RtSessionService,
     private patientService: PatientService,
     private appService: AppService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -62,6 +63,7 @@ export class RtSessionFeedbackComponent implements OnInit {
     } else {
       this.sessionFeedback.duration = this.sessionDuration;
     }
+    this.cdr.detectChanges();
 
     this.setGeneralFeedback(0, this.sessionFeedback.patient_feedback);
     if (this.sessionFeedback.anxiety == 1) { this.symptoms_value["anxiety"] = "Yes"; }

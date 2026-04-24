@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -42,7 +42,8 @@ export class RtSessionDetailComponent implements OnInit {
     private caregiverService: CaregiverService,
     private patientService: PatientService,
     private authenticationService: AuthenticationService,
-    private templateSessionService: TemplateSessionService
+    private templateSessionService: TemplateSessionService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -58,6 +59,7 @@ export class RtSessionDetailComponent implements OnInit {
     this.selectedImages = await this.templateSessionService.getImagesByTemplateSessionId(
       this.authenticationService.getCurrentCaregiverToken()!, this.appContext.templateSessionId);
     this.loadingImages = false;
+    this.cdr.detectChanges();
 
     if (this.templateSession.created_patient_id == this.templateSession.patient_id) {
       this.original_patient_name = this.templateSession.patient_name;

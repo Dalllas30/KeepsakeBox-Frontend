@@ -405,6 +405,48 @@
       "patient_feedback": 0,
       "global_feedback": null,
       "id": 2
+    },
+    {
+      "template_id": 1,
+      "caregiver_id": 12,
+      "patient_id": 8,
+      "full_name": "",
+      "start_session": "2026-04-24T14:37:01.376Z",
+      "end_session": null,
+      "sessionFinished": false,
+      "duration": null,
+      "total_images": 1,
+      "patient_feedback": 0,
+      "global_feedback": null,
+      "id": 3
+    },
+    {
+      "template_id": 2,
+      "caregiver_id": 12,
+      "patient_id": 8,
+      "full_name": "",
+      "start_session": "2026-04-24T16:01:27.115Z",
+      "end_session": null,
+      "sessionFinished": false,
+      "duration": null,
+      "total_images": 1,
+      "patient_feedback": 0,
+      "global_feedback": null,
+      "id": 4
+    },
+    {
+      "template_id": 2,
+      "caregiver_id": 12,
+      "patient_id": 8,
+      "full_name": "",
+      "start_session": "2026-04-24T16:14:48.059Z",
+      "end_session": null,
+      "sessionFinished": false,
+      "duration": null,
+      "total_images": 1,
+      "patient_feedback": 0,
+      "global_feedback": null,
+      "id": 5
     }
   ],
   "sessionFeedbacks": [],
@@ -418,6 +460,19 @@
       "categories": "",
       "created_date": "2026-04-23T11:26:28.740Z",
       "last_updated_date": "2026-04-23T11:26:28.740Z",
+      "image_list": [
+        null
+      ]
+    },
+    {
+      "id": 2,
+      "caregiver_id": 12,
+      "patient_id": 8,
+      "creation_type": 1,
+      "total_images": 1,
+      "categories": "Animais",
+      "created_date": "2026-04-24T16:14:44.156Z",
+      "last_updated_date": "2026-04-24T16:14:44.156Z",
       "image_list": [
         null
       ]

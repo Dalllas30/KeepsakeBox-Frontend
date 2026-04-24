@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -64,7 +64,8 @@ export class PatientSessionStartlistComponent implements OnInit {
     private rtSessionService: RtSessionService,
     private authenticationService: AuthenticationService,
     private dialogService: DialogService,
-    private appService: AppService
+    private appService: AppService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -74,6 +75,7 @@ export class PatientSessionStartlistComponent implements OnInit {
     this.appService.setAppContext(this.appContext);
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
     await this.retrieveTemplateSession();
+    this.cdr.detectChanges();
   }
 
   async retrieveTemplateSession(): Promise<void> {

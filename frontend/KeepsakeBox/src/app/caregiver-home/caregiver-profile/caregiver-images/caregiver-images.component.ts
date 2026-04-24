@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
@@ -43,14 +43,14 @@ export class CaregiverImagesComponent implements OnInit {
     private router: Router,
     private imageService: ImageService,
     private authenticationService: AuthenticationService,
-    private caregiverService: CaregiverService
+    private caregiverService: CaregiverService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
     this.categories = await this.categoryService.getCategories();
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
-    this.retrieveCaregiverPersonalImages();
-  }
+    this.retrieveCaregiverPersonalImages();  }
 
   translateLabels(categories: string): string {
     return this.categoryService.categoriesTranslation(categories, this.translateCache);
@@ -71,6 +71,7 @@ export class CaregiverImagesComponent implements OnInit {
     this.imagesByFavorite = this.images.filter(img => img.isFavorite);
     this.collectionSize = this.images.length;
     this.loadingImages = false;
+    this.cdr.detectChanges();
   }
 
   categoryClick(category: string): void {

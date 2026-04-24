@@ -6,7 +6,7 @@
          NotificationService.notifyPrimaryLeaveCare still uses .toPromise()
          update leavePatientPrimaryCare() to subscribe */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -34,6 +34,7 @@ export class LeavePatientPrimaryCareComponent implements OnInit {
   private patientService        = inject(PatientService);
   private notificationService   = inject(NotificationService);
   private appService            = inject(AppService);
+  private cdr                   = inject(ChangeDetectorRef);
 
   @Input() page     = 1;
   @Input() pageSize = 2;
@@ -59,6 +60,7 @@ export class LeavePatientPrimaryCareComponent implements OnInit {
     this.patient           = this.patientService.getCurrentPatient()!;
     await this.retrievePatientCaregivers();
     this.removeCurrentCaregiverFromList();
+    this.cdr.detectChanges();
   }
 
   showCancel(): void {

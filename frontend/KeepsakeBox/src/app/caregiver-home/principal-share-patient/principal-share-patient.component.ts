@@ -6,7 +6,7 @@
          NotificationService.notifyPrimaryCareTransfer still uses .toPromise()
          update notifyPrimaryCareTransfer() to subscribe */
 
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
@@ -36,6 +36,7 @@ export class PrincipalSharePatientComponent implements OnInit {
   private patientService        = inject(PatientService);
   private notificationService   = inject(NotificationService);
   private appService            = inject(AppService);
+  private cdr                   = inject(ChangeDetectorRef);
 
   // Number of pages to show
   @Input() page     = 1;
@@ -62,6 +63,7 @@ export class PrincipalSharePatientComponent implements OnInit {
     this.patient          = this.patientService.getCurrentPatient()!;
     await this.retrievePatientCaregivers();
     this.getReferenceToCurrentCaregiver();
+    this.cdr.detectChanges();
   }
 
   showCancel(): void {

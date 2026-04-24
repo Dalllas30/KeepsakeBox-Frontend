@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { NavigationExtras, Router } from '@angular/router';
@@ -29,7 +29,8 @@ export class CaregiverValidationComponent implements OnInit {
     private validationService: ValidationService,
     private caregiverService: CaregiverService,
     private authenticationService: AuthenticationService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -45,6 +46,7 @@ export class CaregiverValidationComponent implements OnInit {
         this.targets.push(await this.getTargetName(imageGroup));
       });
     });
+    this.cdr.detectChanges();
   }
 
   goToValidationInterface(imageGroup: any) {
