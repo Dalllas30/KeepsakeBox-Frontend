@@ -58,12 +58,13 @@ export class CaregiverHomeComponent implements OnInit {
   }
 
   hideNavBarCaregiver(): boolean {
-    return this.hideNavBar() ||
-      this.isRouteActive('caregiver/session/running') ||
-      this.isRouteActive('caregiver/session/feedback');
+    // Hide the main caregiver nav for all session-related routes AND overlay pages
+    return this.hideNavBar() || this.isRouteActive('session');
   }
 
   hideNavBarRtSession(): boolean {
+    // Hide the RT session nav only for overlay pages and the fullscreen running/feedback screens
+    // (NOT for session/home, session/categories, etc. — those should show the RT nav)
     return this.hideNavBar() ||
       this.isRouteActive('caregiver/session/running') ||
       this.isRouteActive('caregiver/session/feedback');

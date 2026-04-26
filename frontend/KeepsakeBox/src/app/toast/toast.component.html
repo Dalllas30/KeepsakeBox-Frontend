@@ -1,7 +1,6 @@
-<p>toast works!</p>
 <!-- (hide)="toastService.remove(toast)" -->
+@for (toast of dialogService.toasts; track $index) {
 <ngb-toast
-    *ngFor="let toast of dialogService.toasts"
         [header]="toast.headertext"
         [class]="toast.classname"
         [autohide]="toast.autohide"
@@ -10,26 +9,31 @@
         aria-live="assertive"
         aria-atomic="true"
 >
-    <ng-template [ngIf]="isTemplate(toast)" [ngIfElse]="text">
-        <ng-template [ngTemplateOutlet]="toast.textOrTpl"></ng-template>
-    </ng-template>
-
-    <ng-template #text>
-        <td class="toast-icon">
-            <div *ngIf="isSuccess(toast)">
-                <i class="bi bi-check-lg color-white"></i>
-            </div> 
-            <div *ngIf="isError(toast)">
-                <i class="bi bi-x-lg color-white"></i>
-            </div> 
-            <div *ngIf="isInformation(toast)">
-                <i class="bi bi-info-lg color-white"></i>
-            </div> 
-        </td>
-        <td>
-            <h6 class="toast-text">
-                {{ toast.textOrTpl }}
-            </h6>
-        </td>
-    </ng-template>
+    @if (isTemplate(toast)) {
+    <ng-template [ngTemplateOutlet]="toast.textOrTpl"></ng-template>
+    } @else {
+    <td class="toast-icon">
+        @if (isSuccess(toast)) {
+        <div>
+            <i class="bi bi-check-lg color-white"></i>
+        </div>
+        }
+        @if (isError(toast)) {
+        <div>
+            <i class="bi bi-x-lg color-white"></i>
+        </div>
+        }
+        @if (isInformation(toast)) {
+        <div>
+            <i class="bi bi-info-lg color-white"></i>
+        </div>
+        }
+    </td>
+    <td>
+        <h6 class="toast-text">
+            {{ toast.textOrTpl }}
+        </h6>
+    </td>
+    }
 </ngb-toast>
+}

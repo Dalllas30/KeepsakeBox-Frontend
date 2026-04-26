@@ -1,11 +1,11 @@
-<p>outside-user-image-upload works!</p>
 <!--@author Raúl Alves - fc51019-->
 
 <!--Nav Container-->
-<div *ngIf="!addingImage">
+@if (!addingImage) {
     <div>
         <!--Principal Nav-->
-        <ul class="nav nav-pills nav-fill" *ngIf="target">
+        @if (target) {
+        <ul class="nav nav-pills nav-fill">
             <!--Help-->
             <li class="nav-item">
                 <a class="nav-link" disabled="true" style="text-align: left;">
@@ -13,9 +13,11 @@
                 </a>
             </li>
         </ul>
+        }
     </div>
 
-    <div *ngIf="!submetido">
+    @if (!submetido) {
+    <div>
 
         <div class="d-flex justify-content-left flex-wrap"
             style="min-width: 500px; margin-top: 50px; font-size: 24px; margin-left: 20px; margin-right: 20px;">
@@ -59,20 +61,28 @@
 
         <div style="margin-left: 20px; margin-top:20px">
             Imagens para submeter:
-            <div *ngIf="imagesToValidate.length < 1">
+            @if (imagesToValidate.length < 1) {
+            <div>
                 Nenhuma imagem para submeter
             </div>
-            <div *ngIf="imagesToValidate.length > 0">
+            }
+            @if (imagesToValidate.length > 0) {
+            <div>
                 <!--Caregiver Images-->
                 <div class="d-flex justify-content-start flex-wrap" style="margin-top: 20px;">
-                    <div class="p-2" *ngFor="let img of imagesToValidate">
+                    @for (img of imagesToValidate; track $index) {
+                    <div class="p-2">
 
                         <div class="card long-image-card light-blue-border">
                             <div class="space"></div>
                             <!--Image-->
                             <div class="d-flex justify-content-center align-items-center img-thumbnail image-square">
-                                <i *ngIf="!img.isPrivate" class="bi bi-unlock-fill text-icon-blue image-locker"></i>
-                                <i *ngIf="img.isPrivate" class="bi bi-lock-fill text-icon-blue image-locker"></i>
+                                @if (!img.isPrivate) {
+                                <i class="bi bi-unlock-fill text-icon-blue image-locker"></i>
+                                }
+                                @if (img.isPrivate) {
+                                <i class="bi bi-lock-fill text-icon-blue image-locker"></i>
+                                }
                                 <img [src]="img.imagePath" alt="{{img.description}}" class="image-card-inside">
                             </div>
 
@@ -88,9 +98,11 @@
                         </div>
 
                     </div>
+                    }
 
                 </div>
             </div>
+            }
         </div>
 
         <div class="d-flex justify-content-left flex-wrap">
@@ -99,39 +111,52 @@
                 Submeter
             </button> -->
         </div>
-        <div class="d-flex justify-content-center flex-wrap" style="margin-top: 30px;" *ngIf="submissionAttempted">
-            <div *ngIf="!nameInput" class="d-flex justify-content-left flex-wrap p-2">
+        @if (submissionAttempted) {
+        <div class="d-flex justify-content-center flex-wrap" style="margin-top: 30px;">
+            @if (!nameInput) {
+            <div class="d-flex justify-content-left flex-wrap p-2">
                 <div class="alert alert-warning"
                     style="width: 450px; font-size: 20px; margin-bottom: 10px; margin-top: -20px; margin-left: 10px;">É
                     obrigatório inserir o primeiro e último nome</div>
             </div>
-            <div *ngIf="fileCount < 1" class="d-flex justify-content-left flex-wrap p-2">
+            }
+            @if (fileCount < 1) {
+            <div class="d-flex justify-content-left flex-wrap p-2">
                 <div class="alert alert-warning"
                     style="width: 450px; font-size: 20px; margin-bottom: 10px; margin-top: -20px; margin-left: 10px;">
                     Nenhuma imagem foi adicionada para submissão</div>
             </div>
+            }
         </div>
+        }
     </div>
+    }
 
-    <div *ngIf="submetido">
+    @if (submetido) {
+    <div>
         <div class="d-flex justify-content-center flex-wrap" style="margin-top:50px; margin-left: 50px">
             Imagens submetidas para validação por parte do cuidador. Pode fechar esta página.
         </div>
 
     </div>
-</div>
+    }
+}
 
-<div *ngIf="addingImage">
+@if (addingImage) {
+<div>
     <!--Add Image Component Container-->
     <div class="d-flex justify-content-center flex-wrap">
 
         <!--Cancel Screen-->
-        <app-cancel-screen *ngIf="!hideCancel" (answeredNo)="showAddImage1()"
+        @if (!hideCancel) {
+        <app-cancel-screen (answeredNo)="showAddImage1()"
             (answeredYes)="navigateToSubmissionPage()">
         </app-cancel-screen>
+        }
 
         <!--Skip Image Card-->
-        <div *ngIf="!hideDiscardImage" class="card blue-border">
+        @if (!hideDiscardImage) {
+        <div class="card blue-border">
 
             <!--Skip Image Header-->
             <h5 class="card-header card-header-blue">
@@ -173,21 +198,27 @@
                 </div>
 
             </div>
-
+            
         </div>
+        }
 
         <!--Add Image Screen 1-->
-        <div *ngIf="!hideAddImage1">
+        @if (!hideAddImage1) {
+        <div>
 
             <!--Success Alert - Image Inserted-->
-            <div *ngIf="imageAdded" class="alert alert-success alert-box" role="alert">
+            @if (imageAdded) {
+            <div class="alert alert-success alert-box" role="alert">
                 {{'imageAdded' | translate}}
             </div>
+            }
 
             <!--Warning Alert - Image Discarded-->
-            <div *ngIf="imageDiscarded" class="alert alert-warning alert-box" role="alert">
+            @if (imageDiscarded) {
+            <div class="alert alert-warning alert-box" role="alert">
                 {{'imageDiscarded' | translate}}
             </div>
+            }
 
             <!--Add Image Screen 1 Form-->
             <form (ngSubmit)="showAddImage2()" #selectCategoriesForm="ngForm">
@@ -227,13 +258,15 @@
                                 </div>
                                 <!--Categories to Select-->
                                 <div class="d-flex justify-content-start flex-wrap p-2" style="width: 700px;">
-                                    <div class="p-2" *ngFor="let category of categories" style="margin-top: -10px;">
+                                    @for (category of categories; track $index) {
+                                    <div class="p-2" style="margin-top: -10px;">
                                         <button type="button" class="btn button category-button"
                                             [class.category-button-selected]="isCategorySelected(category)"
                                             (click)="categoryClick(category)">
                                             {{translateLabel(category)}}
                                         </button>
                                     </div>
+                                    }
                                     <!--Clean Selection-->
                                     <div class="p-2" style="margin-top: -10px;">
                                         <button type="button" class="btn button button-neutral"
@@ -256,12 +289,15 @@
                                 <button type="button" class="btn button button-neutral full-width"
                                     (click)="showCancel()">
                                     <i class="bi bi-caret-left-fill color-white"></i>
-                                    <span class="color-white" *ngIf="isRouteActive('caregiver/person/images/add')
-                            && caregiver.type=='Formal'"> {{'images' | translate}} {{'beneficiary' | translate}}</span>
-                                    <span class="color-white" *ngIf="isRouteActive('caregiver/person/images/add')
-                            && caregiver.type=='Informal'"> {{'images' | translate}} {{'relative' | translate}}</span>
-                                    <span class="color-white" *ngIf="isRouteActive('caregiver/profile/images/add')
-                            && caregiver.type=='Informal'"> {{'images' | translate}} {{'caregiver' | translate}}</span>
+                                    @if (isRouteActive('caregiver/person/images/add') && caregiver.type=='Formal') {
+                                    <span class="color-white"> {{'images' | translate}} {{'beneficiary' | translate}}</span>
+                                    }
+                                    @if (isRouteActive('caregiver/person/images/add') && caregiver.type=='Informal') {
+                                    <span class="color-white"> {{'images' | translate}} {{'relative' | translate}}</span>
+                                    }
+                                    @if (isRouteActive('caregiver/profile/images/add') && caregiver.type=='Informal') {
+                                    <span class="color-white"> {{'images' | translate}} {{'caregiver' | translate}}</span>
+                                    }
                                 </button>
                             </div>
 
@@ -294,15 +330,19 @@
             </form>
 
         </div>
+        }
 
         <!--Add Image Screen 2-->
-        <div *ngIf="!hideAddImage2">
+        @if (!hideAddImage2) {
+        <div>
             <div class="d-flex flex-column">
 
                 <!--Error Alert - Image Add failed-->
-                <div *ngIf="!added" class="alert alert-danger alert-box" role="alert">
+                @if (!added) {
+                <div class="alert alert-danger alert-box" role="alert">
                     {{'addImageError' | translate}}
                 </div>
+                }
 
                 <!--Add Image Screen 1 Form-->
                 <form (ngSubmit)="uploadImageToValidate()" #uploadImageForm="ngForm">
@@ -331,16 +371,18 @@
                                     </div>
 
                                     <!--Required symbol-->
-                                    <small *ngIf="translateCache=='pt'"
-                                        class="p-2 form-text text-info-message profile-image-help"
+                                    @if (translateCache=='pt') {
+                                    <small class="p-2 form-text text-info-message profile-image-help"
                                         style="margin-top: -10px;">
                                         Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
                                     </small>
-                                    <small *ngIf="translateCache=='en'"
-                                        class="p-2 form-text text-info-message profile-image-help"
+                                    }
+                                    @if (translateCache=='en') {
+                                    <small class="p-2 form-text text-info-message profile-image-help"
                                         style="margin-top: -10px;">
                                         All fields with <strong>*</strong> are <strong>Required</strong>.
                                     </small>
+                                    }
                                 </div>
 
                                 <!--Add Image Screen 2 Fields-->
@@ -386,12 +428,16 @@
                                     <!--Profile Image Help-->
                                     <small class="p-2 form-text text-info-message" style="margin-top: -5px;">
                                         {{'publicHint' | translate}}
-                                        <span class="text-info-message" *ngIf="caregiver.type=='Formal'">
+                                        @if (caregiver.type=='Formal') {
+                                        <span class="text-info-message">
                                             {{'beneficiaries'
                                             | translate}}.</span>
-                                        <span class="text-info-message" *ngIf="caregiver.type=='Informal'">
+                                        }
+                                        @if (caregiver.type=='Informal') {
+                                        <span class="text-info-message">
                                             {{'relatives' |
                                             translate}}.</span>
+                                        }
                                         {{'reversibleAction' | translate}}
                                     </small>
 
@@ -416,10 +462,12 @@
                                     <button type="submit" class="btn button button-action full-width"
                                         [disabled]="!uploadImageForm.valid">
                                         {{'submit' | translate}}
-                                        <div *ngIf="uploadingImage" class="spinner-border small-spinner-white"
+                                        @if (uploadingImage) {
+                                        <div class="spinner-border small-spinner-white"
                                             role="status">
                                             <span class="sr-only">Loading...</span>
                                         </div>
+                                        }
                                     </button>
                                 </div>
 
@@ -433,5 +481,7 @@
 
             </div>
         </div>
+        }
     </div>
 </div>
+}

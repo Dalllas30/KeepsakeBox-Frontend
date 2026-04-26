@@ -5,7 +5,8 @@
 
         <!--Images-->
         <div class="d-flex justify-content-start flex-wrap p-2">
-            <div class="card" style="border:1px solid rgba(0, 0, 82, 0.4); margin: 1em;" *ngFor="let i of images | slice: (page-1) * pageSize : page * pageSize">
+            @for (i of images | slice: (page-1) * pageSize : page * pageSize; track i.id) {
+                <div class="card" style="border:1px solid rgba(0, 0, 82, 0.4); margin: 1em;">
                 <div class="card-body d-flex justify-content-start flex-wrap">
                     <div class="d-flex flex-column" style="text-align: left; width: 23em;">
                         <div class="row" style="padding-left: 0.5em;">
@@ -45,17 +46,17 @@
                         <div class="row">
                                 <div class="p-2 info-field">
                                     <strong>{{ 'observations' | translate}}: </strong>
-                                    <ng-template [ngIf]="i.observation != null && i.observation != 'null' && i.observation != '' " [ngIfElse]="withOutObservation">
+                                    @if (i.observation != null && i.observation != 'null' && i.observation != '' ) {
                                         {{ i.observation }}
-                                    </ng-template>
-                                    <ng-template #withOutObservation>
+                                    } @else {
                                         {{'noneF' | translate}}
-                                    </ng-template>
+                                    }
                                 </div>
-                        </div>                     
+                        </div>
                     </div>
                 </div>
-            </div>
+                </div>
+            }
         </div>
 
         <!--Pagination-->

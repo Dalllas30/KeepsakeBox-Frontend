@@ -57,8 +57,8 @@ export class RtSessionFeedbackComponent implements OnInit {
     this.pageStatus = this.appService.getPageStatus()!;
     this.resetfeedback(true);
     this.sessionFeedback = (await this.rtSessionService.getSessionFeedback(
-      this.authenticationService.getCurrentCaregiverToken()!, this.session.id))!;
-    if (this.sessionFeedback.session_id == null) {
+      this.authenticationService.getCurrentCaregiverToken()!, this.session?.id ?? ''))!;
+    if (!this.sessionFeedback || this.sessionFeedback.session_id == null) {
       this.sessionFeedback = new SessionFeedback('', this.session.id, '', new Date(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', this.sessionDuration);
     } else {
       this.sessionFeedback.duration = this.sessionDuration;

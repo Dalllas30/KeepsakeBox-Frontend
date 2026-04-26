@@ -1,4 +1,4 @@
-<div *ngIf="!hideHelp()">
+@if (!hideHelp()) {
     <div class="caregiver-home-container p-2 page-message">
         {{'helpAbout' | translate}}:
     </div>
@@ -7,56 +7,60 @@
         <div class="d-flex flex-column" style="width: 500px;">
 
             <div class="p-2">
-                <button type="button" 
+                <button type="button"
                         class="btn button button-neutral full-width">
                 {{'images' | translate}}
                 </button>
             </div>
 
             <div class="p-2">
-                <button type="button" 
-                        class="btn button button-neutral full-width" 
+                <button type="button"
+                        class="btn button button-neutral full-width"
                         (click)="true">
                     {{'listOf' | translate}}
-                    <span class="color-white"
-                          *ngIf="caregiver.type=='Informal'"> {{'relatives' | translate}}</span>
-                    <span class="color-white"
-                          *ngIf="caregiver.type=='Formal'"> {{'beneficiaries' | translate}}</span>
+                    @if (caregiver.type=='Informal') {
+                        <span class="color-white"> {{'relatives' | translate}}</span>
+                    }
+                    @if (caregiver.type=='Formal') {
+                        <span class="color-white"> {{'beneficiaries' | translate}}</span>
+                    }
                 </button>
             </div>
 
             <div class="p-2">
-                <button type="button" 
-                        class="btn button button-neutral full-width" 
+                <button type="button"
+                        class="btn button button-neutral full-width"
                         (click)="true">
                     {{'notifications' | translate}}
                 </button>
             </div>
 
-            <div *ngIf="caregiver.type=='Formal'" class="p-2">
-                <button type="button" 
-                        class="btn button button-neutral full-width" 
-                        (click)="true">
-                    {{'profileOf' | translate}}
-                    <!-- <span class="color-white"
-                          *ngIf="caregiver.type=='Informal'"> {{'relative' | translate}}</span>
-                    <span class="color-white"
-                          *ngIf="caregiver.type=='Formal'"> {{'beneficiary' | translate}}</span> -->
-                    {{'profileOfENG' | translate}}
-                </button>
-            </div>
+            @if (caregiver.type=='Formal') {
+                <div class="p-2">
+                    <button type="button"
+                            class="btn button button-neutral full-width"
+                            (click)="true">
+                        {{'profileOf' | translate}}
+                        <!-- <span class="color-white"
+                              *ngIf="caregiver.type=='Informal'"> {{'relative' | translate}}</span>
+                        <span class="color-white"
+                              *ngIf="caregiver.type=='Formal'"> {{'beneficiary' | translate}}</span> -->
+                        {{'profileOfENG' | translate}}
+                    </button>
+                </div>
+            }
 
             <div class="p-2">
-                <button type="button" 
-                        class="btn button button-neutral full-width" 
+                <button type="button"
+                        class="btn button button-neutral full-width"
                         routerLink="/caregiver/help/profile">
                     {{'caregiverProfile' | translate}}
                 </button>
             </div>
 
-        </div>  
+        </div>
     </div>
-</div> 
+} 
 
 <router-outlet></router-outlet>
 

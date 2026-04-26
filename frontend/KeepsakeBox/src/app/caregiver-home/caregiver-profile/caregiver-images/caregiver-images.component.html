@@ -34,9 +34,11 @@
       <button type="button" class="btn button button-neutral full-width" (click)="showFilter()">
         <i class="bi bi-tag color-white"></i>
         {{'categoryFilter' | translate}}
-        <span class="color-white" *ngIf="this.selectedCategories.length!=0">
-          ({{this.selectedCategories.length}})
-        </span>
+        @if (this.selectedCategories.length!=0) {
+          <span class="color-white">
+            ({{this.selectedCategories.length}})
+          </span>
+        }
       </button>
     </div>
 

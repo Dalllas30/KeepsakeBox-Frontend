@@ -11,15 +11,13 @@
   
   <div class="p-2" style="width: 600px">
     <div class="input-group mb-2 mr-sm-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text input-icon-blue" style="height:50px">
-          <i class="bi bi-search color-white"></i>
-        </div>
+      <div class="input-group-text input-icon-blue" style="height:50px">
+        <i class="bi bi-search color-white"></i>
       </div>
-      <input type="text" 
-             class="form-control input-text-select" 
+      <input type="text"
+             class="form-control input-text-select"
              style="height:50px"
-             [placeholder]="'searchObservation' | translate" 
+             [placeholder]="'searchObservation' | translate"
              (keyup)="searchObservation($event)">
     </div>
   </div>

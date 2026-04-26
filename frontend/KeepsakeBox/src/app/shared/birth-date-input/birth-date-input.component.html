@@ -14,41 +14,51 @@
     <div class="p-2" style="padding-left: 0 !important;
                             margin-bottom: -20px !important;">
         <select class="form-select me-sm-2 input-text-select"
-                style="width: 80px;" 
+                style="width: 80px;"
                 [class.disabled-option]="birthDate.day==0"
                 [class.input-text-select-error]="!birthDate.validDate"
-                [(ngModel)]="birthDate.day" name="day" #day="ngModel" 
+                [(ngModel)]="birthDate.day" name="day" #day="ngModel"
                 (change)="validateSelectedDate()">
             <option value=0 disabled selected>{{'day' | translate}}</option>
-            <option value={{d}} *ngFor="let d of days">{{d}}</option>
+            @for (d of days; track $index) {
+            <option value={{d}}>{{d}}</option>
+            }
         </select>
     </div>
     
 
     <!--Birth Date - Month Selection-->
-    <div *ngIf="translateCache=='pt'" class="p-2" style="margin-bottom: -20px !important;">
+    @if (translateCache=='pt') {
+    <div class="p-2" style="margin-bottom: -20px !important;">
         <select class="form-select me-sm-2 input-text-select"
                 style="width: 150px;" required
                 [class.disabled-option]="birthDate.month==-1"
                 [class.input-text-select-error]="!birthDate.validDate"
-                [(ngModel)]="birthDate.month" name="month" #month="ngModel" 
+                [(ngModel)]="birthDate.month" name="month" #month="ngModel"
                 (change)="validateSelectedDate()">
             <option value='-1' disabled selected>{{'month' | translate}}</option>
-            <option value={{m.id}} *ngFor="let m of monthsPT">{{m.name}}</option>
+            @for (m of monthsPT; track $index) {
+            <option value={{m.id}}>{{m.name}}</option>
+            }
         </select>
     </div>
+    }
 
-    <div *ngIf="translateCache=='en'" class="p-2" style="margin-bottom: -20px !important;">
+    @if (translateCache=='en') {
+    <div class="p-2" style="margin-bottom: -20px !important;">
         <select class="form-select me-sm-2 input-text-select"
                 style="width: 150px;" required
                 [class.disabled-option]="birthDate.month==-1"
                 [class.input-text-select-error]="!birthDate.validDate"
-                [(ngModel)]="birthDate.month" name="month" #month="ngModel" 
+                [(ngModel)]="birthDate.month" name="month" #month="ngModel"
                 (change)="validateSelectedDate()">
             <option value='-1' disabled selected>{{'month' | translate}}</option>
-            <option value={{m.id}} *ngFor="let m of monthsENG">{{m.name}}</option>
+            @for (m of monthsENG; track $index) {
+            <option value={{m.id}}>{{m.name}}</option>
+            }
         </select>
     </div>
+    }
 
     <!--Birth Date - Year Selection-->
     <div class="p-2" style="margin-bottom: -20px !important;">
@@ -56,18 +66,21 @@
                 style="width: 100px;"
                 [class.disabled-option]="birthDate.year==0"
                 [class.input-text-select-error]="!birthDate.validDate"
-                [(ngModel)]="birthDate.year" name="year" #year="ngModel" 
+                [(ngModel)]="birthDate.year" name="year" #year="ngModel"
                 (change)="validateSelectedDate()">
             <option value=0 disabled selected>{{'year' | translate}}</option>
-            <option value={{y}} *ngFor="let y of years">{{y}}</option>
+            @for (y of years; track $index) {
+            <option value={{y}}>{{y}}</option>
+            }
         </select>
     </div>
 
 </div>
 
 <!--Error Message - Not Valid Date-->
-<small *ngIf="!birthDate.validDate"
-    class="form-text text-error-message"
+@if (!birthDate.validDate) {
+<small class="form-text text-error-message"
     style="margin-top: 20px;">
     {{'dateInvalid' | translate}}
 </small>
+}

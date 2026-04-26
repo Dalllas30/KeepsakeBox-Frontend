@@ -44,36 +44,45 @@
 </div>
   
 <!--Formal Caregiver Speciality-->
-<div class="p-2" style="margin-top: -10px;"
-    *ngIf="caregiverType.type == 'Formal'">
+@if (caregiverType.type == 'Formal') {
+<div class="p-2" style="margin-top: -10px;">
 
   <!--Speciality Label-->
   <label class="input-label" for="caregiver_speciality">
-    <i class="bi bi-award"></i> 
+    <i class="bi bi-award"></i>
     {{'speciality' | translate}}*
   </label><br>
 
   <!--Speciality Select-->
-  <div *ngIf="translateCache=='pt'">
-    <select class="form-select me-sm-2 input-text-select 
+  @if (translateCache=='pt') {
+  <div>
+    <select class="form-select me-sm-2 input-text-select
                   specility-select"
-            [(ngModel)]="caregiverType.speciality" 
+            [(ngModel)]="caregiverType.speciality"
             name="speciality" #speciality="ngModel"
             [class.disabled-option]="caregiverType.speciality==''">
       <option value="" selected disabled>{{'chooseOne' | translate}}...</option>
-      <option value="{{s}}" *ngFor="let s of specialitiesPT">{{s}}</option>
+      @for (s of specialitiesPT; track $index) {
+      <option value="{{s}}">{{s}}</option>
+      }
     </select>
   </div>
-  <div *ngIf="translateCache=='en'">
-    <select class="form-select me-sm-2 input-text-select 
+  }
+  @if (translateCache=='en') {
+  <div>
+    <select class="form-select me-sm-2 input-text-select
                   specility-select"
-            [(ngModel)]="caregiverType.speciality" 
+            [(ngModel)]="caregiverType.speciality"
             name="speciality" #speciality="ngModel"
             [class.disabled-option]="caregiverType.speciality==''">
       <option value="" selected disabled>{{'chooseOne' | translate}}...</option>
-      <option value="{{s}}" *ngFor="let s of specialitiesENG">{{s}}</option>
+      @for (s of specialitiesENG; track $index) {
+      <option value="{{s}}">{{s}}</option>
+      }
     </select>
   </div>
+  }
 
 </div>
+}
 

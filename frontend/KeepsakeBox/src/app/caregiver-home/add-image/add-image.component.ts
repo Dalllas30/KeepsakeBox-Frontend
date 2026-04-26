@@ -36,6 +36,7 @@ export class AddImageComponent implements OnInit {
   private categoryService       = inject(CategoryService);
   private imageService          = inject(ImageService);
   private appService            = inject(AppService);
+  private cdr                   = inject(ChangeDetectorRef);
 
   translateCache = navigator.language.startsWith('pt') ? 'pt' : 'en';
 
@@ -86,7 +87,7 @@ export class AddImageComponent implements OnInit {
       true, false
     );
     this.categories   = await this.categoryService.getCategories();
-    inject(ChangeDetectorRef).detectChanges();
+    this.cdr.detectChanges();
   }
 
   translateLabel(category: string): string {

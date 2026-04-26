@@ -228,6 +228,19 @@
       "patientRelation": "Friend",
       "isActive": true,
       "id": 8
+    },
+    {
+      "name": "teste_usuario",
+      "displayName": "user",
+      "birthDate": "1919-01-01T00:00:00.000Z",
+      "education": "Primary School / Elementary School",
+      "profileImageURL": "/assets/profileimage-default.png",
+      "interests": "futebol",
+      "cities": "lisboa",
+      "caregiverId": 5,
+      "patientRelation": "Grandmother/Grandfather",
+      "isActive": true,
+      "id": 9
     }
   ],
   "patientCaregivers": [
@@ -308,6 +321,26 @@
       "isPrimary": true,
       "patientRelation": "Friend",
       "id": 4
+    },
+    {
+      "patientId": 9,
+      "caregiver": {
+        "name": "teste_tdog",
+        "email": "teste3@gmail.com",
+        "phone": "",
+        "password": "ibjDrM2sAVrATzSfAwBVZg==",
+        "birthDate": "1965-03-10T00:00:00.000Z",
+        "profileImage": "/assets/profileimage-default.png",
+        "caregiverType": "Informal",
+        "speciality": "",
+        "token": "temp-token-1776268227649",
+        "id": 5,
+        "type": "Informal"
+      },
+      "caregiverId": 5,
+      "isPrimary": true,
+      "patientRelation": "Grandmother/Grandfather",
+      "id": 5
     }
   ],
   "messages": [],

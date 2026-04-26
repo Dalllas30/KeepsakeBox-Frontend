@@ -1,18 +1,19 @@
-<p>rt-session-running works!</p>
 <!--RT Session Images-->
 <div>
   <div>
     <div class="alert alert-danger alert-box alert-screen" role="alert">
       {{'screenTooSmallMessage' | translate}}
     </div>
-    <div *ngIf="AlertMessage"
-      class="alert alert-warning alert-box" role="alert" style="position:fixed; top: 0.5em; Right: 1em; Left:1em; z-index: 998;">
-      {{'saveBeforeNextImageMessage' | translate}}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
-        (click)="AlertMessage=false;">
-      <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
+    @if (AlertMessage) {
+      <div class="alert alert-warning alert-box" role="alert"
+          style="position:fixed; top: 0.5em; Right: 1em; Left:1em; z-index: 998;">
+        {{'saveBeforeNextImageMessage' | translate}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+          (click)="AlertMessage=false;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    }
   </div>
 
   <div class="black-background">
@@ -36,16 +37,12 @@
         <button type="button"
                 class="btn small-button button-destructive button-full-width"
                 (click)="terminateSession('finish')">
-            <!--routerLink="/caregiver/session/feedback"-->
-            <!-- routerLink="/caregiver/person/rtSessionStartlist" -->
-            {{'finishSession' | translate}}<span class="small-button-text  color-white">&nbsp;{{'session' | translate}}</span>
+            {{'finishSession' | translate}}<span class="small-button-text color-white">&nbsp;{{'session' | translate}}</span>
         </button>
         &nbsp;&nbsp;
         <button type="button"
                 class="btn small-button button-neutral button-full-width"
                 (click)="terminateSession('interrupt')">
-            <!--routerLink="/caregiver/session/feedback"-->
-            <!-- routerLink="/caregiver/person/rtSessionStartlist" -->
             {{'interruptSession' | translate}}<span class="small-button-text color-white">&nbsp;{{'session' | translate}}</span>
         </button>
       </div>
@@ -78,351 +75,300 @@
   </div>
 
   <div class="RightPanel" [style.width.%]="panelWidth">
-    <div *ngIf="panelWidth!=0">
-      <div class="color-white" style="height: 85%;">
-        <!--div style="align-text: right">
-          <button type="button"
-            (click)="openConfigPanel()" style="position: absolute; top: 5px; right: 5px; padding:0 ; border: none; background: none">
-            <div><i class="bi bi-three-dots-vertical color-white"></i></div>
-          </button>
-        </div-->
+    @if (panelWidth != 0) {
+      <div>
+        <div class="color-white" style="height: 85%;">
 
-        <!--div *ngIf="isConfigPanelOpen" class="d-flex justify-content-center align-items-center"
-                    style="padding-top: 60px!important;">
-          <div class="alert alert-primary alert-box" role="alert">
-            <div class="d-flex" style="padding-top: 15px;">
-              <button type="button" class="btn" style="padding:0 ; border: none; background: none"
-                  (click)="configFeedbackPanel('25%')" >
-                  <i class="bi bi-layout-sidebar-reverse"></i>
-              </button>
-              <div style={{configPanel25}}>Painel de feedback ocupa 25%</div>
-            </div>
-            <div class="d-flex">
-              <button type="button" class="btn" style="padding:0 ; border: none; background: none"
-                  (click)="configFeedbackPanel('50%')" >
-                  <i class="bi bi-layout-split"></i>
-              </button>
-              <div style={{configPanel50}}>Painel de feedback ocupa 50%</div>
-            </div>
-            <div class="d-flex">
-              <button type="button" class="btn" style="padding:0 ; border: none; background: none"
-                  (click)="configFeedbackPanel('full')" >
-                  <i class="bi bi-square"></i>
-              </button>
-              <div style={{configPanelFull}}>Painel de feedback ocupa toda a janela</div>
-            </div>
-            <div class="d-flex"  style="padding-top: 15px;">
-              <button type="button" class="btn" style="padding:0 ; border: none; background: none"
-                  (click)="configFeedbackPanel('split')" >
-                  <i class="bi bi-layout-split"></i>
-              </button>
-              <div style={{configPanelSplit}}>Panel é apresentado lado a lado</div>
-            </div>
-            <div class="d-flex">
-              <button type="button" class="btn" style="padding:0 ; border: none; background: none"
-                  (click)="configFeedbackPanel('floating')" >
-                  <i class="bi bi-layout-sidebar-inset-reverse"></i>
-              </button>
-              <div style={{configPanelFloating}}>Panel é apresentado sobre a imagem</div>
-            </div>
-            <div class="d-flex" style="padding-top: 15px;">
-              <button type="button" class="btn" style="padding:0 ; border: none; background: none"
-                  (click)="configFeedbackPanel('autoSave')" >
-                  <i class="bi bi-upload"></i>
-              </button>
-              <div style={{configPanelAutoSave}}>Guardar as reações automaticamante ao sair</div>
-            </div>
-          </div>
-        </div--> <!-- Ends configPanel -->
+          <div class="p-2 d-flex justify-content-center caregiver-home-container" style="padding-top: 2em!Important">
+            <form (ngSubmit)="saveFeedbackPanel()" #updateRtSessionImageFeedbackForm="ngForm">
+              <div class="card blue-border">
+                <h5 class="card-header card-header-blue">
+                  {{'recordFeedback' | translate}} {{'feedback' | translate}}
+                </h5>
+                <div class="card-body">
+                  <div class="extra-padding">
+                    <!--Reação global-->
+                    <label for="feeling" class="input-label">
+                        <i class="bi bi-emoji-expressionless-fill"></i>
+                        {{'globalFeedback' | translate}}
+                    </label>
+                    <div class="p-2">
+                      @if (generalFeedback != 1) {
+                        <button type="button" (click)="generalFeedback=1;" class="emoji-no">
+                          <i class="bi bi-emoji-angry bi-emoji"></i>
+                        </button>
+                      } @else {
+                        <i class="bi bi-emoji-angry-fill emoji-yes font-red"></i>
+                      }
+                      @if (generalFeedback != 2) {
+                        <button type="button" (click)="generalFeedback=2;" class="emoji-no">
+                          <i class="bi bi-emoji-frown bi-emoji"></i>
+                        </button>
+                      } @else {
+                        <i class="bi bi-emoji-frown-fill emoji-yes font-my-color"></i>
+                      }
+                      @if (generalFeedback != 3) {
+                        <button type="button" (click)="generalFeedback=3;" class="emoji-no">
+                          <i class="bi bi-emoji-neutral bi-emoji"></i>
+                        </button>
+                      } @else {
+                        <i class="bi bi-emoji-neutral-fill emoji-yes font-grey"></i>
+                      }
+                      @if (generalFeedback != 4) {
+                        <button type="button" (click)="generalFeedback=4;" class="emoji-no">
+                          <i class="bi bi-emoji-smile bi-emoji"></i>
+                        </button>
+                      } @else {
+                        <i class="bi bi-emoji-smile-fill emoji-yes font-green"></i>
+                      }
+                      @if (generalFeedback != 5) {
+                        <button type="button" (click)="generalFeedback=5;" class="emoji-no">
+                          <i class="bi bi-emoji-heart-eyes bi-emoji"></i>
+                        </button>
+                      } @else {
+                        <i class="bi bi-emoji-heart-eyes-fill emoji-yes font-blue"></i>
+                      }
+                    </div>
 
-        <div class="p-2 d-flex justify-content-center caregiver-home-container"  style="padding-top: 2em!Important">
-          <form (ngSubmit)="saveFeedbackPanel()" #updateRtSessionImageFeedbackForm="ngForm">
-            <div class="card blue-border">
-              <h5 class="card-header card-header-blue">
-                {{'recordFeedback' | translate}} {{'feedback' | translate}}
-              </h5>
-              <div class="card-body">
-                <div class="extra-padding">
-                  <!--Reação global-->
-                  <label for="feeling" class="input-label">
-                      <i class="bi bi-emoji-expressionless-fill"></i>
-                      {{'globalFeedback' | translate}}
-                  </label>
-                  <div class="p-2">
-                    <span *ngIf="generalFeedback!=1">
-                      <button type="button" (click)="generalFeedback=1;" class="emoji-no">
-                        <i class="bi bi-emoji-angry bi-emoji"></i>
-                      </button>
-                    </span>
-                    <span *ngIf="generalFeedback==1">
-                      <i class="bi bi-emoji-angry-fill emoji-yes font-red"></i>
-                    </span>
-                    <span *ngIf="generalFeedback!=2">
-                      <button type="button" (click)="generalFeedback=2;" class="emoji-no">
-                        <i class="bi bi-emoji-frown bi-emoji"></i>
-                      </button>
-                    </span>
-                    <span *ngIf="generalFeedback==2">
-                      <i class="bi bi-emoji-frown-fill emoji-yes font-my-color"></i>
-                    </span>
-                    <span *ngIf="generalFeedback!=3">
-                      <button type="button" (click)="generalFeedback=3;" class="emoji-no">
-                        <i class="bi bi-emoji-neutral bi-emoji"></i>
-                      </button>
-                    </span>
-                    <span *ngIf="generalFeedback==3">
-                      <i class="bi bi-emoji-neutral-fill emoji-yes font-grey"></i>
-                    </span>
-                    <span *ngIf="generalFeedback!=4">
-                      <button type="button" (click)="generalFeedback=4;" class="emoji-no">
-                        <i class="bi bi-emoji-smile bi-emoji"></i>
-                      </button>
-                    </span>
-                    <span *ngIf="generalFeedback==4">
-                      <i class="bi bi-emoji-smile-fill emoji-yes font-green"></i>
-                    </span>
-                    <span *ngIf="generalFeedback!=5">
-                      <button type="button" (click)="generalFeedback=5;" class="emoji-no">
-                        <i class="bi bi-emoji-heart-eyes bi-emoji"></i>
-                      </button>
-                    </span>
-                    <span *ngIf="generalFeedback==5">
-                      <i class="bi bi-emoji-heart-eyes-fill emoji-yes font-blue"></i>
-                    </span>
-                  </div>
-
-                  <div *ngIf="generalFeedback!=3 && generalFeedback!=0" class="d-flex justify-content-start">
+                    @if (generalFeedback != 3 && generalFeedback != 0) {
+                      <div class="d-flex justify-content-start">
                         <label for="feeling" class="input-label">
-                          
-                          <!--h4-->
                           <i class="bi bi-person-square"></i>
                           {{'symptoms' | translate}}
-                          <!--/h4-->
-                          
-                      </label>
-                  </div>
-                  <!--Anxiety-->
-                  <div *ngIf="generalFeedback>0 && generalFeedback<3" class="d-flex justify-content-start symptoms">
-                    <div class="align-self-center half-width">
-                      <label for="Anxiety" for="flexSwitchCheckDefault">
-                        {{'anxiety' | translate}}
-                      </label>
-                    </div>   
-                    <div class="d-flex justify-content-center">                             
-                      <div class="d-flex justify-content-start YesNo-box">
-                        <div class="input-radio">
-                          <input type="radio" id="Anxiety_No" value="No"
-                                [(ngModel)]="anxiety" name="Anxiety" #name="ngModel">
-                          <label for="Anxiety_No">{{'no' | translate}}</label>
-                        </div>
-                        <div class="input-radio">
-                          <input type="radio" id="Anxiety_Yes" value="Yes"
-                                [(ngModel)]="anxiety" name="Anxiety" #name="ngModel">
-                          <label for="Anxiety_Yes">{{'yes' | translate}}</label>
-                        </div>
+                        </label>
                       </div>
-                    </div> 
-                  </div>
-                  <!--Agressivity-->
-                  <div *ngIf="generalFeedback>0 && generalFeedback<3" class="d-flex justify-content-start symptoms">
-                    <div class="align-self-center half-width">
-                      <label for="Agressivity" for="flexSwitchCheckDefault">
-                        {{'agitation_agression' | translate}}
-                      </label>
-                    </div>   
-                    <div class="d-flex justify-content-center">                             
-                      <div class="d-flex justify-content-start YesNo-box">
-                        <div class="input-radio">
-                          <input type="radio" id="Agressivity_No" value="No"
-                                [(ngModel)]="agressivity" name="Agressivity" #name="ngModel">
-                          <label for="Agressivity_No">{{'no' | translate}}</label>
-                        </div>
-                        <div class="input-radio">
-                          <input type="radio" id="Agressivity_Yes" value="Yes"
-                                [(ngModel)]="agressivity" name="Agressivity" #name="ngModel">
-                          <label for="Agressivity_Yes">{{'yes' | translate}}</label>
-                        </div>
-                      </div>
-                    </div> 
-                  </div>
-                  <!--Irritability-->
-                  <div *ngIf="generalFeedback>0 && generalFeedback<3" class="d-flex justify-content-start symptoms">
-                    <div class="align-self-center half-width">
-                      <label for="Irritability" for="flexSwitchCheckDefault">
-                        {{'irritability_lability' | translate}}
-                      </label>
-                    </div>   
-                    <div class="d-flex justify-content-center">                             
-                      <div class="d-flex justify-content-start YesNo-box">
-                        <div class="input-radio">
-                          <input type="radio" id="Irritability_No" value="No"
-                                [(ngModel)]="irritability" name="Irritability" #name="ngModel">
-                          <label for="Irritability_No">{{'no' | translate}}</label>
-                        </div>
-                        <div class="input-radio">
-                          <input type="radio" id="Irritability_Yes" value="Yes"
-                                [(ngModel)]="irritability" name="Irritability" #name="ngModel">
-                          <label for="Irritability_Yes">{{'yes' | translate}}</label>
-                        </div>
-                      </div>
-                    </div> 
-                  </div>
-                  <!--Apathy-->
-                  <div *ngIf="generalFeedback>0 && generalFeedback<3" class="d-flex justify-content-start symptoms">
-                    <div class="align-self-center half-width">
-                      <label for="Irritability" for="flexSwitchCheckDefault">
-                        {{'apathy' | translate}}
-                      </label>
-                    </div>   
-                    <div class="d-flex justify-content-center">                             
-                      <div class="d-flex justify-content-start YesNo-box">
-                        <div class="input-radio">
-                          <input type="radio" id="Apathy_No" value="No"
-                                [(ngModel)]="apathy" name="Apathy" #name="ngModel">
-                          <label for="Apathy_No">{{'no' | translate}}</label>
-                        </div>
-                        <div class="input-radio">
-                          <input type="radio" id="Apathy_Yes" value="Yes"
-                                [(ngModel)]="apathy" name="Apathy" #name="ngModel">
-                          <label for="Apathy_Yes">{{'yes' | translate}}</label>
-                        </div>
-                      </div>
-                    </div> 
-                  </div>
-                  <!--Joy-->
-                  <div *ngIf="generalFeedback>3" class="d-flex justify-content-start symptoms">
-                    <div class="align-self-center half-width">
-                      <label for="Joy" for="flexSwitchCheckDefault">
-                        {{'joy_happiness' | translate}}
-                      </label>
-                    </div>   
-                    <div class="d-flex justify-content-center">                             
-                      <div class="d-flex justify-content-start YesNo-box">
-                        <div class="input-radio">
-                          <input type="radio" id="Joy_No" value="No"
-                                [(ngModel)]="joy" name="Joy" #name="ngModel">
-                          <label for="Joy_No">{{'no' | translate}}</label>
-                        </div>
-                        <div class="input-radio">
-                          <input type="radio" id="Joy_Yes" value="Yes"
-                                [(ngModel)]="joy" name="Joy" #name="ngModel">
-                          <label for="Joy_Yes">{{'yes' | translate}}</label>
-                        </div>
-                      </div>
-                    </div> 
-                  </div>
-                  <!--Enthusiam-->
-                  <div *ngIf="generalFeedback>3" class="d-flex justify-content-start symptoms">
-                    <div class="align-self-center half-width">
-                      <label for="Enthusiasm" for="flexSwitchCheckDefault">
-                        {{'enthusiasm' | translate}}
-                      </label>
-                    </div>   
-                    <div class="d-flex justify-content-center">                             
-                      <div class="d-flex justify-content-start YesNo-box">
-                        <div class="input-radio">
-                          <input type="radio" id="Enthusiasm_No" value="No"
-                                [(ngModel)]="enthusiasm" name="Enthusiasm" #name="ngModel">
-                          <label for="Enthusiasm_No">{{'no' | translate}}</label>
-                        </div>
-                        <div class="input-radio">
-                          <input type="radio" id="Enthusiasm_Yes" value="Yes"
-                                [(ngModel)]="enthusiasm" name="Enthusiasm" #name="ngModel">
-                          <label for="Enthusiasm_Yes">{{'yes' | translate}}</label>
-                        </div>
-                      </div>
-                    </div> 
-                  </div>
-                  <!--Communication-->
-                  <div *ngIf="generalFeedback>3" class="d-flex justify-content-start symptoms">
-                    <div class="align-self-center half-width">
-                      <label for="Communication" for="flexSwitchCheckDefault">
-                        {{'communication' | translate}}
-                      </label>
-                    </div>   
-                    <div class="d-flex justify-content-center">                             
-                      <div class="d-flex justify-content-start YesNo-box">
-                        <div class="input-radio">
-                          <input type="radio" id="Communication_No" value="No"
-                                [(ngModel)]="communication" name="Communication" #name="ngModel">
-                          <label for="Communication_No">{{'no' | translate}}</label>
-                        </div>
-                        <div class="input-radio">
-                          <input type="radio" id="Communication_Yes" value="Yes"
-                                [(ngModel)]="communication" name="Communication" #name="ngModel">
-                          <label for="Communication_Yes">{{'yes' | translate}}</label>
-                        </div>
-                      </div>
-                    </div> 
-                  </div>
-                  <!--Commitment-->
-                  <div *ngIf="generalFeedback>3" class="d-flex justify-content-start symptoms">
-                    <div class="align-self-center half-width">
-                      <label for="Commication" for="flexSwitchCheckDefault">
-                        {{'commitment' | translate}}
-                      </label>
-                    </div>   
-                    <div class="d-flex justify-content-center">                             
-                      <div class="d-flex justify-content-start YesNo-box">
-                        <div class="input-radio">
-                          <input type="radio" id="Commitment_No" value="No"
-                                [(ngModel)]="commitment" name="Commitment" #name="ngModel">
-                          <label for="Commitment_No">{{'no' | translate}}</label>
-                        </div>
-                        <div class="input-radio">
-                          <input type="radio" id="Commitment_Yes" value="Yes"
-                                [(ngModel)]="commitment" name="Commitment" #name="ngModel">
-                          <label for="Commitment_Yes">{{'yes' | translate}}</label>
-                        </div>
-                      </div>
-                    </div> 
-                  </div>
-                  <!--Obsersation-->
-                  <label for="observation" class="input-label">
-                      <i class="bi bi-chat-left-text-fill"></i>
-                      {{'observations' | translate}}
-                  </label>
-                  <div class="p-2">
-                    <textarea type="text" rows="6" cols="50" class="form-control input-text-select"
-                        id="observation" placeholder="{{'insertObservations' | translate}}"
-                        [(ngModel)]="rtSessionImage.observation"
-                        name="observation" #name="ngModel">
-                    </textarea>
-                  </div>
-                </div>
+                    }
 
-                <div class="d-flex justify-content-center align-items-center">
-                  <div class="extra-padding">
-                   <button type="submit" class="btn button button-action">
-                       <i class="bi bi-check-lg color-white"></i>
-                       {{'save' | translate}}
-                       <div *ngIf="updating"
-                            class="spinner-border small-spinner-white"
-                            role="status">
-                       </div>
-                   </button>
+                    <!--Anxiety-->
+                    @if (generalFeedback > 0 && generalFeedback < 3) {
+                      <div class="d-flex justify-content-start symptoms">
+                        <div class="align-self-center half-width">
+                          <label for="Anxiety">{{'anxiety' | translate}}</label>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex justify-content-start YesNo-box">
+                            <div class="input-radio">
+                              <input type="radio" id="Anxiety_No" value="No"
+                                    [(ngModel)]="anxiety" name="Anxiety" #name="ngModel">
+                              <label for="Anxiety_No">{{'no' | translate}}</label>
+                            </div>
+                            <div class="input-radio">
+                              <input type="radio" id="Anxiety_Yes" value="Yes"
+                                    [(ngModel)]="anxiety" name="Anxiety" #name="ngModel">
+                              <label for="Anxiety_Yes">{{'yes' | translate}}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <!--Agressivity-->
+                    @if (generalFeedback > 0 && generalFeedback < 3) {
+                      <div class="d-flex justify-content-start symptoms">
+                        <div class="align-self-center half-width">
+                          <label for="Agressivity">{{'agitation_agression' | translate}}</label>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex justify-content-start YesNo-box">
+                            <div class="input-radio">
+                              <input type="radio" id="Agressivity_No" value="No"
+                                    [(ngModel)]="agressivity" name="Agressivity" #name="ngModel">
+                              <label for="Agressivity_No">{{'no' | translate}}</label>
+                            </div>
+                            <div class="input-radio">
+                              <input type="radio" id="Agressivity_Yes" value="Yes"
+                                    [(ngModel)]="agressivity" name="Agressivity" #name="ngModel">
+                              <label for="Agressivity_Yes">{{'yes' | translate}}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <!--Irritability-->
+                    @if (generalFeedback > 0 && generalFeedback < 3) {
+                      <div class="d-flex justify-content-start symptoms">
+                        <div class="align-self-center half-width">
+                          <label for="Irritability">{{'irritability_lability' | translate}}</label>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex justify-content-start YesNo-box">
+                            <div class="input-radio">
+                              <input type="radio" id="Irritability_No" value="No"
+                                    [(ngModel)]="irritability" name="Irritability" #name="ngModel">
+                              <label for="Irritability_No">{{'no' | translate}}</label>
+                            </div>
+                            <div class="input-radio">
+                              <input type="radio" id="Irritability_Yes" value="Yes"
+                                    [(ngModel)]="irritability" name="Irritability" #name="ngModel">
+                              <label for="Irritability_Yes">{{'yes' | translate}}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <!--Apathy-->
+                    @if (generalFeedback > 0 && generalFeedback < 3) {
+                      <div class="d-flex justify-content-start symptoms">
+                        <div class="align-self-center half-width">
+                          <label for="Apathy">{{'apathy' | translate}}</label>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex justify-content-start YesNo-box">
+                            <div class="input-radio">
+                              <input type="radio" id="Apathy_No" value="No"
+                                    [(ngModel)]="apathy" name="Apathy" #name="ngModel">
+                              <label for="Apathy_No">{{'no' | translate}}</label>
+                            </div>
+                            <div class="input-radio">
+                              <input type="radio" id="Apathy_Yes" value="Yes"
+                                    [(ngModel)]="apathy" name="Apathy" #name="ngModel">
+                              <label for="Apathy_Yes">{{'yes' | translate}}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <!--Joy-->
+                    @if (generalFeedback > 3) {
+                      <div class="d-flex justify-content-start symptoms">
+                        <div class="align-self-center half-width">
+                          <label for="Joy">{{'joy_happiness' | translate}}</label>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex justify-content-start YesNo-box">
+                            <div class="input-radio">
+                              <input type="radio" id="Joy_No" value="No"
+                                    [(ngModel)]="joy" name="Joy" #name="ngModel">
+                              <label for="Joy_No">{{'no' | translate}}</label>
+                            </div>
+                            <div class="input-radio">
+                              <input type="radio" id="Joy_Yes" value="Yes"
+                                    [(ngModel)]="joy" name="Joy" #name="ngModel">
+                              <label for="Joy_Yes">{{'yes' | translate}}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <!--Enthusiasm-->
+                    @if (generalFeedback > 3) {
+                      <div class="d-flex justify-content-start symptoms">
+                        <div class="align-self-center half-width">
+                          <label for="Enthusiasm">{{'enthusiasm' | translate}}</label>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex justify-content-start YesNo-box">
+                            <div class="input-radio">
+                              <input type="radio" id="Enthusiasm_No" value="No"
+                                    [(ngModel)]="enthusiasm" name="Enthusiasm" #name="ngModel">
+                              <label for="Enthusiasm_No">{{'no' | translate}}</label>
+                            </div>
+                            <div class="input-radio">
+                              <input type="radio" id="Enthusiasm_Yes" value="Yes"
+                                    [(ngModel)]="enthusiasm" name="Enthusiasm" #name="ngModel">
+                              <label for="Enthusiasm_Yes">{{'yes' | translate}}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <!--Communication-->
+                    @if (generalFeedback > 3) {
+                      <div class="d-flex justify-content-start symptoms">
+                        <div class="align-self-center half-width">
+                          <label for="Communication">{{'communication' | translate}}</label>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex justify-content-start YesNo-box">
+                            <div class="input-radio">
+                              <input type="radio" id="Communication_No" value="No"
+                                    [(ngModel)]="communication" name="Communication" #name="ngModel">
+                              <label for="Communication_No">{{'no' | translate}}</label>
+                            </div>
+                            <div class="input-radio">
+                              <input type="radio" id="Communication_Yes" value="Yes"
+                                    [(ngModel)]="communication" name="Communication" #name="ngModel">
+                              <label for="Communication_Yes">{{'yes' | translate}}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <!--Commitment-->
+                    @if (generalFeedback > 3) {
+                      <div class="d-flex justify-content-start symptoms">
+                        <div class="align-self-center half-width">
+                          <label for="Commitment">{{'commitment' | translate}}</label>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                          <div class="d-flex justify-content-start YesNo-box">
+                            <div class="input-radio">
+                              <input type="radio" id="Commitment_No" value="No"
+                                    [(ngModel)]="commitment" name="Commitment" #name="ngModel">
+                              <label for="Commitment_No">{{'no' | translate}}</label>
+                            </div>
+                            <div class="input-radio">
+                              <input type="radio" id="Commitment_Yes" value="Yes"
+                                    [(ngModel)]="commitment" name="Commitment" #name="ngModel">
+                              <label for="Commitment_Yes">{{'yes' | translate}}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <!--Observation-->
+                    <label for="observation" class="input-label">
+                        <i class="bi bi-chat-left-text-fill"></i>
+                        {{'observations' | translate}}
+                    </label>
+                    <div class="p-2">
+                      <textarea type="text" rows="6" cols="50" class="form-control input-text-select"
+                          id="observation" placeholder="{{'insertObservations' | translate}}"
+                          [(ngModel)]="rtSessionImage.observation"
+                          name="observation" #name="ngModel">
+                      </textarea>
+                    </div>
                   </div>
-                  <div class="extra-padding">
-                    <button type="button" class="btn button button-destructive"
-                          (click)="closeFeedbackPanel()">
-                        <i class="bi bi-x-lg color-white"></i>
-                        {{'cancel' | translate}}
-                    </button>
-                  </div>
-                  <div class="extra-padding">
-                    <button type="button" class="btn button button-neutral"
-                         (click)="resetfeedback()">
-                         <i class="bi bi-backspace-fill color-white"></i>
-                      {{'clear' | translate}}
-                    </button>
+
+                  <div class="d-flex justify-content-center align-items-center">
+                    <div class="extra-padding">
+                      <button type="submit" class="btn button button-action">
+                          <i class="bi bi-check-lg color-white"></i>
+                          {{'save' | translate}}
+                          @if (updating) {
+                            <div class="spinner-border small-spinner-white" role="status"></div>
+                          }
+                      </button>
+                    </div>
+                    <div class="extra-padding">
+                      <button type="button" class="btn button button-destructive"
+                            (click)="closeFeedbackPanel()">
+                          <i class="bi bi-x-lg color-white"></i>
+                          {{'cancel' | translate}}
+                      </button>
+                    </div>
+                    <div class="extra-padding">
+                      <button type="button" class="btn button button-neutral"
+                           (click)="resetfeedback()">
+                           <i class="bi bi-backspace-fill color-white"></i>
+                        {{'clear' | translate}}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </form>
-        </div> <!-- ends Feedback card -->
+            </form>
+          </div> <!-- ends Feedback card -->
 
+        </div>
       </div>
-    </div>
+    }
   </div>
 </div>
