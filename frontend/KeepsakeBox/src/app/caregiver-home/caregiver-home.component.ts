@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,6 +21,8 @@ export class CaregiverHomeComponent implements OnInit {
   public patient!: Patient;
   public linkBackwards!: string;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private router: Router,
     private appService: AppService,
@@ -28,7 +31,14 @@ export class CaregiverHomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.caregiver = this.caregiverService.getCurrentCaregiver()!;
+    // Subscribe reactively so any field change (type, name, future colour theme, etc.)
+    // is reflected immediately without needing to re-navigate or reload.
+    this.caregiverService.getCurrentCaregiver$()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(caregiver => {
+        if (caregiver) this.caregiver = caregiver;
+      });
+
     this.patient = this.patientService.getCurrentPatient()!;
   }
 

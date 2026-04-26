@@ -62,8 +62,15 @@ export class CaregiverUpdateProfileComponent implements OnInit {
 
     this.lastEmailValidated = this.currentCaregiver.email;
 
-    const dateValues = this.currentCaregiver.birthDate?.toString().split('-').map(v => Number(v)) ?? [0, 0, 0];
-    this.birthDate    = new BirthDate(dateValues[2], dateValues[1] - 1, dateValues[0], true);
+    // Split on 'T' first to strip the ISO time portion ("1965-03-10T00:00:00.000Z" → "1965-03-10"),
+    // then parse each part as an integer. This avoids NaN from Number("10T00:00:00.000Z")
+    // and avoids timezone drift from new Date(isoString).getDate().
+    const datePart  = (this.currentCaregiver.birthDate ?? '').toString().split('T')[0]; // "YYYY-MM-DD"
+    const dateParts = datePart.split('-').map(Number);                                  // [YYYY, MM, DD]
+    const year  = dateParts[0] || 2000;
+    const month = dateParts[1] ? dateParts[1] - 1 : 0; // BirthDate expects 0-indexed month
+    const day   = dateParts[2] || 1;
+    this.birthDate    = new BirthDate(day, month, year, true);
     this.profileImage = new ProfileImage(this.currentCaregiver.profileImageURL);
     this.caregiverType = new CaregiverType(
       this.currentCaregiver.type,

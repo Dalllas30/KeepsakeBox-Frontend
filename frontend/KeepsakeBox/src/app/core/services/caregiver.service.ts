@@ -4,7 +4,7 @@
 
  import { HttpClient } from '@angular/common/http';
  import { Injectable } from '@angular/core';
- import { BehaviorSubject } from 'rxjs';
+ import { BehaviorSubject, Observable } from 'rxjs';
  import { Caregiver } from '../models/caregiver.model';
  import { CaregiverPatientAssociationData } from '../models/caregiver-patient-association-data.model';
  import { Patient } from '../models/patient.model';
@@ -99,11 +99,22 @@
    }
  
    /**
-    * Gets current caregiver token from cache
+    * Gets current caregiver token from cache (point-in-time snapshot).
+    * Prefer getCurrentCaregiver$() when the value may change during the session.
     * @returns current caregiver logged in
     */
    getCurrentCaregiver(): Caregiver | null {
      return this.currentCaregiver.value;
+   }
+
+   /**
+    * Returns an Observable that emits the current caregiver and every
+    * subsequent update (type change, profile edit, colour theme, etc.).
+    * Subscribe to this instead of getCurrentCaregiver() whenever the
+    * component needs to stay in sync for its entire lifetime.
+    */
+   getCurrentCaregiver$(): Observable<Caregiver | null> {
+     return this.currentCaregiver.asObservable();
    }
  
    /**
@@ -297,8 +308,31 @@
     */
    async caregiverUpdate(token: string,
      updatedCaregiver: Caregiver): Promise<boolean>{
+     // Fetch the raw db record first so we can preserve fields that must
+     // never be overwritten: token, password, and the db-side field names
+     // (caregiverType / profileImage) that our normalizeCaregiver reads.
+     const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise().catch(() => null);
+     const existing = caregivers?.[0];
+     if (!existing) return false;
+
+     const payload = {
+       ...existing,                                         // preserve token, password, etc.
+       name:            updatedCaregiver.name,
+       email:           updatedCaregiver.email,
+       phone:           updatedCaregiver.phone,
+       birthDate:       updatedCaregiver.birthDate,
+       // Write both field-name variants so the record stays readable by
+       // normalizeCaregiver regardless of which format it expects.
+       profileImage:    updatedCaregiver.profileImageURL,
+       profileImageURL: updatedCaregiver.profileImageURL,
+       caregiverType:   updatedCaregiver.type,
+       type:            updatedCaregiver.type,
+       speciality:      updatedCaregiver.speciality,
+       isActive:        updatedCaregiver.isActive ?? existing.isActive,
+     };
+
      let caregiverUpdated = true;
-     await this.http.put(`${apiUrl}/caregivers/${updatedCaregiver.id}`, updatedCaregiver).toPromise().catch(error => {
+     await this.http.put(`${apiUrl}/caregivers/${updatedCaregiver.id}`, payload).toPromise().catch(() => {
        caregiverUpdated = false;
      });
      return caregiverUpdated;

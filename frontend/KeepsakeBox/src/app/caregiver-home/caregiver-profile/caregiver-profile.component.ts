@@ -36,4 +36,18 @@ export class CaregiverProfileComponent implements OnInit {
   public isRouteActive(route: string): boolean {
     return this.appService.isRouteActive(route);
   }
+
+  /**
+   * Returns true when the active child route is a standalone "overlay"
+   * page that should fill the viewport on its own, without the profile
+   * card and tab nav wrapping it.
+   */
+  hideNavBar(): boolean {
+    return this.isRouteActive('profile/update') ||
+      this.isRouteActive('profile/password') ||
+      this.isRouteActive('profile/images/add') ||
+      this.isRouteActive('profile/image/update') ||
+      this.isRouteActive('profile/image/delete') ||
+      this.isRouteActive('profile/images/method');
+  }
 }
