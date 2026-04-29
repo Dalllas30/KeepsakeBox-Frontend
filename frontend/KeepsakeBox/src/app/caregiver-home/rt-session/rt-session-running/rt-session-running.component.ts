@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, HostListener } from '@angular/core';
+import { Component, Input, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -99,7 +99,8 @@ export class RtSessionRunningComponent implements OnInit {
     private rtSessionImageService: RtSessionImageService,
     private patientService: PatientService,
     private dialogService: DialogService,
-    private appService: AppService
+    private appService: AppService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -153,6 +154,7 @@ export class RtSessionRunningComponent implements OnInit {
     this.PreviousImage = this.rtSessionImage.current_image > 1;
     this.NextImage = this.rtSessionImage.current_image < this.rtSessionImage.total_images;
     this.NextButtonRight = 0;
+    this.cdr.detectChanges();
   }
 
   async NavigateToNextImage() {

@@ -38,7 +38,47 @@ export class RtSessionService {
   }
 
   private async getSessions(): Promise<Session[]> {
-    return await this.http.get<Session[]>(`${environment.apiUrl}/sessions`).toPromise().then(response => response ?? []);
+    const sessions = await this.http.get<Session[]>(`${environment.apiUrl}/sessions`).toPromise().then(response => response ?? []);
+    const sessionFeedbacks = await this.http.get<SessionFeedback[]>(`${environment.apiUrl}/sessionFeedbacks`).toPromise().then(response => response ?? []);
+    const caregivers = await this.http.get<Caregiver[]>(`${environment.apiUrl}/caregivers`).toPromise().then(response => response ?? []);
+    const patients = await this.http.get<Patient[]>(`${environment.apiUrl}/patients`).toPromise().then(response => response ?? []);
+
+    const feedbackBySessionId = new Map<string, SessionFeedback>();
+    sessionFeedbacks.forEach(feedback => {
+      if (feedback.session_id) {
+        feedbackBySessionId.set(feedback.session_id.toString(), feedback);
+      }
+    });
+
+    const caregiverById = new Map(caregivers.map(caregiver => [caregiver.id?.toString() ?? '', caregiver]));
+    const patientById = new Map(patients.map(patient => [patient.id?.toString() ?? '', patient]));
+
+    return sessions.map(session => {
+      const feedback = feedbackBySessionId.get(session.id?.toString() ?? '');
+      const caregiver = caregiverById.get(session.caregiver_id?.toString() ?? '');
+      const patient = patientById.get(session.patient_id?.toString() ?? '');
+      const caregiverName = session.caregiver_name || caregiver?.name || '';
+      const patientName = session.patient_name || patient?.name || patient?.displayName || '';
+      if (!feedback) {
+        return {
+          ...session,
+          caregiver_name: caregiverName,
+          patient_name: patientName,
+          full_name: session.full_name || patientName
+        };
+      }
+
+      return {
+        ...session,
+        sessionFinished: true,
+        global_feedback: feedback,
+        patient_feedback: feedback.patient_feedback,
+        duration: feedback.duration as any,
+        caregiver_name: caregiverName,
+        patient_name: patientName,
+        full_name: session.full_name || patientName
+      };
+    });
   }
 
   private async getCurrentCaregiverId(token: string): Promise<string | null> {
@@ -135,7 +175,11 @@ export class RtSessionService {
   async getSessionListByCaregiver(token: string): Promise<Session[]> {
     const caregiverId = await this.getCurrentCaregiverId(token);
     const sessions = await this.getSessions();
-    return sessions.filter(session => session.caregiver_id?.toString() === caregiverId?.toString());
+    return sessions.filter(session =>
+      session.caregiver_id?.toString() === caregiverId?.toString() &&
+      session.sessionFinished &&
+      session.global_feedback != null
+    );
   }
 
   async getSessionListByCaregiverHistory(token: string): Promise<Session[]> {
@@ -156,7 +200,7 @@ export class RtSessionService {
       const matchesPatient = !patientId || patientId === 'all' || session.patient_id?.toString() === patientId.toString();
       const matchesMonth = !filter || filter === 'all' || `${startDate.getMonth() + 1}` === filter;
       const matchesYear = !filterYear || filterYear === 'all' || `${startDate.getFullYear()}` === filterYear;
-      return matchesCaregiver && matchesPatient && matchesMonth && matchesYear;
+      return matchesCaregiver && matchesPatient && matchesMonth && matchesYear && session.sessionFinished && session.global_feedback != null;
     });
   }
 
@@ -172,13 +216,17 @@ export class RtSessionService {
       const matchesPatient = session.patient_id?.toString() === patientId.toString();
       const matchesMonth = !filterMonth || filterMonth === 'all' || `${startDate.getMonth() + 1}` === filterMonth;
       const matchesYear = !filterYear || filterYear === 'all' || `${startDate.getFullYear()}` === filterYear;
-      return matchesPatient && matchesMonth && matchesYear;
+      return matchesPatient && matchesMonth && matchesYear && session.sessionFinished && session.global_feedback != null;
     });
   }
 
   async getSessionListByPatient(token: string, patientId: string): Promise<Session[]> {
     const sessions = await this.getSessions();
-    return sessions.filter(session => session.patient_id?.toString() === patientId.toString());
+    return sessions.filter(session =>
+      session.patient_id?.toString() === patientId.toString() &&
+      session.sessionFinished &&
+      session.global_feedback != null
+    );
   }
 
   async getSessionFeedback(token: string, session_Id: string): Promise<SessionFeedback | null> {
@@ -201,31 +249,18 @@ export class RtSessionService {
     sessionFeedback: SessionFeedback
   ): Promise<boolean> {
     try {
-      const sessions = await this.getSessions();
-      const existing = sessions.find(session => session.template_id?.toString() === templateSessionId.toString() && session.patient_id?.toString() === patientId.toString());
-      if (existing?.id) {
-        await this.upsertSession({
-          ...existing,
-          sessionFinished: true,
-          global_feedback: sessionFeedback
-        } as any);
-      } else {
-        await this.upsertSession({
-          template_id: templateSessionId,
-          patient_id: patientId,
-          sessionFinished: true,
-          global_feedback: sessionFeedback,
-          caregiver_id: localStorage.getItem('currentCaregiverId') ?? '',
-          caregiver_name: '',
-          patient_name: '',
-          full_name: '',
-          start_session: new Date(),
-          end_session: new Date(),
-          duration: null as any,
-          total_images: 0,
-          patient_feedback: sessionFeedback.patient_feedback,
-        } as any);
+      const existing = await this.http.get<any>(`${environment.apiUrl}/sessions/${sessionFeedback.session_id}`).toPromise().catch(() => null);
+      if (!existing?.id) {
+        return false;
       }
+      await this.upsertSession({
+        ...existing,
+        sessionFinished: true,
+        end_session: new Date().toISOString(),
+        global_feedback: sessionFeedback,
+        patient_feedback: sessionFeedback.patient_feedback,
+        duration: sessionFeedback.duration
+      } as any);
       await this.upsertSessionFeedback(sessionFeedback);
       return true;
     } catch {

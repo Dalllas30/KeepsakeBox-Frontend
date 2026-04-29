@@ -165,8 +165,12 @@ export class PreviewSessionComponent implements OnInit {
     var categories = this.categoryService.parseCategories(this.selectedCategories);
     var imageList: string[] = [];
     for (let i = 0; i < this.selectedImages.length; i++) {
-      console.log(this.selectedImages[i].id);
-      imageList.push(this.selectedImages[i].id);
+      const imageId = (this.selectedImages[i].id ?? this.selectedImages[i].image?.id ?? '').toString();
+      if (!imageId) {
+        continue;
+      }
+      console.log(imageId);
+      imageList.push(imageId);
     }
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
     if (this.appContext.patientContext) {

@@ -183,10 +183,24 @@ export class CreateSessionImagesComponent implements OnInit {
     return this.selectedImages.findIndex(r => r.id == imageId) !== -1;
   }
 
+  private getImageId(img: PersonalImage): string {
+    return ((img as any).id ?? img.image?.id ?? '').toString();
+  }
+
   selectImage(img: PersonalImage) {
-    var idx = this.selectedImages.findIndex(r => r.id == img.image.id);
+    const imageId = this.getImageId(img);
+    if (!imageId) {
+      return;
+    }
+
+    var idx = this.selectedImages.findIndex(r => r.id == imageId);
     if (idx == -1) {
-      this.selectedImages.push(new RtSessionCreateData(img.image.id, img.image, false, img.isFavorite));
+      this.selectedImages.push(new RtSessionCreateData(
+        imageId,
+        { ...(img.image as any), id: imageId },
+        false,
+        img.isFavorite
+      ));
       img.image.category.split(',').forEach(c => {
         let category = c.trim();
         if (this.selectedImagesByCategory.has(category)) {

@@ -155,6 +155,14 @@ import { environment } from '../../../environments/environment';
       return await this.http.get<TemplateSession[]>(`${environment.apiUrl}/templateSessions`).toPromise().then(response => response ?? []);
      }
 
+    private async getCaregivers(): Promise<Caregiver[]> {
+     return await this.http.get<Caregiver[]>(`${environment.apiUrl}/caregivers`).toPromise().then(response => response ?? []);
+    }
+
+    private async getPatients(): Promise<Patient[]> {
+     return await this.http.get<Patient[]>(`${environment.apiUrl}/patients`).toPromise().then(response => response ?? []);
+    }
+
      private async getImages(): Promise<any[]> {
       return await this.http.get<any[]>(`${environment.apiUrl}/images`).toPromise().then(response => response ?? []);
      }
@@ -171,6 +179,24 @@ import { environment } from '../../../environments/environment';
      */
     async getTemplateSessionList(token: string, patientId: String, filter: String, count: String): Promise<TemplateSession[]>{
       let templateSessions = await this.getTemplateSessions();
+      const caregivers = await this.getCaregivers();
+      const patients = await this.getPatients();
+      const caregiverById = new Map(caregivers.map(caregiver => [caregiver.id?.toString() ?? '', caregiver]));
+      const patientById = new Map(patients.map(patient => [patient.id?.toString() ?? '', patient]));
+
+      templateSessions = templateSessions.map(templateSession => {
+        const caregiver = caregiverById.get(templateSession.caregiver_id?.toString() ?? '');
+        const patient = patientById.get(templateSession.patient_id?.toString() ?? '');
+        const caregiverName = templateSession.caregiver_name || caregiver?.name || '';
+        const patientName = templateSession.patient_name || patient?.name || patient?.displayName || '';
+
+        return {
+          ...templateSession,
+          caregiver_name: caregiverName,
+          patient_name: patientName
+        };
+      });
+
       if (patientId && patientId !== 'any' && patientId !== 'all') {
         templateSessions = templateSessions.filter(templateSession => templateSession.patient_id?.toString() === patientId.toString());
       }
@@ -244,10 +270,35 @@ import { environment } from '../../../environments/environment';
      async selectImageList4TemplateSession(token: string, templateSessionData: TemplateSessionData): Promise<RtSessionCreateData[]>{
        let rtSessionCreateData: RtSessionCreateData[] = [];
        const images = await this.getImages();
-       const selectedImages = images.filter(image => templateSessionData.image_list.includes(image.id?.toString()));
+       const selectedImageIds = new Set<string>();
+
+       for (const selection of templateSessionData.image_list ?? []) {
+         const selectionText = selection?.toString() ?? '';
+         if (!selectionText) {
+           continue;
+         }
+
+         if (selectionText.includes(':')) {
+           const [categoryName, countText] = selectionText.split(':');
+           const requestedCount = Number(countText);
+           const matchingImages = images.filter(image => (image.image?.category ?? image.category ?? '').toString() === categoryName.trim());
+           const limit = Number.isNaN(requestedCount) ? matchingImages.length : Math.max(0, requestedCount);
+
+           for (const image of matchingImages.slice(0, limit)) {
+             const imageId = image.id?.toString();
+             if (imageId) {
+               selectedImageIds.add(imageId);
+             }
+           }
+         } else {
+           selectedImageIds.add(selectionText);
+         }
+       }
+
+       const selectedImages = images.filter(image => selectedImageIds.has(image.id?.toString() ?? ''));
        rtSessionCreateData = selectedImages.map(image => ({
          id: image.id?.toString(),
-         image: image.image ?? image,
+         image: { ...(image.image ?? image), id: image.id?.toString() },
          favorite: image.isFavorite ?? false,
          isFavorite: image.isFavorite ?? false
        } as RtSessionCreateData));
@@ -303,6 +354,36 @@ import { environment } from '../../../environments/environment';
       }).catch(() => {
         sessionId = null;
       });
+      if (sessionId) {
+        const selectedImages = await this.getImagesByTemplateSessionId(token, templateSessionId);
+        await Promise.all(selectedImages.map(async (image, index) => {
+          const imageId = image.image?.id?.toString();
+          if (!imageId) {
+            return;
+          }
+          await this.http.post(`${environment.apiUrl}/rtSessionImages`, {
+            sessionId,
+            image_id: imageId,
+            imageURL: image.image?.imageURL ?? '',
+            current_image: index + 1,
+            total_images: selectedImages.length,
+            patient_feedback: 0,
+            anxiety: -1,
+            agressivity: -1,
+            irritability: -1,
+            commitment: -1,
+            joy: -1,
+            enthusiasm: -1,
+            communication: -1,
+            apathy: -1,
+            observation: '',
+            patient_agressivity: 0,
+            patient_sadness: 0,
+            patient_isolation: 0,
+            category: image.image?.category ?? ''
+          }).toPromise();
+        }));
+      }
       return sessionId;
     }
  
@@ -317,7 +398,30 @@ import { environment } from '../../../environments/environment';
        const templateSession = await this.http.get<any>(`${environment.apiUrl}/templateSessions/${templateSessionId}`).toPromise().catch(() => null);
        const allImages = await this.getImages();
        if (templateSession?.image_list) {
-         images = allImages.filter(image => templateSession.image_list.includes(image.id?.toString()));
+         const validImageIds = (templateSession.image_list as any[])
+           .map(id => (id ?? '').toString())
+           .filter(id => id.length > 0 && id !== 'null' && id !== 'undefined');
+
+         if (validImageIds.length > 0) {
+           images = allImages.filter(image => validImageIds.includes(image.id?.toString()));
+         }
+       }
+
+       // Legacy fallback: older templates may contain image_list=[null].
+       // In that case, recover images from the stored categories.
+       if (images.length === 0 && templateSession?.categories) {
+         const categories = templateSession.categories
+           .split(',')
+           .map((c: string) => c.trim())
+           .filter((c: string) => c.length > 0);
+
+         if (categories.length > 0) {
+           const filteredByCategory = allImages.filter(image =>
+             categories.includes((image.image?.category ?? image.category ?? '').toString())
+           );
+           const limit = Number(templateSession.total_images ?? filteredByCategory.length);
+           images = filteredByCategory.slice(0, Number.isNaN(limit) ? filteredByCategory.length : Math.max(0, limit));
+         }
        }
        return images;
      }

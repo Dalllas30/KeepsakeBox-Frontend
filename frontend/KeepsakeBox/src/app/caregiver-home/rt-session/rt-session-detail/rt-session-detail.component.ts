@@ -88,9 +88,13 @@ export class RtSessionDetailComponent implements OnInit {
 
   goToEditTemplateSession(): void {
     for (let i = 0; i < this.selectedImages.length; i++) {
+      const imageId = ((this.selectedImages[i] as any).id ?? this.selectedImages[i].image?.id ?? '').toString();
+      if (!imageId) {
+        continue;
+      }
       this.selectedImages4Edition.push(new RtSessionCreateData(
-        this.selectedImages[i].image.id,
-        this.selectedImages[i].image,
+        imageId,
+        { ...(this.selectedImages[i].image as any), id: imageId },
         false,
         this.selectedImages[i].isFavorite));
     }

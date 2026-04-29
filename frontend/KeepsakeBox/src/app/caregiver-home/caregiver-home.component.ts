@@ -69,7 +69,7 @@ export class CaregiverHomeComponent implements OnInit {
 
   hideNavBarCaregiver(): boolean {
     // Hide the main caregiver nav for all session-related routes AND overlay pages
-    return this.hideNavBar() || this.isRouteActive('session');
+    return this.hideNavBar();
   }
 
   hideNavBarRtSession(): boolean {

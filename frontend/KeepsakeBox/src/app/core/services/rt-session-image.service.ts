@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 import { RtSessionImage } from '../models/rt-session-image.model';
 import { RtSessionImageList } from '../models/rt-session-image-list.model';
 import { ImageService } from './image.service';
+import { TemplateSessionService } from './template-session.service';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -15,11 +16,85 @@ import { environment } from '../../../environments/environment';
 export class RtSessionImageService {
 
   constructor(private http: HttpClient,
-              private imageService: ImageService) {}
+              private imageService: ImageService,
+              private templateSessionService: TemplateSessionService) {}
 
   private async getRtSessionImages(sessionId: string): Promise<RtSessionImage[]> {
     const response = await this.http.get<RtSessionImage[]>(`${environment.apiUrl}/rtSessionImages?sessionId=${sessionId}`).toPromise();
     return (response ?? []).sort((a, b) => (a.image_id < b.image_id) ? 1 : -1);
+  }
+
+  private async seedRtSessionImagesFromCurrentSelection(sessionId: string): Promise<RtSessionImage[]> {
+    let currentSelection = this.templateSessionService.getCurrentRtSessionData() ?? [];
+
+    if (currentSelection.length === 0) {
+      const session = await this.http.get<any>(`${environment.apiUrl}/sessions/${sessionId}`).toPromise().catch(() => null);
+      const templateId = session?.template_id?.toString();
+      if (templateId) {
+        const templateImages = await this.templateSessionService.getImagesByTemplateSessionId('', templateId);
+        currentSelection = templateImages
+          .map((img: any) => {
+            const imageId = (img?.id ?? img?.image?.id ?? '').toString();
+            if (!imageId) {
+              return null;
+            }
+            return {
+              id: imageId,
+              image: { ...(img.image ?? img), id: imageId }
+            } as any;
+          })
+          .filter((item: any) => item != null);
+      }
+    }
+
+    if (currentSelection.length === 0) {
+      return [];
+    }
+
+    await Promise.all(currentSelection.map(async (selection, index) => {
+      const imageId = selection.id?.toString();
+      if (!imageId) {
+        return;
+      }
+
+      const existing = await this.http.get<any[]>(`${environment.apiUrl}/rtSessionImages?sessionId=${sessionId}&image_id=${imageId}`).toPromise();
+      if (existing && existing.length > 0) {
+        return;
+      }
+
+      await this.http.post(`${environment.apiUrl}/rtSessionImages`, {
+        sessionId,
+        image_id: imageId,
+        imageURL: selection.image?.imageURL ?? '',
+        current_image: index + 1,
+        total_images: currentSelection.length,
+        patient_feedback: 0,
+        anxiety: -1,
+        agressivity: -1,
+        irritability: -1,
+        commitment: -1,
+        joy: -1,
+        enthusiasm: -1,
+        communication: -1,
+        apathy: -1,
+        observation: '',
+        patient_agressivity: 0,
+        patient_sadness: 0,
+        patient_isolation: 0,
+        category: selection.image?.category ?? ''
+      }).toPromise();
+    }));
+
+    return this.getRtSessionImages(sessionId);
+  }
+
+  private async getOrSeedRtSessionImages(sessionId: string): Promise<RtSessionImage[]> {
+    const images = await this.getRtSessionImages(sessionId);
+    if (images.length > 0) {
+      return images;
+    }
+    const seededImages = await this.seedRtSessionImagesFromCurrentSelection(sessionId);
+    return seededImages.length > 0 ? seededImages : images;
   }
 
 
@@ -30,7 +105,7 @@ export class RtSessionImageService {
    * @returns list with all PersonalImage that belongs to the patient
    */
   async getRtSessionImage(token: string, sessionId: String, direction: String): Promise<RtSessionImage | null>{
-    const images = await this.getRtSessionImages(sessionId.toString());
+    const images = await this.getOrSeedRtSessionImages(sessionId.toString());
     return images.find(image => image.category === direction || image.current_image.toString() === direction.toString()) ?? images[0] ?? null;
   }
 
@@ -51,7 +126,7 @@ export class RtSessionImageService {
   }
 
   async getSessionPatientImageInformation(token: string, sessionId: String): Promise<RtSessionImage[]>{
-    const images = await this.getRtSessionImages(sessionId.toString());
+    const images = await this.getOrSeedRtSessionImages(sessionId.toString());
     await Promise.all(images.map(async element => {
       element.thumbnailPath = await this.imageService.getThumbnailPath(element.image_id)
     }));
@@ -59,6 +134,6 @@ export class RtSessionImageService {
   }
 
   async getSessionImagesInformation(token: string, sessionId: String): Promise<RtSessionImage[]>{
-    return this.getRtSessionImages(sessionId.toString());
+    return this.getOrSeedRtSessionImages(sessionId.toString());
   }
 }

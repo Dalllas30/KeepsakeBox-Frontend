@@ -1,19 +1,17 @@
 <div class="d-flex flex-column">
-
   <div>
     <div class="column d-flex justify-content-start flex-wrap p-2">
       <div class="p-2">
         <b>{{ 'filterBy' | translate }}</b>
       </div>
       <div class="column border">
-        
-        <div class="row">
+        <div class="d-flex flex-wrap align-items-center">
           <div class="p-2 padding" style="width: 7em;">
             <b>{{ 'symptoms' | translate }}</b>
           </div>
           <div class="p-2">
-            @for (s of symptomsList | slice: 5; track s) {
-              <button type="button" 
+            @for (s of symptomsList.slice(5); track s) {
+              <button type="button"
                 class="btn button category-button" style="margin-right: 1em;"
                 [class.category-button-selected]="isSymptomsFilterSelected(s)"
                 (click)="symptomsFilterClick(s); retrieveSessions(isSymptomsFilterSelected(s), s)">
@@ -23,11 +21,11 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="d-flex flex-wrap align-items-center">
           <div class="p-2 padding" style="width: 7em;"></div>
           <div class="p-2">
-            @for (s of symptomsList | slice: 0:5; track s) {
-              <button type="button" 
+            @for (s of symptomsList.slice(0, 5); track s) {
+              <button type="button"
                 class="btn button category-button" style="margin-right: 1em;"
                 [class.category-button-selected]="isSymptomsFilterSelected(s)"
                 (click)="symptomsFilterClick(s); retrieveSessions(isSymptomsFilterSelected(s), s)">
@@ -37,18 +35,16 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="d-flex flex-wrap align-items-center">
           <div class="p-2 padding" style="width: 7em;">
             <b>{{ 'reactions' | translate }}</b>
           </div>
-          
-          @for (score of [1, 2, 3, 4, 5]; track score) {
-            <div class="p-2">
-              <button type="button" 
-                class="btn button category-button"
-                [class.category-button-selected]="isFeedbackFilterSelected(score.toString())" 
+          <div class="p-2">
+            @for (score of [1, 2, 3, 4, 5]; track score) {
+              <button type="button"
+                class="btn button category-button me-1"
+                [class.category-button-selected]="isFeedbackFilterSelected(score.toString())"
                 (click)="feedbackFilterClick(score.toString()); retrieveSessions(isFeedbackFilterSelected(score.toString()), score)">
-                
                 @switch (score) {
                   @case (1) { <i class="bi bi-emoji-angry-fill font-red circleEmojiButton emoji-options"></i> }
                   @case (2) { <i class="bi bi-emoji-frown-fill font-orange circleEmojiButton emoji-options"></i> }
@@ -57,15 +53,15 @@
                   @case (5) { <i class="bi bi-emoji-heart-eyes-fill font-blue circleEmojiButton emoji-options"></i> }
                 }
               </button>
-            </div>
-          }
+            }
+          </div>
 
           <div class="p-2 padding">
-            <b> {{'caregiver' | translate}}</b>
+            <b>{{ 'caregiver' | translate }}</b>
           </div>
           <div class="p-2">
             @for (c of caregiversList; track c) {
-              <button type="button" 
+              <button type="button"
                 class="btn button category-button" style="margin-right: 1em;"
                 [class.category-button-selected]="isOptionFilterSelected(c)"
                 (click)="filterClick(c); retrieveSessions(isOptionFilterSelected(c), c)">
@@ -74,7 +70,6 @@
             }
           </div>
         </div>
-
       </div>
     </div>
 
@@ -84,9 +79,9 @@
       </div>
       <div class="p-2">
         <select id="filtersMonth"
-                class="custom-select mr-sm-2 input-text-select bolder-text"
+                class="form-select me-sm-2 input-text-select bolder-text"
                 style="width: 245px;"
-                [(ngModel)]="selectSort"
+                [(ngModel)]="sortOption"
                 (change)="convertSelectSort($event)">
           @for (s of sortOptions; track s.id) {
             <option [value]="s.id">{{ s.name | translate }}</option>
@@ -95,11 +90,13 @@
       </div>
     </div>
 
-    @if (patientCollectionSize === 0) {
+    @if (patientCollectionSize == 0) {
       <div class="p-2 page-message">
         {{ 'noSessionsResearch' | translate }}
       </div>
-    } @else {
+    }
+
+    @if (patientCollectionSize > 0) {
       <table class="table table-sm">
         <thead>
           <tr>
@@ -110,8 +107,9 @@
             <th scope="col" colspan="3">{{ 'actions' | translate }}</th>
           </tr>
         </thead>
+
         <tbody>
-          @for (s of patientSessions | slice: (page-1) * pageSize : page * pageSize; track s.id) {
+          @for (s of patientSessions.slice((page-1) * pageSize, page * pageSize); track s.id) {
             <tr>
               <td class="table-text-fields bolder-text" style="width: 7em;">
                 {{ s.caregiver_name }}
@@ -119,7 +117,6 @@
               <td class="table-text-fields">
                 {{ s.end_session | date:'shortDate' }}
               </td>
-              
               <td class="table-text-fields bolder-text center-smiley">
                 @switch (s.patient_feedback) {
                   @case (1) { <i class="bi bi-emoji-angry-fill emoji-yes font-red"></i> }
@@ -129,23 +126,19 @@
                   @case (5) { <i class="bi bi-emoji-heart-eyes-fill emoji-yes font-blue"></i> }
                 }
               </td>
-
-              <td class="table-text-fields text-left height-table" style="width: 20em; height: 6.1em;">
+              <td class="table-text-fields text-start" style="width: 20em; height: 6.1em;">
                 {{ getFinalSymptom(s.global_feedback) }}
               </td>
-
               <td colspan="2">
                 <div class="p-2">
-                  <button type="button" class="btn button button-neutral height-table">
+                  <button type="button" class="btn button button-neutral">
                     <i class="bi bi-pencil-fill color-white"></i>
                     {{ 'editReactions' | translate }}
                   </button>
-
                   <button type="button" class="btn button button-neutral" style="margin-left: 20px;" (click)="goToPatientSessionSummary(s)">
                     <i class="bi bi-eye-fill color-white"></i>
                     {{ 'viewSummary' | translate }}
                   </button>
-
                   <button type="button" class="btn button button-action" style="margin-left: 20px;">
                     <i class="bi bi-people-fill color-white"></i>
                     {{ 'shareSession' | translate }}
@@ -160,15 +153,15 @@
   </div>
 </div>
 
-@if (patientCollectionSize !== 0) {
+@if (patientCollectionSize != 0) {
   <div class="d-flex justify-content-center flex-wrap" style="margin-top: 10px;">
     <ngb-pagination
-        [(page)]="page"
-        [pageSize]="pageSize"
-        [maxSize]="maxSize"
-        [collectionSize]="patientCollectionSize"
-        [rotate]="true"
-        [ellipses]="true">
+      [(page)]="page"
+      [pageSize]="pageSize"
+      [maxSize]="maxSize"
+      [collectionSize]="patientCollectionSize"
+      [rotate]="true"
+      [ellipses]="true">
       <ng-template ngbPaginationPrevious>
         <i class="bi bi-caret-left"></i>{{ 'previous' | translate }}
       </ng-template>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
@@ -39,7 +39,8 @@ export class CaregiverSessionSummaryComponent implements OnInit {
     private rtSessionService: RtSessionService,
     private rtSessionImageService: RtSessionImageService,
     private authenticationService: AuthenticationService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -54,6 +55,7 @@ export class CaregiverSessionSummaryComponent implements OnInit {
       for (let image of this.images) image.category = this.categoryService.categoryTranslation(image.category, 'en');
     }
     await this.getCategories();
+    this.cdr.detectChanges();
   }
 
   async getPatient() {

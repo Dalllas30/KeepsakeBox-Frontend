@@ -66,43 +66,8 @@
 
     </ul>
 
-  } @else if (!hideNavBarRtSession()) {
-
-    <!--RT Session Nav-->
-    <ul class="nav nav-pills nav-fill">
-
-      <!--Session Home-->
-      <li class="nav-item1">
-          <a class="nav-link" routerLink="/caregiver/session/home"
-            [class.nav-link-active]="isRouteActive('session/home')">
-            <i class="bi bi-collection-play color-white"
-            [class.color-blue]="isRouteActive('session/home')"></i>
-            Sessão com {{caregiver.name.split(" ")[0]}}
-          </a>
-      </li>
-
-      <!--Help-->
-      <li class="nav-item">
-          <a class="nav-link" routerLink="/caregiver/session/help"
-            [class.nav-link-active]="isRouteActive('session/help')">
-            <i class="bi bi-question-circle color-white"
-            [class.color-blue]="isRouteActive('session/help')"></i>
-            Ajuda
-          </a>
-      </li>
-
-      <!--Back-->
-      <li class="nav-item">
-          <a class="nav-link logout"
-            (click)="navigateBack()">
-            <i class="bi bi-box-arrow-left color-white"></i>
-            Voltar
-          </a>
-      </li>
-
-    </ul>
-
-  } @else {
+  }
+  @else {
 
     <!--No Nav — show logo only during session-init screens (not on overlay pages, not during running/feedback)-->
     @if (!hideNavBar() && !isRouteActive('caregiver/session/running') && !isRouteActive('caregiver/session/feedback')) {
