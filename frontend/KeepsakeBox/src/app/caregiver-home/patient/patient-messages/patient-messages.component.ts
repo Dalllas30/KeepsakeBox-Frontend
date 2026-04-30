@@ -37,7 +37,6 @@ export class PatientMessagesComponent implements OnInit, AfterViewInit {
   @ViewChild('messagesDiv', { static: false }) private messagingDiv!: ElementRef;
   @ViewChildren('messages') messagesSent!: QueryList<any>;
 
-  private scrollContainer: any;
   private stompClient: any = null;
 
   constructor(
@@ -50,34 +49,57 @@ export class PatientMessagesComponent implements OnInit, AfterViewInit {
 
   async ngOnInit(): Promise<void> {
     this.currentPatient = await this.patientService.getCurrentPatient()!;
-    this.retrieveChatMessages();
     this.currentCaregiver = await this.caregiverService.getCurrentCaregiver()!;
+    this.messageToSend = new PatientChatMessageData(this.currentCaregiver.id, "", new Date());
+
+    if (!this.currentPatient.chat?.id) {
+      // No chat yet for this patient — nothing to load
+      this.loadingMessages = false;
+      this.messages = [];
+      this.oldMessages = [];
+      this.newMessages = [];
+      this.cdr.detectChanges();
+      return;
+    }
+
+    await this.retrieveChatMessages();
     this.messageService.updateLastMessageReadDate(
       this.authenticationService.getCurrentCaregiverToken()!,
       this.currentCaregiver.id,
       this.currentPatient.chat.id,
       new Date()
     );
-    this.messageToSend = new PatientChatMessageData(this.currentCaregiver.id, "", new Date());
     this.connect();
     this.cdr.detectChanges();
   }
 
   ngAfterViewInit(): void {
-    this.scrollContainer = this.messagingDiv.nativeElement;
     this.scrollMessagesToBottomFast();
     this.messagesSent.changes.subscribe(_ => this.onMessagesSentChanged());
   }
 
   async retrieveChatMessages(): Promise<void> {
+    if (!this.currentPatient.chat?.id) return;
     this.loadingMessages = true;
-    this.messages = await this.messageService.getPatientChatMessages(
-      this.authenticationService.getCurrentCaregiverToken()!,
-      this.currentPatient.chat.id
-    );
+    try {
+      this.messages = await this.messageService.getPatientChatMessages(
+        this.authenticationService.getCurrentCaregiverToken()!,
+        this.currentPatient.chat.id
+      );
+      const lastRead = this.currentPatient.chat.lastMessageReadDate;
+      this.oldMessages = lastRead
+        ? this.messages.filter(m => m.createdDate < lastRead)
+        : [];
+      this.newMessages = lastRead
+        ? this.messages.filter(m => m.createdDate >= lastRead)
+        : [...this.messages];
+    } catch {
+      this.messages = [];
+      this.oldMessages = [];
+      this.newMessages = [];
+    }
     this.loadingMessages = false;
-    this.oldMessages = this.messages.filter(m => m.createdDate < this.currentPatient.chat.lastMessageReadDate);
-    this.newMessages = this.messages.filter(m => m.createdDate >= this.currentPatient.chat.lastMessageReadDate);
+    this.cdr.detectChanges();
   }
 
   private onMessagesSentChanged(): void {
@@ -91,14 +113,19 @@ export class PatientMessagesComponent implements OnInit, AfterViewInit {
   }
 
   scrollMessagesToBottomFast() {
-    this.scrollContainer.scroll({ top: this.scrollContainer.scrollHeight, left: 0, behavior: 'auto' });
+    this.messagingDiv?.nativeElement?.scroll({ top: this.messagingDiv.nativeElement.scrollHeight, left: 0, behavior: 'auto' });
   }
 
   scrollMessagesToBottom() {
-    this.scrollContainer.scroll({ top: this.scrollContainer.scrollHeight, left: 0, behavior: 'smooth' });
+    this.messagingDiv?.nativeElement?.scroll({ top: this.messagingDiv.nativeElement.scrollHeight, left: 0, behavior: 'smooth' });
   }
 
   connect() {
+    if (!this.stompClient) {
+      // WebSocket/STOMP not available (mock / dev mode) — skip live connection.
+      // Messages are loaded once on init and refreshed after every send via REST.
+      return;
+    }
     // const socket = new SockJS(`http://${serverURL}:8080/ws`);
     // this.stompClient = Stomp.over(socket);
     const _this = this;
@@ -110,10 +137,27 @@ export class PatientMessagesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  sendMessage() {
+  async sendMessage(): Promise<void> {
+    if (!this.messageToSend.message?.trim()) return;
+
+    if (!this.stompClient) {
+      // Mock / dev mode: send via REST, then reload the message list.
+      this.messageToSend.createdDate = new Date();
+      await this.messageService.sendMessageRest(
+        this.authenticationService.getCurrentCaregiverToken()!,
+        this.currentPatient.chat.id,
+        this.messageToSend
+      );
+      this.messageToSend = new PatientChatMessageData(this.currentCaregiver.id, '', new Date());
+      await this.retrieveChatMessages();
+      this.cdr.detectChanges();
+      return;
+    }
+
+    // Live mode: send over STOMP
     this.messageToSend.createdDate = new Date();
     this.stompClient.send('/chat/send/' + this.currentPatient.chat.id, {}, JSON.stringify(this.messageToSend));
-    this.messageToSend = new PatientChatMessageData(this.currentCaregiver.id, "", new Date());
+    this.messageToSend = new PatientChatMessageData(this.currentCaregiver.id, '', new Date());
   }
 
   async showMessage(message: PatientChatMessage) {

@@ -8,7 +8,7 @@ import { AppService } from '../../core/services/app.service';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { CaregiverService } from '../../core/services/caregiver.service';
 import { PatientService } from '../../core/services/patient.service';
-import { NotificationService } from '../../core/services/notification.service';
+import { NotificationService, RENDERABLE_NOTIFICATION_TYPES } from '../../core/services/notification.service';
 import { CategoryService } from '../../core/services/category.service';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -61,16 +61,24 @@ export class CaregiverPatientsComponent implements OnInit {
   async checkNotifications() {
     try {
       this.hasNewNotifications = false;
-      let notifications = await this.notificationService
+      const selfTypes = [
+        'ACCEPTED_SHARE_PATIENT', 'DENIED_SHARE_PATIENT', 'REMOVED_FROM_PATIENT',
+        'ACCEPTED_PRIMARY_CARE', 'DENIED_PRIMARY_CARE',
+        'ACCEPTED_PRIMARY_LEAVE_CARE', 'DENIED_PRIMARY_LEAVE_CARE'
+      ];
+      const notifications = await this.notificationService
         .getCaregiverNotifications(this.authenticationService.getCurrentCaregiverToken()!);
-      for (let n of notifications) {
-        if (n.receiver.email == this.caregiver.email) {
-          this.hasNewNotifications = true;
-        }
-      }
+      this.hasNewNotifications = notifications.some(n => {
+        // Must have a rendered component
+        if (!RENDERABLE_NOTIFICATION_TYPES.has(n.messageType)) return false;
+        // Must be visible to current caregiver (same logic as notifications page)
+        const isSender = n.sender.email == this.caregiver.email;
+        return !(isSender && selfTypes.includes(n.messageType));
+      });
     } catch {
       this.hasNewNotifications = false;
     }
+    this.cdr.detectChanges();
   }
 
   searchPatientByName(event: Event) {

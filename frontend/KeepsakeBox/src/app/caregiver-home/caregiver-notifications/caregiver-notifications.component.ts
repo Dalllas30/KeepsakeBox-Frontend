@@ -2,14 +2,14 @@
  * @author André Santana - fc49451
  */
 
-import { Component, OnInit, Input, inject } from '@angular/core';
+import { Component, OnInit, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { CaregiverNotification } from '../../core/models/caregiver-notification.model';
 import { Caregiver } from '../../core/models/caregiver.model';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { CaregiverService } from '../../core/services/caregiver.service';
-import { NotificationService } from '../../core/services/notification.service';
+import { NotificationService, RENDERABLE_NOTIFICATION_TYPES } from '../../core/services/notification.service';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { WaitingShareNotificationComponent } from './waiting-share-notification/waiting-share-notification.component';
 import { SharePatientNotificationComponent } from './share-patient-notification/share-patient-notification.component';
@@ -61,6 +61,7 @@ export class CaregiverNotificationsComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private authenticationService = inject(AuthenticationService);
   private caregiverService = inject(CaregiverService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.currentCaregiver = this.caregiverService.getCurrentCaregiver()!;
@@ -71,6 +72,13 @@ export class CaregiverNotificationsComponent implements OnInit {
     this.notifications = await this.notificationService
       .getCaregiverNotifications(this.authenticationService.getCurrentCaregiverToken()!);
     this.notifications = this.notifications.filter(n => {
+      // Drop any type that has no rendered component — this silences
+      // response notifications whose type names don't match the template
+      // (e.g. ACCEPT_SHARE created by the service vs ACCEPTED_SHARE_PATIENT in the template).
+      if (!RENDERABLE_NOTIFICATION_TYPES.has(n.messageType)) return false;
+
+      // Hide self-generated "accepted/denied" confirmations the current caregiver
+      // sent — they only need to be seen by the other party.
       const isSender = n.sender.email == this.currentCaregiver.email;
       const selfTypes = [
         'ACCEPTED_SHARE_PATIENT', 'DENIED_SHARE_PATIENT', 'REMOVED_FROM_PATIENT',
@@ -80,5 +88,6 @@ export class CaregiverNotificationsComponent implements OnInit {
       return !(isSender && selfTypes.includes(n.messageType));
     });
     this.collectionSize = this.notifications.length;
+    this.cdr.detectChanges();
   }
 }

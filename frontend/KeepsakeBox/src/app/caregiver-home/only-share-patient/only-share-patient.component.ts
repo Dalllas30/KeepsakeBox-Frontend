@@ -6,7 +6,7 @@
          NotificationService.notifySharePatient still uses .toPromise()
          update notifySharePatient() to subscribe */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgModel } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -34,6 +34,7 @@ export class OnlySharePatientComponent implements OnInit {
   private patientService        = inject(PatientService);
   private notificationService   = inject(NotificationService);
   private appService            = inject(AppService);
+  private cdr                   = inject(ChangeDetectorRef);
 
   translateCache = navigator.language.startsWith('pt') ? 'pt' : 'en';
 
@@ -77,13 +78,20 @@ export class OnlySharePatientComponent implements OnInit {
 
   async notifySharePatient(): Promise<void> {
     this.sharingPatient = true;
-    const token = this.authenticationService.getCurrentCaregiverToken()!;
-    if (await this.notificationService.notifySharePatient(
-      token, this.receiverEmail, this.patientService.getCurrentPatient()!.id)) {
-      this.hideCancel = true; this.hideSharePatient = true; this.hidePatientShared = false;
-    } else {
-      this.shared         = false;
+    try {
+      const token = this.authenticationService.getCurrentCaregiverToken()!;
+      const ok = await this.notificationService.notifySharePatient(
+        token, this.receiverEmail, this.patientService.getCurrentPatient()!.id);
+      if (ok) {
+        this.hideCancel = true; this.hideSharePatient = true; this.hidePatientShared = false;
+      } else {
+        this.shared = false;
+      }
+    } catch {
+      this.shared = false;
+    } finally {
       this.sharingPatient = false;
+      this.cdr.detectChanges();
     }
   }
 }

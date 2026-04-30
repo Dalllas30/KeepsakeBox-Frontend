@@ -4,9 +4,26 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { timeout } from 'rxjs/operators';
 import { CaregiverNotificationList } from '../models/caregiver-notification-list.model';
 import { CaregiverNotification } from '../models/caregiver-notification.model';
 import { environment } from '../../../environments/environment';
+
+/**
+ * Every messageType that has a corresponding rendered component in the
+ * notifications template. Any type NOT in this list is silently ignored
+ * so that "response" notifications with mismatched type names (e.g.
+ * ACCEPT_SHARE vs ACCEPTED_SHARE_PATIENT) never pollute the badge count
+ * or show an empty list row.
+ */
+export const RENDERABLE_NOTIFICATION_TYPES: ReadonlySet<string> = new Set([
+  'SHARE_PATIENT',
+  'ACCEPTED_SHARE_PATIENT', 'DENIED_SHARE_PATIENT',
+  'TRANSFER_PRIMARY',
+  'ACCEPTED_PRIMARY_CARE', 'DENIED_PRIMARY_CARE',
+  'REMOVED_FROM_PATIENT',
+  'PRIMARY_LEAVE_CARE', 'ACCEPTED_PRIMARY_LEAVE_CARE', 'DENIED_PRIMARY_LEAVE_CARE',
+]);
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +33,14 @@ export class NotificationService {
   constructor(private http: HttpClient) {}
 
   private async getCaregiverByToken(token: string): Promise<any | null> {
-    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?token=${token}`).toPromise();
+    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?token=${token}`)
+      .toPromise().catch(() => null);
     return caregivers?.[0] ?? null;
   }
 
   private async getCaregiverByEmail(email: string): Promise<any | null> {
-    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?email=${email}`).toPromise();
+    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?email=${email}`)
+      .toPromise().catch(() => null);
     return caregivers?.[0] ?? null;
   }
 
@@ -31,7 +50,9 @@ export class NotificationService {
 
   private async createNotification(notification: Partial<CaregiverNotification>): Promise<boolean> {
     try {
-      await this.http.post(`${environment.apiUrl}/notifications`, notification).toPromise();
+      await this.http.post(`${environment.apiUrl}/notifications`, notification)
+        .pipe(timeout(8000))
+        .toPromise();
       return true;
     } catch {
       return false;

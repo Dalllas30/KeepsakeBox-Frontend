@@ -93,15 +93,21 @@ export class PrincipalSharePatientComponent implements OnInit {
   }
 
   async notifyPrimaryCareTransfer(care: PatientCaregiver): Promise<void> {
-    this.notifyingPatient    = true;
-    this.selectedCaregiver   = care.caregiver;
-    const token              = this.authenticationService.getCurrentCaregiverToken()!;
-    const patientId          = this.patientService.getCurrentPatient()!.id;
-    if (await this.notificationService.notifyPrimaryCareTransfer(
-      token, this.selectedCaregiver.email, patientId)) {
-      this.showPatientShared();
-    } else {
-      this.notified        = false;
+    this.notifyingPatient  = true;
+    this.selectedCaregiver = care.caregiver;
+    try {
+      const token     = this.authenticationService.getCurrentCaregiverToken()!;
+      const patientId = this.patientService.getCurrentPatient()!.id;
+      const ok        = await this.notificationService.notifyPrimaryCareTransfer(
+        token, this.selectedCaregiver.email, patientId);
+      if (ok) {
+        this.showPatientShared();
+      } else {
+        this.notified = false;
+      }
+    } catch {
+      this.notified = false;
+    } finally {
       this.notifyingPatient = false;
     }
   }
