@@ -109,6 +109,7 @@ export class PrincipalSharePatientComponent implements OnInit {
       this.notified = false;
     } finally {
       this.notifyingPatient = false;
+      this.cdr.detectChanges();
     }
   }
 

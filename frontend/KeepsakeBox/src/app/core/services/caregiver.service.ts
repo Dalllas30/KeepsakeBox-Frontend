@@ -177,15 +177,28 @@
      let patients: Patient[] | null = null;
      const caregiver = await this.getCaregiverByToken(token);
      const caregiverId = caregiver?.id ?? localStorage.getItem('currentCaregiverId');
-     await this.http.get<Patient[]>(`${apiUrl}/patients?caregiverId=${caregiverId}`).toPromise()
-     .then(response => {
-       if (response) {
-         patients = response.sort((a, b) => (a.name > b.name) ? 1 : -1);
+     try {
+       // Fetch all patientCaregivers records for this caregiver (covers both primary and secondary)
+       const patientCaregiverRecords = await this.http.get<any[]>(`${apiUrl}/patientCaregivers?caregiverId=${caregiverId}`).toPromise() ?? [];
+       const patientIds = [...new Set(patientCaregiverRecords.map((r: any) => r.patientId?.toString()).filter(Boolean))];
+
+       // Fetch each associated patient by ID
+       const fetched = (await Promise.all(
+         patientIds.map(id => this.http.get<Patient>(`${apiUrl}/patients/${id}`).toPromise().catch(() => null))
+       )).filter(Boolean) as Patient[];
+
+       // Also fetch patients where this caregiver is the primary (safety net for any missing patientCaregivers records)
+       const primary = await this.http.get<Patient[]>(`${apiUrl}/patients?caregiverId=${caregiverId}`).toPromise() ?? [];
+       for (const p of primary) {
+         if (!fetched.find(existing => existing.id?.toString() === p.id?.toString())) {
+           fetched.push(p);
+         }
        }
-     })
-     .catch(error => {
+
+       patients = fetched.sort((a, b) => (a.name > b.name) ? 1 : -1);
+     } catch {
        patients = [];
-     });
+     }
      return patients;
    }
  

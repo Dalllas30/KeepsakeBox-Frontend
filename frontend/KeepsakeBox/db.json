@@ -424,6 +424,43 @@
         }
       },
       "id": 7
+    },
+    {
+      "patientId": 9,
+      "caregiver": {
+        "name": "t_f",
+        "email": "12@gmail.com",
+        "phone": "",
+        "password": "ibjDrM2sAVrATzSfAwBVZg==",
+        "birthDate": "2023-03-02T00:00:00.000Z",
+        "profileImage": "/assets/profileimage-default.png",
+        "caregiverType": "Formal",
+        "speciality": "Medicine",
+        "token": "temp-token-1776350561721",
+        "id": 6
+      },
+      "caregiverId": 6,
+      "isPrimary": false,
+      "patientRelation": "",
+      "patient": {
+        "name": "teste_usuario",
+        "displayName": "user",
+        "birthDate": "1919-01-01T00:00:00.000Z",
+        "education": "Primary School / Elementary School",
+        "profileImageURL": "/assets/profileimage-default.png",
+        "interests": "futebol",
+        "cities": "lisboa",
+        "caregiverId": 5,
+        "patientRelation": "Grandmother/Grandfather",
+        "isActive": true,
+        "id": 9,
+        "chat": {
+          "id": 4,
+          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
+          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
+        }
+      },
+      "id": 8
     }
   ],
   "messages": [
@@ -1156,6 +1193,56 @@
       "messageType": "SHARE_PATIENT",
       "createdDate": "2026-04-30T12:07:13.380Z",
       "id": 16
+    },
+    {
+      "sender": {
+        "name": "teste_tdog",
+        "email": "teste3@gmail.com",
+        "phone": "",
+        "password": "ibjDrM2sAVrATzSfAwBVZg==",
+        "birthDate": "1965-03-10T00:00:00.000Z",
+        "profileImage": "/assets/profileimage-default.png",
+        "caregiverType": "Formal",
+        "speciality": "Geriatrics",
+        "token": "temp-token-1776268227649",
+        "id": 5,
+        "profileImageURL": "/assets/profileimage-default.png",
+        "type": "Formal",
+        "isActive": true
+      },
+      "receiver": {
+        "name": "t_f",
+        "email": "12@gmail.com",
+        "phone": "",
+        "password": "ibjDrM2sAVrATzSfAwBVZg==",
+        "birthDate": "2023-03-02T00:00:00.000Z",
+        "profileImage": "/assets/profileimage-default.png",
+        "caregiverType": "Formal",
+        "speciality": "Medicine",
+        "token": "temp-token-1776350561721",
+        "id": 6
+      },
+      "patient": {
+        "name": "teste_usuario",
+        "displayName": "user",
+        "birthDate": "1919-01-01T00:00:00.000Z",
+        "education": "Primary School / Elementary School",
+        "profileImageURL": "/assets/profileimage-default.png",
+        "interests": "futebol",
+        "cities": "lisboa",
+        "caregiverId": 5,
+        "patientRelation": "Grandmother/Grandfather",
+        "isActive": true,
+        "id": 9,
+        "chat": {
+          "id": 4,
+          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
+          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
+        }
+      },
+      "messageType": "ACCEPT_SHARE",
+      "createdDate": "2026-05-02T21:44:58.837Z",
+      "id": 17
     }
   ],
   "chats": [
