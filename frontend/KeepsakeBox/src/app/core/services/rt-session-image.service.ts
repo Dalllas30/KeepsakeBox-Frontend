@@ -15,13 +15,15 @@ import { environment } from '../../../environments/environment';
 })
 export class RtSessionImageService {
 
+  private currentImageIndexBySession = new Map<string, number>();
+
   constructor(private http: HttpClient,
               private imageService: ImageService,
               private templateSessionService: TemplateSessionService) {}
 
   private async getRtSessionImages(sessionId: string): Promise<RtSessionImage[]> {
     const response = await this.http.get<RtSessionImage[]>(`${environment.apiUrl}/rtSessionImages?sessionId=${sessionId}`).toPromise();
-    return (response ?? []).sort((a, b) => (a.image_id < b.image_id) ? 1 : -1);
+    return (response ?? []).sort((a, b) => (a.current_image > b.current_image) ? 1 : -1);
   }
 
   private async seedRtSessionImagesFromCurrentSelection(sessionId: string): Promise<RtSessionImage[]> {
@@ -106,12 +108,37 @@ export class RtSessionImageService {
    */
   async getRtSessionImage(token: string, sessionId: String, direction: String): Promise<RtSessionImage | null>{
     const images = await this.getOrSeedRtSessionImages(sessionId.toString());
-    return images.find(image => image.category === direction || image.current_image.toString() === direction.toString()) ?? images[0] ?? null;
+    if (images.length === 0) {
+      return null;
+    }
+
+    const sessionKey = sessionId.toString();
+    const normalizedDirection = direction.toString();
+    let currentIndex = this.currentImageIndexBySession.get(sessionKey) ?? 1;
+
+    if (normalizedDirection === 'Current') {
+      currentIndex = 1;
+    } else if (normalizedDirection === 'Next') {
+      currentIndex = Math.min(currentIndex + 1, images.length);
+    } else if (normalizedDirection === 'Previous') {
+      currentIndex = Math.max(currentIndex - 1, 1);
+    } else {
+      const matchedIndex = images.findIndex(image =>
+        image.category === normalizedDirection || image.current_image.toString() === normalizedDirection
+      );
+      if (matchedIndex >= 0) {
+        currentIndex = matchedIndex + 1;
+      }
+    }
+
+    this.currentImageIndexBySession.set(sessionKey, currentIndex);
+    return images[currentIndex - 1] ?? images[0] ?? null;
   }
 
   async updateRtSessionImageFeedback(token: string, rtSessionImage: RtSessionImage): Promise<boolean> {
       let rtSessionImageFeedbackUpdated = true;
-      let localrtSessionImage = new RtSessionImage(rtSessionImage.id,rtSessionImage.image_id,"",
+      const existing = await this.http.get<RtSessionImage>(`${environment.apiUrl}/rtSessionImages/${rtSessionImage.id}`).toPromise().catch(() => null);
+      let localrtSessionImage = new RtSessionImage(rtSessionImage.id,rtSessionImage.image_id,rtSessionImage.imageURL || existing?.imageURL || '',
                 rtSessionImage.current_image,rtSessionImage.total_images,rtSessionImage.patient_feedback,
                 rtSessionImage.anxiety, rtSessionImage.agressivity, rtSessionImage.irritability, rtSessionImage.commitment,
                 rtSessionImage.joy, rtSessionImage.enthusiasm, rtSessionImage.communication, rtSessionImage.apathy,

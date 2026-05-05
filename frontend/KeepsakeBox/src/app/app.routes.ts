@@ -68,6 +68,8 @@ export const routes: Routes = [
           { path: 'images/method', loadComponent: () => import('./caregiver-home/caregiver-profile/caregiver-images/caregiver-image-add-selection/caregiver-image-add-selection.component').then(m => m.CaregiverImageAddSelectionComponent) },
           { path: 'session', loadComponent: () => import('./caregiver-home/caregiver-profile/caregiver-session/caregiver-session.component').then(m => m.CaregiverSessionComponent) },
           { path: 'history', loadComponent: () => import('./caregiver-home/caregiver-profile/caregiver-sessions-history/caregiver-sessions-history.component').then(m => m.CaregiverSessionsHistoryComponent) },
+          { path: 'history/summary', loadComponent: () => import('./caregiver-home/caregiver-profile/caregiver-sessions-history/caregiver-session-summary/caregiver-session-summary.component').then(m => m.CaregiverSessionSummaryComponent) },
+          { path: 'history/summary/images', loadComponent: () => import('./caregiver-home/caregiver-profile/caregiver-sessions-history/caregiver-session-summary/caregiver-session-images/caregiver-session-images.component').then(m => m.CaregiverSessionImagesComponent) },
           { path: 'statistics', loadComponent: () => import('./caregiver-home/caregiver-profile/caregiver-statistics/caregiver-statistics.component').then(m => m.CaregiverStatisticsComponent) },
           { path: 'update', loadComponent: () => import('./caregiver-home/caregiver-update-profile/caregiver-update-profile.component').then(m => m.CaregiverUpdateProfileComponent) },
           { path: 'password', loadComponent: () => import('./caregiver-home/change-password/change-password.component').then(m => m.ChangePasswordComponent) },

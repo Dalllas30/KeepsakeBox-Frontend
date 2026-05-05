@@ -6,7 +6,7 @@
          CaregiverService.leavePatientCare still uses .toPromise()
          update leavePatientCare() to subscribe */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,6 +29,8 @@ export class LeavePatientCareComponent implements OnInit {
   private caregiverService      = inject(CaregiverService);
   private patientService        = inject(PatientService);
   private appService            = inject(AppService);
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   hideLeaveCare = false;
   hideCareLeft  = true;
@@ -58,5 +60,6 @@ export class LeavePatientCareComponent implements OnInit {
       this.left        = false;
       this.leavingCare = false;
     }
+    this.cdr.detectChanges();
   }
 }

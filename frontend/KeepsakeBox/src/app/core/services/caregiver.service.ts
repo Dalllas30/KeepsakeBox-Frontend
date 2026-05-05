@@ -321,31 +321,28 @@
     */
    async caregiverUpdate(token: string,
      updatedCaregiver: Caregiver): Promise<boolean>{
-     // Fetch the raw db record first so we can preserve fields that must
-     // never be overwritten: token, password, and the db-side field names
-     // (caregiverType / profileImage) that our normalizeCaregiver reads.
+     // Fetch the raw db record first and PATCH it to avoid destructive
+     // replacements that can drop fields (token, password, legacy keys, etc.).
      const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise().catch(() => null);
      const existing = caregivers?.[0];
      if (!existing) return false;
 
      const payload = {
-       ...existing,                                         // preserve token, password, etc.
        name:            updatedCaregiver.name,
        email:           updatedCaregiver.email,
        phone:           updatedCaregiver.phone,
        birthDate:       updatedCaregiver.birthDate,
-       // Write both field-name variants so the record stays readable by
-       // normalizeCaregiver regardless of which format it expects.
+       // Keep both naming variants so old and new readers remain compatible.
        profileImage:    updatedCaregiver.profileImageURL,
        profileImageURL: updatedCaregiver.profileImageURL,
-       caregiverType:   updatedCaregiver.type,
-       type:            updatedCaregiver.type,
-       speciality:      updatedCaregiver.speciality,
+       caregiverType:   updatedCaregiver.type || existing.caregiverType || existing.type || '',
+       type:            updatedCaregiver.type || existing.type || existing.caregiverType || '',
+       speciality:      updatedCaregiver.speciality ?? existing.speciality ?? '',
        isActive:        updatedCaregiver.isActive ?? existing.isActive,
      };
 
      let caregiverUpdated = true;
-     await this.http.put(`${apiUrl}/caregivers/${updatedCaregiver.id}`, payload).toPromise().catch(() => {
+     await this.http.patch(`${apiUrl}/caregivers/${existing.id}`, payload).toPromise().catch(() => {
        caregiverUpdated = false;
      });
      return caregiverUpdated;

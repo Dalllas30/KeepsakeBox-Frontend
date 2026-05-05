@@ -16,6 +16,7 @@ import { CaregiverService } from '../../core/services/caregiver.service';
 import { PatientService } from '../../core/services/patient.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AppService } from '../../core/services/app.service';
+import { Router } from '@angular/router';
 import { Caregiver } from '../../core/models/caregiver.model';
 import { Patient } from '../../core/models/patient.model';
 import { PatientCaregiver } from '../../core/models/patient-caregiver.model';
@@ -34,6 +35,7 @@ export class LeavePatientPrimaryCareComponent implements OnInit {
   private patientService        = inject(PatientService);
   private notificationService   = inject(NotificationService);
   private appService            = inject(AppService);
+  private router                = inject(Router);
   private cdr                   = inject(ChangeDetectorRef);
 
   @Input() page     = 1;
@@ -72,7 +74,8 @@ export class LeavePatientPrimaryCareComponent implements OnInit {
   }
 
   navigateToPatientInfo(): void {
-    this.appService.isRouteActive('caregiver/person/info');
+    // Navigate to the person info page after successful primary-leave
+    this.router.navigate(['/caregiver/person/info']).catch(() => {});
   }
 
   convertPatientDisplayName(displayName: string, name: string): string {
@@ -86,6 +89,8 @@ export class LeavePatientPrimaryCareComponent implements OnInit {
     if (await this.notificationService.notifyPrimaryLeaveCare(
       token, this.selectedCaregiver.email, this.patientService.getCurrentPatient()!.id)) {
       this.hideCancel = true; this.hideLeaveCare = true; this.hideCareLeft = false;
+      // After confirmation, navigate to patient info
+      this.navigateToPatientInfo();
     } else {
       this.left        = false;
       this.leavingCare = false;

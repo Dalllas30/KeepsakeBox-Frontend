@@ -103,7 +103,7 @@ export class RtSessionRunningComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.loadingImage = false;
     this.loadingFolder = false;
     this.selectedCategories = [];
@@ -112,7 +112,7 @@ export class RtSessionRunningComponent implements OnInit {
     this.patient = this.patientService.getCurrentPatient()!;
     this.session = this.rtSessionService.getCurrentSession()!;
     this.rtSessionImage = new RtSessionImage("", "", "", 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, "", 0, 0, 0, "");
-    this.getRtSessionImage(this.session.id, "Current");
+    await this.getRtSessionImage(this.session.id, "Current");
     this.updated = true;
     this.updating = false;
     this.startTime = Date.now();
@@ -169,7 +169,7 @@ export class RtSessionRunningComponent implements OnInit {
     }
     if (goToNextStep) {
       this.loadingImages = true;
-      this.getRtSessionImage(this.session.id, "Next");
+      await this.getRtSessionImage(this.session.id, "Next");
       this.loadingImages = false;
     }
   }
@@ -186,7 +186,7 @@ export class RtSessionRunningComponent implements OnInit {
     }
     if (goToNextStep) {
       this.loadingImages = true;
-      this.getRtSessionImage(this.session.id, "Previous");
+      await this.getRtSessionImage(this.session.id, "Previous");
       this.loadingImages = false;
     }
   }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgModel } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,6 +21,8 @@ export class ChangePasswordComponent implements OnInit {
   private authenticationService = inject(AuthenticationService);
   private caregiverService      = inject(CaregiverService);
   private encryptionService     = inject(EncryptionService);
+  
+  constructor(private cdr: ChangeDetectorRef) {}
 
   translateCache = navigator.language.startsWith('pt') ? 'pt' : 'en';
 
@@ -95,5 +97,6 @@ export class ChangePasswordComponent implements OnInit {
       this.changed = false;
     }
     this.changing = false;
+    this.cdr.detectChanges();
   }
 }

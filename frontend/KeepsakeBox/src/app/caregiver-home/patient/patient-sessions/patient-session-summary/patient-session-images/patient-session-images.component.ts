@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,7 +31,8 @@ export class PatientSessionImagesComponent implements OnInit {
     private router: Router,
     private rtSessionService: RtSessionService,
     private rtSessionImageService: RtSessionImageService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -40,6 +41,7 @@ export class PatientSessionImagesComponent implements OnInit {
       this.rtSessionService.getCurrentSession()!.id
     );
     this.collectionSize = this.images.length;
+    this.cdr.detectChanges();
   }
 
   translate(): string[] {
