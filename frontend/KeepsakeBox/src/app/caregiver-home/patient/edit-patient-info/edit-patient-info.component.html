@@ -1,122 +1,184 @@
-<!--@author André Santana - fc49451-->
+<div class="d-flex justify-content-center flex-wrap">
 
-<!--Edit Patient Info Container-->
-<div class="p-2 d-flex justify-content-center caregiver-home-container">
+  <!-- Cancel Screen -->
+  <app-cancel-screen
+    *ngIf="!hideCancel"
+    (answeredNo)="showEditPatient()"
+    (answeredYes)="navigateToPatientInfo()">
+  </app-cancel-screen>
 
-  <form (ngSubmit)="updatePatient()" #editForm="ngForm">
-    <div class="card blue-border">
+  <!-- Edit Patient Container -->
+  <div *ngIf="!hideEditPatient" class="d-flex flex-column">
 
-      <!--Card Header-->
-      <h5 class="card-header card-header-blue">
-        {{'editInformation' | translate}} — {{convertPatientDisplayName(patient.displayName, patient.name)}}
-      </h5>
+    <!-- Error Alert -->
+    <div *ngIf="!updated && caregiver.type == 'Formal'"
+         class="alert alert-danger alert-box" role="alert">
+      {{'updateError' | translate}} {{'beneficiary' | translate}}.
+    </div>
+    <div *ngIf="!updated && caregiver.type == 'Informal'"
+         class="alert alert-danger alert-box" role="alert">
+      {{'updateError' | translate}} {{'relative' | translate}}.
+    </div>
 
-      <!--Card Body-->
-      <div class="card-body">
+    <!-- Form -->
+    <form (ngSubmit)="updatePatient()" #updatePatientForm="ngForm">
 
-        <!--Error Alert-->
-        @if(updateError) {
-          <div class="alert alert-danger alert-box" role="alert">
-            {{'updateError' | translate}} {{convertPatientDisplayName(patient.displayName, patient.name)}}.
+      <div class="card blue-border">
+
+        <!-- Card Header -->
+        <h5 *ngIf="caregiver.type == 'Formal'"
+            class="card-header card-header-blue">
+          {{'editInformation' | translate}} {{'beneficiary' | translate}}
+        </h5>
+        <h5 *ngIf="caregiver.type == 'Informal'"
+            class="card-header card-header-blue">
+          {{'editInformation' | translate}} {{'relative' | translate}}
+        </h5>
+
+        <!-- Card Body -->
+        <div class="card-body">
+
+          <div class="d-flex justify-content-start flex-wrap">
+
+            <!-- Profile Image -->
+            <app-profile-image [profileImage]="profileImage"></app-profile-image>
+
+            <!-- Fields -->
+            <div class="d-flex flex-column flex-wrap">
+
+              <!-- Name -->
+              <div class="p-2 form-group" style="margin-bottom: 5px;">
+                <label for="name" class="input-label">
+                  <i class="bi bi-person"></i> {{'name' | translate}}*
+                </label>
+                <input type="text" class="form-control input-text-select"
+                  id="name" placeholder="{{'required' | translate}}" required
+                  [(ngModel)]="patient.name" name="name" #name="ngModel">
+              </div>
+
+              <!-- Row: Display Name + Birth Date -->
+              <div class="d-flex justify-content-start flex-wrap">
+
+                <!-- Display Name -->
+                <div class="p-2 form-group" style="margin-bottom: 10px;">
+                  <label for="displayName" class="input-label">
+                    <i class="bi bi-file-person"></i> {{'nameToPresent' | translate}}
+                  </label>
+                  <input type="text" class="form-control input-text-select"
+                    id="displayName" placeholder="{{'optional' | translate}}"
+                    [(ngModel)]="patient.displayName" name="displayName">
+                </div>
+
+                <!-- Birth Date -->
+                <div class="p-2 form-group" style="margin-right: -10px !important;">
+                  <app-birth-date-input [birthDate]="birthDate"></app-birth-date-input>
+                </div>
+
+              </div>
+
+              <!-- Education -->
+              <div class="p-2" style="margin-bottom: 10px !important;">
+                <label for="education" class="input-label">
+                  <i class="bi bi-book"></i> {{'education' | translate}}:*
+                </label><br>
+                <div *ngIf="translateCache=='pt'">
+                  <select class="custom-select mr-sm-2 input-text-select"
+                          id="education"
+                          style="text-overflow: ellipsis;"
+                          [(ngModel)]="patient.education"
+                          [class.disabled-option]="patient.education==''"
+                          name="education" #education="ngModel">
+                    <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
+                    <option *ngFor="let e of educationsPT" [value]="e">{{e}}</option>
+                  </select>
+                </div>
+                <div *ngIf="translateCache=='en'">
+                  <select class="custom-select mr-sm-2 input-text-select"
+                          id="education"
+                          style="text-overflow: ellipsis;"
+                          [(ngModel)]="patient.education"
+                          [class.disabled-option]="patient.education==''"
+                          name="education" #education="ngModel">
+                    <option value="" disabled selected>{{'chooseOne' | translate}}...</option>
+                    <option *ngFor="let e of educationsENG" [value]="e">{{e}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Interests -->
+              <div class="p-2 form-group" style="margin-bottom: 10px;">
+                <label for="interests" class="input-label">
+                  <i class="bi bi-stars"></i> {{'interests' | translate}}
+                </label>
+                <textarea class="form-control input-text-select"
+                  id="interests" rows="2"
+                  placeholder="{{'optional' | translate}}"
+                  [(ngModel)]="patient.interests" name="interests"></textarea>
+              </div>
+
+              <!-- Cities -->
+              <div class="p-2 form-group" style="margin-bottom: 10px;">
+                <label for="cities" class="input-label">
+                  <i class="bi bi-geo-alt"></i> {{'cities' | translate}}
+                </label>
+                <textarea class="form-control input-text-select"
+                  id="cities" rows="2"
+                  placeholder="{{'optional' | translate}}"
+                  [(ngModel)]="patient.cities" name="cities"></textarea>
+              </div>
+
+              <!-- Required note -->
+              <small *ngIf="translateCache=='pt'"
+                     class="p-2 form-text text-info-message profile-image-help"
+                     style="margin-top: -10px;">
+                Todos os campos com <strong>*</strong> são <strong>Obrigatórios</strong>.
+              </small>
+              <small *ngIf="translateCache=='en'"
+                     class="p-2 form-text text-info-message profile-image-help"
+                     style="margin-top: -10px;">
+                All fields with <strong>*</strong> are <strong>Required</strong>.
+              </small>
+
+            </div>
           </div>
-        }
 
-        <!--Name-->
-        <div class="p-2 mb-3" style="margin-bottom: 10px;">
-          <label for="name" class="input-label">
-            <i class="bi bi-person"></i> {{'name' | translate}}*
-          </label>
-          <input type="text" class="form-control input-text-select"
-            id="name" required
-            placeholder="{{'required' | translate}}"
-            [(ngModel)]="updatedPatient.name"
-            name="name">
-        </div>
+          <!-- Buttons -->
+          <div class="d-flex justify-content-start flex-wrap-reverse">
 
-        <!--Display Name-->
-        <div class="p-2 mb-3" style="margin-bottom: 10px;">
-          <label for="displayName" class="input-label">
-            <i class="bi bi-person-badge"></i> {{'nameToPresent' | translate}}
-          </label>
-          <input type="text" class="form-control input-text-select"
-            id="displayName"
-            placeholder="{{'optional' | translate}}"
-            [(ngModel)]="updatedPatient.displayName"
-            name="displayName">
-        </div>
+            <!-- Cancel -->
+            <div class="p-2 half-width">
+              <button type="button"
+                      class="btn button button-neutral full-width"
+                      (click)="showCancel()">
+                <i class="bi bi-caret-left-fill color-white"></i>
+                <span class="color-white" *ngIf="caregiver.type=='Formal'"> {{'beneficiary' | translate}}</span>
+                <span class="color-white" *ngIf="caregiver.type=='Informal'"> {{'relative' | translate}}</span>
+              </button>
+            </div>
 
-        <!--Education-->
-        <div class="p-2 mb-3" style="margin-bottom: 10px;">
-          <label for="education" class="input-label">
-            <i class="bi bi-mortarboard"></i> {{'education' | translate}}
-          </label>
-          <input type="text" class="form-control input-text-select"
-            id="education"
-            placeholder="{{'optional' | translate}}"
-            [(ngModel)]="updatedPatient.education"
-            name="education">
-        </div>
-
-        <!--Interests-->
-        <div class="p-2 mb-3" style="margin-bottom: 10px;">
-          <label for="interests" class="input-label">
-            <i class="bi bi-stars"></i> {{'interests' | translate}}
-          </label>
-          <textarea class="form-control input-text-select"
-            id="interests" rows="2"
-            placeholder="{{'optional' | translate}}"
-            [(ngModel)]="updatedPatient.interests"
-            name="interests"></textarea>
-        </div>
-
-        <!--Cities-->
-        <div class="p-2 mb-3" style="margin-bottom: 10px;">
-          <label for="cities" class="input-label">
-            <i class="bi bi-geo-alt"></i> {{'cities' | translate}}
-          </label>
-          <textarea class="form-control input-text-select"
-            id="cities" rows="2"
-            placeholder="{{'optional' | translate}}"
-            [(ngModel)]="updatedPatient.cities"
-            name="cities"></textarea>
-        </div>
-
-        <!--Required note-->
-        <small class="p-2 form-text text-info-message" style="margin-top: -10px;">
-          * {{'required' | translate}}
-        </small>
-
-        <!--Buttons-->
-        <div class="d-flex justify-content-start flex-wrap-reverse">
-
-          <!--Cancel-->
-          <div class="p-2" style="width: 300px;">
-            <button type="button"
-                    class="btn button button-neutral full-width"
-                    (click)="cancel()">
-              <i class="bi bi-x-circle color-white"></i>
-              {{'cancel' | translate}}
-            </button>
-          </div>
-
-          <!--Save-->
-          <div class="p-2" style="width: 300px;">
-            <button type="submit"
-                    class="btn button button-action full-width"
-                    [disabled]="!editForm.valid || updating">
-              {{'save' | translate}}
-              @if(updating) {
-                <div class="spinner-border small-spinner-white" role="status">
+            <!-- Submit -->
+            <div class="p-2 half-width">
+              <button type="submit"
+                      class="btn button button-action full-width"
+                      [disabled]="!updatePatientForm.valid
+                                  || birthDate.day == 0
+                                  || birthDate.month == -1
+                                  || birthDate.year == 0
+                                  || !birthDate.validDate
+                                  || updating">
+                {{'submit' | translate}}
+                <div *ngIf="updating"
+                     class="spinner-border small-spinner-white" role="status">
                   <span class="visually-hidden">Loading...</span>
                 </div>
-              }
-            </button>
+              </button>
+            </div>
+
           </div>
 
         </div>
-
       </div>
-    </div>
-  </form>
 
+    </form>
+  </div>
 </div>

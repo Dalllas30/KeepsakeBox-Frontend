@@ -252,9 +252,9 @@
       "name": "paciente",
       "displayName": "Daniel",
       "birthDate": "2020-03-31T23:00:00.000Z",
-      "education": "Preparatory Cicle / 2nd Cycle of Basic Education",
+      "education": "Primary School / Elementary School",
       "profileImageURL": "/assets/profileimage-default.png",
-      "interests": "Basket",
+      "interests": "Basquetebol",
       "cities": "Povoa",
       "caregiverId": 12,
       "patientRelation": "Friend",
@@ -287,8 +287,8 @@
       "profileImageURL": "/assets/profileimage-default.png",
       "interests": "Basket",
       "cities": "Lisboa",
-      "caregiverId": 12,
-      "patientRelation": "Sister/Brother",
+      "caregiverId": null,
+      "patientRelation": "",
       "isActive": true,
       "id": 10
     }
@@ -490,28 +490,6 @@
         }
       },
       "id": 8
-    },
-    {
-      "patientId": 10,
-      "caregiver": {
-        "name": "Imagens",
-        "email": "imagens@gmail.com",
-        "phone": "919191919",
-        "password": "XeTlaGmRf6wHiWWqhswHpw==",
-        "birthDate": "2014-05-04T23:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "caregiverType": "Informal",
-        "speciality": "",
-        "token": "temp-token-1776943039283",
-        "isActive": true,
-        "id": 12,
-        "type": "Informal"
-      },
-      "caregiverId": 12,
-      "isPrimary": true,
-      "patientRelation": "Sister/Brother",
-      "id": 9
     }
   ],
   "messages": [

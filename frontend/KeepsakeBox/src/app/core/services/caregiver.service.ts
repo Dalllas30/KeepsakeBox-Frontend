@@ -389,6 +389,15 @@
      if (record?.id) {
        await this.http.delete(`${apiUrl}/patientCaregivers/${record.id}`).toPromise().catch(() => leftCare = false);
      }
+     if (caregiver?.id) {
+       const patient = await this.http.get<any>(`${apiUrl}/patients/${patientId}`).toPromise().catch(() => null);
+       if (patient && patient.caregiverId?.toString() === caregiver.id.toString()) {
+         await this.http.patch(`${apiUrl}/patients/${patientId}`, {
+           caregiverId: null,
+           patientRelation: ''
+         }).toPromise().catch(() => leftCare = false);
+       }
+     }
      return leftCare;
    }
  
@@ -405,6 +414,13 @@
      const record = patientCaregivers.find((entry: any) => entry.patientId?.toString() === patientId.toString() && entry.caregiver?.id?.toString() === caregiverId.toString());
      if (record?.id) {
        await this.http.delete(`${apiUrl}/patientCaregivers/${record.id}`).toPromise().catch(() => removed = false);
+     }
+     const patient = await this.http.get<any>(`${apiUrl}/patients/${patientId}`).toPromise().catch(() => null);
+     if (patient && patient.caregiverId?.toString() === caregiverId.toString()) {
+       await this.http.patch(`${apiUrl}/patients/${patientId}`, {
+         caregiverId: null,
+         patientRelation: ''
+       }).toPromise().catch(() => removed = false);
      }
      return removed;
    }
