@@ -4,6 +4,7 @@
  */
 
 import { BirthDate } from "./birth-date.model";
+import { UserRole } from "./user-role.model";
 
 export class RegisterStep1Data {
     constructor(
@@ -13,5 +14,9 @@ export class RegisterStep1Data {
         public phone: string,
         public password: string,
         public confirmPassword: string,
+        // Role selected at the top of step 1. Drives which collection the
+        // register call hits and whether the caregiver-type widget is shown
+        // in step 2.
+        public role: UserRole = 'caregiver',
     ){}
 }

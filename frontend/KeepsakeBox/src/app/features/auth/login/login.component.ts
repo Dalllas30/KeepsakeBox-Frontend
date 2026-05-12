@@ -34,9 +34,10 @@ export class LoginComponent implements OnInit {
   currentPassword: string = '';
 
   ngOnInit(): void {
-    // If a token already exists, skip login entirely
+    // If a token already exists, skip login entirely — route by role.
     if (this.authenticationService.getCurrentCaregiverToken()) {
-      this.router.navigate(['/caregiver/persons']);
+      const role = this.authenticationService.getCurrentUserRole();
+      this.router.navigate([role === 'independent' ? '/independent' : '/caregiver/persons']);
     }
   }
 
@@ -82,13 +83,15 @@ export class LoginComponent implements OnInit {
         ? this.encryptionService.encrypt(environment.encryptionKey, this.currentPassword)
         : this.currentPassword;
 
-      const success = await this.authenticationService.login({
+      const role = await this.authenticationService.login({
         email: this.loginData.email,
         password: passwordToUse
       });
 
-      if (success) {
+      if (role === 'caregiver') {
         await this.router.navigate(['/caregiver/persons']);
+      } else if (role === 'independent') {
+        await this.router.navigate(['/independent']);
       } else {
         this.validLogin.set(false);
       }

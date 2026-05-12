@@ -1426,5 +1426,21 @@
     }
   ],
   "requests": [],
-  "imagesToValidate": []
+  "imagesToValidate": [],
+  "independents": [
+    {
+      "name": "independent",
+      "email": "independent@gmail.com",
+      "phone": "",
+      "password": "ibjDrM2sAVrATzSfAwBVZg==",
+      "birthDate": "1901-01-01T00:36:45.000Z",
+      "profileImage": "/assets/profileimage-default.png",
+      "profileImageURL": "/assets/profileimage-default.png",
+      "primaryCaregiverId": null,
+      "token": "temp-token-1778587201691",
+      "isActive": true,
+      "id": 1
+    }
+  ],
+  "independentCaregivers": []
 }

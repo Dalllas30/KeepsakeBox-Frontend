@@ -16,6 +16,8 @@ import { CaregiverTypeComponent } from '../../../../shared/caregiver-type/caregi
 export class RegisterStep2Component {
   public translateCache: string = navigator.language.startsWith('pt') ? 'pt' : 'en';
   @Input() step2Data!: RegisterStep2Data;
+  // Suppress the caregiver-type widget when registering an independent user.
+  @Input() hideCaregiverType: boolean = false;
   @Output() backToStep1: EventEmitter<void> = new EventEmitter();
   @Output() registerSubmitted: EventEmitter<void> = new EventEmitter();
 

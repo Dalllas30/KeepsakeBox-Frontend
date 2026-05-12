@@ -32,8 +32,9 @@
   @if(!hideStep2) {
     <app-register-step2
     [step2Data]="step2Data"
+    [hideCaregiverType]="step1Data.role === 'independent'"
     (backToStep1)="showStep1()"
-    (registerSubmitted)="caregiverRegister()">
+    (registerSubmitted)="submitRegister()">
     </app-register-step2>
   }
 

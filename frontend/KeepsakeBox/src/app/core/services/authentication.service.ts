@@ -6,8 +6,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { CaregiverRegisterData } from '../models/caregiver-register-data.model';
+import { IndependentUserRegisterData } from '../models/independent-user-register-data.model';
 import { LoginData } from '../models/login-data.model';
+import { UserRole, USER_ROLES } from '../models/user-role.model';
 import { CaregiverService } from './caregiver.service';
+import { IndependentUserService } from './independent-user.service';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -18,37 +21,43 @@ export class AuthenticationService {
   //Class Constructor
   constructor(
     private http: HttpClient,
-    private caregiverService: CaregiverService
+    private caregiverService: CaregiverService,
+    private independentUserService: IndependentUserService
   ) {
-    //Stores the current caregiver token on cache
+    //Stores the current session token on cache
     this.currentCaregiverToken =
-    new BehaviorSubject<string | null>(localStorage.getItem('currentCaregiverToken'));
+      new BehaviorSubject<string | null>(localStorage.getItem('currentCaregiverToken'));
+    this.currentUserRole =
+      new BehaviorSubject<UserRole | null>(
+        (localStorage.getItem('currentUserRole') as UserRole | null) ?? null
+      );
   }
 
-  //Cache variable for the current caregiver token
+  //Cache variable for the current session token (caregiver or independent user)
   private currentCaregiverToken: BehaviorSubject<string | null>;
 
+  //Cache variable for the role of the currently logged-in user
+  private currentUserRole: BehaviorSubject<UserRole | null>;
+
+  // ------------------------------------------------------------------------
+  // Token + role cache
+  // ------------------------------------------------------------------------
+
   /**
-   * Sets the current caregiver token on cache
-   * @param token - current caregiver token
+   * Sets the current session token on cache.
+   * Name kept as `currentCaregiverToken` for backward compatibility with
+   * existing call sites; it stores the token regardless of role.
    */
   setCurrentCaregiverToken(token: string): void {
     localStorage.setItem('currentCaregiverToken', token);
     this.currentCaregiverToken.next(token);
   }
 
-  /**
-   * Resets current caregiver token saved on cache
-   */
   resetCurrentCaregiverToken(): void {
     localStorage.removeItem('currentCaregiverToken');
     this.currentCaregiverToken.next(null);
   }
 
-  /**
-   * Gets the current caregiver token
-   * @returns the current caregiver token from cache
-   */
   getCurrentCaregiverToken(): string | null {
     return this.currentCaregiverToken.value;
   }
@@ -56,6 +65,28 @@ export class AuthenticationService {
   isLoggedIn(): boolean {
     return this.getCurrentCaregiverToken() != null;
   }
+
+  setCurrentUserRole(role: UserRole): void {
+    localStorage.setItem('currentUserRole', role);
+    this.currentUserRole.next(role);
+  }
+
+  resetCurrentUserRole(): void {
+    localStorage.removeItem('currentUserRole');
+    this.currentUserRole.next(null);
+  }
+
+  getCurrentUserRole(): UserRole | null {
+    return this.currentUserRole.value;
+  }
+
+  hasRole(role: UserRole): boolean {
+    return this.currentUserRole.value === role;
+  }
+
+  // ------------------------------------------------------------------------
+  // Normalization
+  // ------------------------------------------------------------------------
 
   private normalizeCaregiver(caregiver: any): any {
     return {
@@ -66,27 +97,34 @@ export class AuthenticationService {
     };
   }
 
+  // ------------------------------------------------------------------------
+  // Email validation
+  // ------------------------------------------------------------------------
+
   /**
-   * Request that validates an email by verifying if it exists in database
-   * @param email - email to validate with database
-   * @returns TRUE if email does not belong to another caregiver
+   * Checks whether an email is free to register, across BOTH caregivers and
+   * independent users — emails must be globally unique to support the unified
+   * login flow (which doesn't know the role up front).
    */
   async validateEmail(email: string): Promise<boolean> {
     try {
-      const response = await firstValueFrom(
-        this.http.get<any[]>(`${environment.apiUrl}/caregivers?email=${email}`)
-      );
-      // If array is empty, email is valid (doesn't exist)
-      return response.length === 0;
+      const [caregivers, independents] = await Promise.all([
+        firstValueFrom(this.http.get<any[]>(`${environment.apiUrl}/caregivers?email=${email}`)).catch(() => []),
+        firstValueFrom(this.http.get<any[]>(`${environment.apiUrl}/independents?email=${email}`)).catch(() => []),
+      ]);
+      return (caregivers?.length ?? 0) === 0 && (independents?.length ?? 0) === 0;
     } catch (error) {
       console.error('Email validation error:', error);
       return false;
     }
   }
 
+  // ------------------------------------------------------------------------
+  // Register
+  // ------------------------------------------------------------------------
+
   /**
-   * Request that registers a new caregiver into the application
-   * @param caregiver - caregiver data needed to register the caregiver
+   * Register a new caregiver. Kept as-is for backward compatibility.
    */
   async register(caregiver: CaregiverRegisterData): Promise<boolean> {
     try {
@@ -105,48 +143,101 @@ export class AuthenticationService {
           isActive: true
         })
       );
-      console.log('Registration successful:', response);
+      console.log('Caregiver registration successful:', response);
       return true;
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Caregiver registration error:', error);
       return false;
     }
   }
 
   /**
-   * Request that logins a caregiver into the application
-   * @param loginData - LoginData for the POST request
-   * @returns TRUE if login was succeeded
+   * Register a new independent user. Delegates to IndependentUserService so
+   * the persistence shape stays in one place.
    */
-  async login(loginData: LoginData): Promise<boolean> {
+  async registerIndependent(data: IndependentUserRegisterData): Promise<boolean> {
+    const user = await this.independentUserService.register(data);
+    return user != null;
+  }
+
+  // ------------------------------------------------------------------------
+  // Login (unified — auto-detects role)
+  // ------------------------------------------------------------------------
+
+  /**
+   * Unified login: try the caregivers collection first, then independents.
+   * Returns the resolved role on success, or null on failure.
+   *
+   * Side effects on success:
+   *  - persists the session token
+   *  - persists the user role
+   *  - hydrates the matching service's "current user" cache
+   *
+   * Backward compatibility: existing call sites that treat the return as a
+   * boolean still work — a non-null result is truthy.
+   *
+   * Post-Keycloak this becomes a single OIDC exchange whose token already
+   * carries the realm role; this method then reads the role from the token
+   * instead of probing two collections.
+   */
+  async login(loginData: LoginData): Promise<UserRole | null> {
     try {
-      const response = await firstValueFrom(
+      // 1) Try caregiver
+      const caregivers = await firstValueFrom(
         this.http.get<any[]>(
           `${environment.apiUrl}/caregivers?email=${loginData.email}&password=${loginData.password}`
         )
-      );
-      
-      if (response && response.length > 0) {
-        const caregiver = this.normalizeCaregiver(response[0]);
+      ).catch(() => [] as any[]);
+
+      if (caregivers && caregivers.length > 0) {
+        const caregiver = this.normalizeCaregiver(caregivers[0]);
         this.setCurrentCaregiverToken(caregiver.token);
         localStorage.setItem('currentCaregiverId', caregiver.id);
         this.caregiverService.setCurrentCaregiver(caregiver);
-        return true;
+        this.setCurrentUserRole(USER_ROLES.CAREGIVER);
+        return USER_ROLES.CAREGIVER;
       }
-      return false;
+
+      // 2) Try independent user
+      const independents = await firstValueFrom(
+        this.http.get<any[]>(
+          `${environment.apiUrl}/independents?email=${loginData.email}&password=${loginData.password}`
+        )
+      ).catch(() => [] as any[]);
+
+      if (independents && independents.length > 0) {
+        const user = independents[0];
+        const normalized = {
+          ...user,
+          profileImageURL: user.profileImageURL ?? user.profileImage ?? '/assets/profileimage-default.png',
+          isActive: user.isActive ?? true,
+        };
+        this.setCurrentCaregiverToken(normalized.token);
+        localStorage.setItem('currentIndependentUserId', normalized.id);
+        this.independentUserService.setCurrentIndependentUser(normalized);
+        this.setCurrentUserRole(USER_ROLES.INDEPENDENT);
+        return USER_ROLES.INDEPENDENT;
+      }
+
+      return null;
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      return null;
     }
   }
 
-  /**
-   * Logouts a caregiver from the application
-   */
+  // ------------------------------------------------------------------------
+  // Logout
+  // ------------------------------------------------------------------------
+
   async logout() {
     this.resetCurrentCaregiverToken();
+    this.resetCurrentUserRole();
     localStorage.removeItem('currentCaregiverId');
     localStorage.removeItem('currentCaregiver');
+    localStorage.removeItem('currentIndependentUserId');
+    localStorage.removeItem('currentIndependentUser');
     this.caregiverService.resetCurrentCaregiver();
+    this.independentUserService.resetCurrentIndependentUser();
   }
 }

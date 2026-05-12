@@ -31,10 +31,12 @@
             [profileImage]="step2Data.profileImage">
             </app-profile-image>
 
-            <!--Caregiver Type-->
-            <app-caregiver-type
-            [caregiverType]="step2Data.caregiverType">
-            </app-caregiver-type>
+            <!--Caregiver Type (hidden for independent-user registration)-->
+            @if(!hideCaregiverType) {
+              <app-caregiver-type
+              [caregiverType]="step2Data.caregiverType">
+              </app-caregiver-type>
+            }
 
           </div>
 

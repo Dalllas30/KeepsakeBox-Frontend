@@ -24,6 +24,21 @@
             <!--Step 1 Register Card Body-->
             <div class="card-body">
 
+                <!--Account Type Toggle (caregiver vs independent user)-->
+                <div class="p-2 mb-3 btn-group" role="group" aria-label="Account type">
+                    <input type="radio" class="btn-check" name="role" id="role-caregiver"
+                           [value]="'caregiver'" [(ngModel)]="step1Data.role" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="role-caregiver">
+                        <i class="bi bi-people-fill"></i> {{'caregiver' | translate}}
+                    </label>
+
+                    <input type="radio" class="btn-check" name="role" id="role-independent"
+                           [value]="'independent'" [(ngModel)]="step1Data.role" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="role-independent">
+                        <i class="bi bi-person-fill"></i> {{'independentUser' | translate}}
+                    </label>
+                </div>
+
                 <!--Caregiver Name-->
                 <div class="p-2 mb-3"
                     style="margin-bottom: 10px;">
