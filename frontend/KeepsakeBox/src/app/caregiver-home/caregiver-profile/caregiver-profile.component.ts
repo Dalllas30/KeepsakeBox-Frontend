@@ -5,9 +5,11 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 import { Caregiver } from '../../core/models/caregiver.model';
 import { AppService } from '../../core/services/app.service';
 import { CaregiverService } from '../../core/services/caregiver.service';
+import { AuthenticationService } from '../../core/services/authentication.service';
 import { ValidationService } from '../../core/services/validation.service';
 import { ImageToValidate } from '../../core/models/image.model';
 import { Router } from '@angular/router';
+import { USER_ROLES } from '../../core/models/user-role.model';
 
 @Component({
   selector: 'app-caregiver-profile',
@@ -23,6 +25,7 @@ export class CaregiverProfileComponent implements OnInit {
   constructor(
     private appService: AppService,
     private caregiverService: CaregiverService,
+    private authenticationService: AuthenticationService,
     private validationService: ValidationService,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -35,6 +38,10 @@ export class CaregiverProfileComponent implements OnInit {
 
   public isRouteActive(route: string): boolean {
     return this.appService.isRouteActive(route);
+  }
+
+  public isCaregiver(): boolean {
+    return this.authenticationService.getCurrentUserRole() === USER_ROLES.CAREGIVER;
   }
 
   /**
