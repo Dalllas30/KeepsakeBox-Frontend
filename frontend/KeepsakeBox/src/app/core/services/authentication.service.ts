@@ -215,6 +215,8 @@ export class AuthenticationService {
         this.setCurrentCaregiverToken(normalized.token);
         localStorage.setItem('currentIndependentUserId', normalized.id);
         this.independentUserService.setCurrentIndependentUser(normalized);
+        // Also cache as currentCaregiver so components that read caregiverService work for both roles
+        this.caregiverService.setCurrentCaregiver(normalized as any);
         this.setCurrentUserRole(USER_ROLES.INDEPENDENT);
         return USER_ROLES.INDEPENDENT;
       }

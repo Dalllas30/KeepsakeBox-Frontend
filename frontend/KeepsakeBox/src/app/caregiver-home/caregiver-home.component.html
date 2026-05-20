@@ -28,7 +28,8 @@
           </a>
       </li>
 
-      <!--Beneficiaries/Relatives-->
+      <!--Beneficiaries/Relatives (caregiver only)-->
+      @if (isCaregiver()) {
       <li class="nav-item">
           <a class="nav-link" routerLink="/caregiver/persons"
             [class.nav-link-active]="isRouteActive('persons') || isRouteActive('person/info')">
@@ -44,6 +45,7 @@
             }
           </a>
       </li>
+      }
 
       <!--Help-->
       <li class="nav-item">

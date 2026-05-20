@@ -46,37 +46,45 @@
               </a>
             </li>
 
-            <!--Sessions-->
+            <!--Sessions (caregiver only)-->
+            @if (isCaregiver()) {
             <li class="nav-item">
               <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/session')"
                 routerLink="/caregiver/profile/session">
                 <i class="bi bi-card-list"></i> {{'manageSessions' | translate}}
               </a>
             </li>
+            }
 
-            <!--History-->
+            <!--History (caregiver only)-->
+            @if (isCaregiver()) {
             <li class="nav-item">
               <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/history')"
                 routerLink="/caregiver/profile/history">
                 <i class="bi bi-card-list"></i> {{'sessionHistory' | translate}}
               </a>
             </li>
+            }
 
-            <!--Statistics-->
+            <!--Statistics (caregiver only)-->
+            @if (isCaregiver()) {
             <li class="nav-item">
               <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/statistics')"
                 routerLink="/caregiver/profile/statistics">
                 <i class="bi bi-card-list"></i> {{'statisticsSessions' | translate}}
               </a>
             </li>
+            }
 
-            <!--Validation-->
+            <!--Validation (caregiver only)-->
+            @if (isCaregiver()) {
             <li class="nav-item">
               <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/validation')"
                 routerLink="/caregiver/profile/validation">
                 <i class="bi bi-card-image"></i> {{'validation' | translate}}
               </a>
             </li>
+            }
 
           </ul>
         </div>

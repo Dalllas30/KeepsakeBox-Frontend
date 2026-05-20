@@ -121,7 +121,7 @@ export class RegisterComponent implements OnInit {
       const loginData = new LoginData(independent.email, independent.password);
       const role = await this.authenticationService.login(loginData);
       if (role === 'independent') {
-        this.router.navigate(['/independent']);
+        this.router.navigate(['/caregiver/persons']);
       } else {
         this.router.navigate(['/login']);
       }

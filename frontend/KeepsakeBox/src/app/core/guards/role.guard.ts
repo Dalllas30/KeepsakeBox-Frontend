@@ -38,7 +38,6 @@ export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     return true;
   }
 
-  // Logged in but wrong role — send them to their own home.
-  const fallback = role === 'independent' ? '/independent' : '/caregiver/persons';
-  return router.createUrlTree([fallback]);
+  // Both roles now share the caregiver UI tree.
+  return router.createUrlTree(['/caregiver/persons']);
 };

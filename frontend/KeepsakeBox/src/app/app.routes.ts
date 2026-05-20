@@ -3,7 +3,6 @@ import { RegisterComponent } from './features/auth/register/register.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { CaregiverHomeComponent } from './caregiver-home/caregiver-home.component';
-import { IndependentHomeComponent } from './independent-home/independent-home.component';
 import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
@@ -15,7 +14,7 @@ export const routes: Routes = [
     path: 'caregiver',
     component: CaregiverHomeComponent,
     canActivate: [roleGuard],
-    data: { roles: ['caregiver'] },
+    data: { roles: ['caregiver', 'independent'] },
     children: [
 
       // --- Persons / Patients ---
@@ -109,27 +108,10 @@ export const routes: Routes = [
     ]
   },
 
-  // ----------------------------------------------------------------------
-  // Independent-user route tree.
-  // Layout component is a stub (colleague is implementing it). Child routes
-  // for cognitive games will be added incrementally as backend endpoints
-  // land. Keep all children lazy with loadComponent to match caregiver-home
-  // and avoid bloating the initial bundle.
-  // ----------------------------------------------------------------------
   {
     path: 'independent',
-    component: IndependentHomeComponent,
-    canActivate: [roleGuard],
-    data: { roles: ['independent'] },
-    children: [
-      // TODO (games epic): wire children once components exist, e.g.
-      // { path: '', pathMatch: 'full', redirectTo: 'home' },
-      // { path: 'home', loadComponent: () => import('./independent-home/independent-landing/independent-landing.component').then(m => m.IndependentLandingComponent) },
-      // { path: 'games', loadComponent: () => import('./independent-home/games/games-list/games-list.component').then(m => m.GamesListComponent) },
-      // { path: 'games/quiz', loadComponent: () => import('./independent-home/games/quiz/quiz.component').then(m => m.QuizComponent) },
-      // { path: 'games/jigsaw', loadComponent: () => import('./independent-home/games/jigsaw/jigsaw.component').then(m => m.JigsawComponent) },
-      // { path: 'profile', loadComponent: () => import('./independent-home/independent-profile/independent-profile.component').then(m => m.IndependentProfileComponent) },
-    ]
+    redirectTo: 'caregiver/persons',
+    pathMatch: 'full'
   },
 
   { path: '**', redirectTo: 'login' }
