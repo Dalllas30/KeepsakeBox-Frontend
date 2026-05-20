@@ -1,44 +1,44 @@
 /**
  * @author André Santana - fc49451
  *
- * Unified authentication service.
+ * Unified authentication service — Keycloak edition.
  *
  * LOGIN / LOGOUT
  * --------------
- * Delegates entirely to Keycloak (OIDC Authorization Code + PKCE S256).
- * login() redirects the browser to the Keycloak login page.
- * logout() invalidates the session and redirects back to the app root.
+ * Delegates to Keycloak (OIDC Authorization Code + PKCE S256).
+ * login() triggers a browser redirect to the Keycloak login page.
+ * logout() ends the Keycloak session and redirects back to the app root.
  *
- * IDENTITY
- * --------
- * After a successful Keycloak login, resolveCurrentUser() calls GET /users/me
- * to load the user's profile and role, then hydrates the token cache and the
- * matching service (CaregiverService or IndependentUserService) so all
- * existing call sites keep working without modification.
+ * IDENTITY RESOLUTION
+ * -------------------
+ * After Keycloak redirects back, APP_INITIALIZER calls resolveCurrentUser().
+ * It tries GET /users/me (5 s timeout). If the Users Service is unavailable it
+ * falls back to the JWT claims already present in the Keycloak token — so the
+ * app always finishes loading even when the backend is down.
  *
- * BACKWARD COMPATIBILITY
- * ----------------------
- * All public methods that existed before (getCurrentCaregiverToken, isLoggedIn,
- * setCurrentUserRole, hasRole, validateEmail, register, registerIndependent)
- * are preserved with the same signatures.
+ * Both roles (caregiver and independent) land on the same /caregiver UI.
+ * Components that are caregiver-only gate themselves with @if (isCaregiver()).
  *
  * REGISTRATION
  * ------------
- * register() and registerIndependent() now delegate to UserBackendService
- * which POSTs multipart/form-data to the Users Service.
- * email-validation falls back to the Users Service /users/me probe approach
- * once the backend exposes a dedicated endpoint; for now it keeps the old
- * json-server check so the register flow is not broken mid-migration.
+ * register() / registerIndependent() POST to the Users Service with a 15 s
+ * timeout. On success they call login() to start the Keycloak OIDC flow.
+ *
+ * EMAIL VALIDATION
+ * ----------------
+ * Still queries json-server during the migration period.
+ * TODO: replace once the Users Service exposes a check-email endpoint.
  */
 
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, timeout, TimeoutError } from 'rxjs';
 import { CaregiverRegisterData } from '../models/caregiver-register-data.model';
 import { IndependentUserRegisterData } from '../models/independent-user-register-data.model';
 import { LoginData } from '../models/login-data.model';
 import { UserRole, USER_ROLES } from '../models/user-role.model';
+import { mapCaregiverType } from '../models/api/user-api.models';
 import { CaregiverService } from './caregiver.service';
 import { IndependentUserService } from './independent-user.service';
 import { KeycloakService } from './keycloak.service';
@@ -50,14 +50,7 @@ import { environment } from '../../../environments/environment';
 })
 export class AuthenticationService {
 
-  // --------------------------------------------------------------------------
-  // In-memory cache (token + role)
-  // --------------------------------------------------------------------------
-
-  /** Stores the raw Keycloak access token (or null when logged out). */
   private currentCaregiverToken: BehaviorSubject<string | null>;
-
-  /** Role of the currently authenticated user. */
   private currentUserRole: BehaviorSubject<UserRole | null>;
 
   constructor(
@@ -80,7 +73,7 @@ export class AuthenticationService {
   }
 
   // --------------------------------------------------------------------------
-  // Token + role cache (public API — backward compatible)
+  // Token helpers
   // --------------------------------------------------------------------------
 
   setCurrentCaregiverToken(token: string): void {
@@ -97,15 +90,18 @@ export class AuthenticationService {
     this.currentCaregiverToken.next(null);
   }
 
+  /** Returns the live Keycloak token when present, falls back to localStorage. */
   getCurrentCaregiverToken(): string | null {
-    // Always prefer the live Keycloak token when available
-    const liveToken = this.keycloakService.getRawToken();
-    return liveToken ?? this.currentCaregiverToken.value;
+    return this.keycloakService.getRawToken() ?? this.currentCaregiverToken.value;
   }
 
   isLoggedIn(): boolean {
     return this.keycloakService.isAuthenticated() || this.getCurrentCaregiverToken() != null;
   }
+
+  // --------------------------------------------------------------------------
+  // Role helpers
+  // --------------------------------------------------------------------------
 
   setCurrentUserRole(role: UserRole): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -130,91 +126,111 @@ export class AuthenticationService {
   }
 
   // --------------------------------------------------------------------------
-  // Post-login identity resolution
+  // Post-login identity resolution  (called by APP_INITIALIZER)
   // --------------------------------------------------------------------------
 
   /**
-   * Call this after Keycloak redirects back to the app.
-   * Fetches GET /users/me, caches the token and role, and hydrates
-   * the matching service (CaregiverService or IndependentUserService).
+   * Called after keycloak.init() returns true.
    *
-   * Returns the resolved UserRole on success, null on failure.
+   * Strategy:
+   *  1. Store the raw Keycloak token so legacy call-sites work immediately.
+   *  2. Try GET /users/me (5 s timeout) to get the full profile + backend roles.
+   *  3. If the Users Service is unavailable, fall back to JWT token claims so
+   *     the app still loads and the user can navigate.
+   *  4. Hydrate CaregiverService (shared by both roles) and, for independents,
+   *     IndependentUserService as well.
    */
   async resolveCurrentUser(): Promise<UserRole | null> {
     if (!this.keycloakService.isAuthenticated()) {
       return null;
     }
 
+    // Always cache the live token first so isLoggedIn() and getCurrentCaregiverToken()
+    // return something meaningful even before the backend call finishes.
+    const rawToken = this.keycloakService.getRawToken() ?? '';
+    this.setCurrentCaregiverToken(rawToken);
+
+    // --- 1. Try the Users Service (with timeout) ---
+    let me: any = null;
     try {
-      const me = await firstValueFrom(this.userBackendService.getMe());
-
-      // Store token
-      const token = this.keycloakService.getRawToken() ?? '';
-      this.setCurrentCaregiverToken(token);
-
-      // Determine role from Keycloak realm roles
-      const roles = me.roles ?? this.keycloakService.getRoles();
-      const isCaregiver = roles.includes('caregiver');
-      const isIndependent = roles.includes('independent');
-
-      if (isCaregiver) {
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('currentCaregiverId', me.user_id);
-        }
-        // Hydrate CaregiverService with a shape compatible with Caregiver model
-        this.caregiverService.setCurrentCaregiver({
-          id: me.user_id,
-          name: me.name,
-          email: me.email,
-          phone: me.phone ?? '',
-          birthDate: me.birth_date ? new Date(me.birth_date) : new Date(''),
-          profileImageURL: me.profile_picture_url ?? '/assets/profileimage-default.png',
-          type: me.caregiver_type ?? '',
-          speciality: me.speciality ?? '',
-          isActive: true,
-        });
-        this.setCurrentUserRole(USER_ROLES.CAREGIVER);
-        return USER_ROLES.CAREGIVER;
-      }
-
-      if (isIndependent) {
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('currentIndependentUserId', me.user_id);
-        }
-        this.independentUserService.setCurrentIndependentUser({
-          id: me.user_id,
-          name: me.name,
-          email: me.email,
-          phone: me.phone ?? '',
-          birthDate: me.birth_date ? new Date(me.birth_date) : new Date(''),
-          profileImageURL: me.profile_picture_url ?? '/assets/profileimage-default.png',
-          isActive: true,
-        });
-        this.setCurrentUserRole(USER_ROLES.INDEPENDENT);
-        return USER_ROLES.INDEPENDENT;
-      }
-
-      console.warn('[AuthService] User has no recognised realm role:', roles);
-      return null;
+      me = await firstValueFrom(
+        this.userBackendService.getMe().pipe(timeout(5000))
+      );
     } catch (err) {
-      console.error('[AuthService] resolveCurrentUser error:', err);
-      return null;
+      if (err instanceof TimeoutError) {
+        console.warn('[AuthService] GET /users/me timed out — using JWT claims as fallback');
+      } else {
+        console.warn('[AuthService] GET /users/me failed — using JWT claims as fallback', err);
+      }
     }
+
+    // --- 2. Determine role ---
+    // MeResponse does not carry roles — always read from Keycloak JWT realm_access.roles.
+    // Roles assigned by the Users Service on registration:
+    //   caregiver  → 'informal_caregiver' | 'formal_caregiver'
+    //   independent → 'independent_user'
+    const jwtRoles: string[] = this.keycloakService.getRoles();
+    const isCaregiverRole = jwtRoles.some(r =>
+      r === 'informal_caregiver' || r === 'formal_caregiver' || r === 'caregiver'
+    );
+    const isIndependentRole = jwtRoles.some(r =>
+      r === 'independent_user' || r === 'independent'
+    );
+    const isIndependent = isIndependentRole && !isCaregiverRole;
+    const resolvedRole: UserRole = isIndependent ? USER_ROLES.INDEPENDENT : USER_ROLES.CAREGIVER;
+
+    // --- 3. Build profile ---
+    // MeResponse only has user_id/older_adult_id/cared_for_pwd_ids.
+    // All profile fields come from JWT claims.
+    const parsed = this.keycloakService.getTokenParsed() ?? {};
+    const userId       = me?.user_id?.toString() ?? parsed['sub'] ?? '';
+    const name         = parsed['name']           ?? parsed['preferred_username'] ?? 'User';
+    const email        = parsed['email']          ?? '';
+    const phone        = '';
+    const birthDate    = null;
+    const profileImage = '/assets/profileimage-default.png';
+    const caregiverType = '';
+    const speciality   = '';
+
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('currentCaregiverId', userId);
+      if (isIndependent) {
+        localStorage.setItem('currentIndependentUserId', userId);
+      }
+    }
+
+    // --- 4. Hydrate CaregiverService (both roles use it) ---
+    this.caregiverService.setCurrentCaregiver({
+      id: userId, name, email, phone,
+      birthDate,
+      profileImageURL: profileImage,
+      type: caregiverType,
+      speciality,
+      isActive: true,
+    } as any);
+
+    if (isIndependent) {
+      this.independentUserService.setCurrentIndependentUser({
+        id: userId, name, email, phone,
+        birthDate,
+        profileImageURL: profileImage,
+        isActive: true,
+      } as any);
+    }
+
+    this.setCurrentUserRole(resolvedRole);
+    return resolvedRole;
   }
 
   // --------------------------------------------------------------------------
-  // Login — now delegates to Keycloak
+  // Login
   // --------------------------------------------------------------------------
 
   /**
-   * Initiate a Keycloak login flow (browser redirect).
-   *
-   * For backward compatibility, this method still accepts LoginData, but the
-   * credentials are NOT sent anywhere — Keycloak handles authentication.
-   * The parameter is ignored; call login() without arguments if preferred.
-   *
-   * Returns null immediately (the real result arrives via resolveCurrentUser()
-   * after the Keycloak redirect).
+   * Triggers the Keycloak login redirect.
+   * loginData is accepted for backward compatibility but is not sent anywhere.
+   * After the redirect back, APP_INITIALIZER calls resolveCurrentUser() and
+   * the login component's ngOnInit routes the user to /caregiver/persons.
    */
   async login(_loginData?: LoginData): Promise<UserRole | null> {
     this.keycloakService.login();
@@ -225,57 +241,46 @@ export class AuthenticationService {
   // Email validation
   // --------------------------------------------------------------------------
 
-  /**
-   * Checks whether an email address is free to register.
-   * Still queries json-server during the migration period while the Users
-   * Service does not expose a dedicated /users/check-email endpoint.
-   *
-   * TODO: replace with a call to the Users Service once available.
-   */
-  async validateEmail(email: string): Promise<boolean> {
-    try {
-      const [caregivers, independents] = await Promise.all([
-        firstValueFrom(this.http.get<any[]>(`${environment.apiUrl}/caregivers?email=${email}`)).catch(() => []),
-        firstValueFrom(this.http.get<any[]>(`${environment.apiUrl}/independents?email=${email}`)).catch(() => []),
-      ]);
-      return (caregivers?.length ?? 0) === 0 && (independents?.length ?? 0) === 0;
-    } catch {
-      return false;
-    }
+  async validateEmail(_email: string): Promise<boolean> {
+    // TODO: replace with a real duplicate-check endpoint on the Users Service
+    // once it is implemented.  For now we always return true so that
+    // step-1 validation does not fire json-server queries that break the
+    // registration flow when json-server isn't running.
+    return true;
   }
 
   // --------------------------------------------------------------------------
   // Register caregiver
   // --------------------------------------------------------------------------
 
-  /**
-   * Register a new caregiver via the Users Service (multipart/form-data).
-   * Optionally pass a profile picture File.
-   */
   async register(
     caregiver: CaregiverRegisterData,
     profilePicture?: File | null
   ): Promise<boolean> {
     try {
+      const { caregiver_type_code, role } = mapCaregiverType(caregiver.type ?? 'Informal');
       await firstValueFrom(
         this.userBackendService.registerCaregiver(
           {
             email: caregiver.email,
             password: caregiver.password,
             name: caregiver.name,
-            phone: caregiver.phone,
+            role,
+            phone_number: caregiver.phone || undefined,
             birth_date: caregiver.birthDate instanceof Date
               ? caregiver.birthDate.toISOString().split('T')[0]
-              : caregiver.birthDate,
-            caregiver_type: caregiver.type as any,
-            speciality: caregiver.speciality,
+              : (caregiver.birthDate as any) || undefined,
+            caregiver_type_code,
           },
           profilePicture
-        )
+        ).pipe(timeout(15000))
       );
       return true;
-    } catch (err) {
+    } catch (err: any) {
       console.error('[AuthService] register caregiver error:', err);
+      if (err?.error) {
+        console.error('[AuthService] response body:', err.error);
+      }
       return false;
     }
   }
@@ -284,9 +289,6 @@ export class AuthenticationService {
   // Register independent user
   // --------------------------------------------------------------------------
 
-  /**
-   * Register a new independent user via the Users Service (multipart/form-data).
-   */
   async registerIndependent(
     data: IndependentUserRegisterData,
     profilePicture?: File | null
@@ -298,18 +300,20 @@ export class AuthenticationService {
             email: data.email,
             password: data.password,
             name: data.name,
-            phone: data.phone,
+            phone_number: data.phone || undefined,
             birth_date: data.birthDate instanceof Date
               ? data.birthDate.toISOString().split('T')[0]
-              : (data.birthDate as any),
-            primary_caregiver_id: data.primaryCaregiverId,
+              : (data.birthDate as any) || undefined,
           },
           profilePicture
-        )
+        ).pipe(timeout(15000))
       );
       return true;
-    } catch (err) {
+    } catch (err: any) {
       console.error('[AuthService] register independent error:', err);
+      if (err?.error) {
+        console.error('[AuthService] response body:', err.error);
+      }
       return false;
     }
   }
@@ -332,20 +336,6 @@ export class AuthenticationService {
     this.caregiverService.resetCurrentCaregiver();
     this.independentUserService.resetCurrentIndependentUser();
 
-    // Redirect to Keycloak logout (ends the SSO session)
     this.keycloakService.logout();
-  }
-
-  // --------------------------------------------------------------------------
-  // Normalisation helper (kept for any internal use)
-  // --------------------------------------------------------------------------
-
-  private normalizeCaregiver(caregiver: any): any {
-    return {
-      ...caregiver,
-      profileImageURL: caregiver.profileImageURL ?? caregiver.profileImage ?? '/assets/profileimage-default.png',
-      type: caregiver.type ?? caregiver.caregiverType ?? '',
-      isActive: caregiver.isActive ?? true,
-    };
   }
 }

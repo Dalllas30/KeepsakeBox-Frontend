@@ -13,19 +13,33 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { caregiverIdInterceptor } from './core/interceptors/caregiver-id.interceptor';
 import { KeycloakService } from './core/services/keycloak.service';
+import { AuthenticationService } from './core/services/authentication.service';
 
 /**
- * APP_INITIALIZER factory — initialises Keycloak on the browser side.
+ * APP_INITIALIZER factory — initialises Keycloak, then immediately resolves
+ * the current user's identity if Keycloak already has an authenticated session
+ * (i.e. the user just came back from the Keycloak login page).
  *
- * On the server (SSR) Keycloak.init() returns immediately with false so
- * universal rendering is not blocked.
+ * This runs before the router activates any route, so by the time guards and
+ * components mount, currentUserRole and the caregiver cache are already set.
+ *
+ * On the server (SSR) everything is skipped so universal rendering is not blocked.
  */
-function initKeycloak(keycloak: KeycloakService, platformId: Object) {
-  return () => {
+function initKeycloak(
+  keycloak: KeycloakService,
+  authService: AuthenticationService,
+  platformId: Object
+) {
+  return async () => {
     if (!isPlatformBrowser(platformId)) {
-      return Promise.resolve(false);
+      return false;
     }
-    return keycloak.init();
+    const authenticated = await keycloak.init();
+    if (authenticated) {
+      // Keycloak just finished the OIDC code exchange — populate role + cache.
+      await authService.resolveCurrentUser();
+    }
+    return authenticated;
   };
 }
 
@@ -42,13 +56,16 @@ export const appConfig: ApplicationConfig = {
     // provideAnimationsAsync(),
 
     // -------------------------------------------------------------------------
-    // Keycloak initialisation
+    // Keycloak initialisation + identity resolution
     // -------------------------------------------------------------------------
     {
       provide: APP_INITIALIZER,
-      useFactory: (keycloak: KeycloakService, platformId: Object) =>
-        initKeycloak(keycloak, platformId),
-      deps: [KeycloakService, PLATFORM_ID],
+      useFactory: (
+        keycloak: KeycloakService,
+        authService: AuthenticationService,
+        platformId: Object
+      ) => initKeycloak(keycloak, authService, platformId),
+      deps: [KeycloakService, AuthenticationService, PLATFORM_ID],
       multi: true,
     },
 

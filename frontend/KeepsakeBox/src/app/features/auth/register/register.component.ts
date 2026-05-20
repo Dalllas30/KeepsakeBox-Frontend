@@ -36,6 +36,13 @@ export class RegisterComponent implements OnInit {
   private encryptionService = inject(EncryptionService);
 
   ngOnInit(): void {
+    // If the user lands here while already authenticated (e.g. after Keycloak
+    // redirects back to /register post-login), send them straight to the app.
+    if (this.authenticationService.isLoggedIn()) {
+      this.router.navigate(['/caregiver/persons']);
+      return;
+    }
+
     this.showStep1();
     this.step1Data = new RegisterStep1Data("", new BirthDate(0, -1, 0, true), "", "", "", "", 'caregiver');
     this.step2Data = new RegisterStep2Data(new ProfileImage(""), new CaregiverType("Informal", ""), false, true);
@@ -77,11 +84,14 @@ export class RegisterComponent implements OnInit {
 
   async caregiverRegister(): Promise<void> {
     this.step2Data.submittingRegister = true;
-    let caregiver = new CaregiverRegisterData(
+    const caregiver = new CaregiverRegisterData(
       this.step1Data.name,
       this.step1Data.email,
       this.step1Data.phone,
-      this.encryptionService.encrypt("989$%&2!3123KeepsakeBox2021", this.step1Data.password),
+      // Send the raw password — Keycloak handles hashing server-side.
+      // Encrypting here would cause login to fail because Keycloak would
+      // store the ciphertext and never match the user's real password.
+      this.step1Data.password,
       new Date(this.step1Data.birthDate.year, this.step1Data.birthDate.month,
         this.step1Data.birthDate.day, 0, 0, 0, 0),
       this.step2Data.profileImage.imageURL,
@@ -89,13 +99,10 @@ export class RegisterComponent implements OnInit {
       this.step2Data.caregiverType.speciality
     );
     if (await this.authenticationService.register(caregiver)) {
-      let loginData = new LoginData(caregiver.email, caregiver.password);
-      const role = await this.authenticationService.login(loginData);
-      if (role === 'caregiver') {
-        this.router.navigate(['/caregiver/persons']);
-      } else {
-        this.router.navigate(['/login']);
-      }
+      // Account created in the backend. Redirect to Keycloak login so the user
+      // gets a proper OIDC session. login() triggers a browser redirect and
+      // never returns — no role check needed here.
+      this.authenticationService.login();
     } else {
       this.step2Data.submittingRegister = false;
       this.step2Data.registered = false;
@@ -108,23 +115,17 @@ export class RegisterComponent implements OnInit {
       this.step1Data.name,
       this.step1Data.email,
       this.step1Data.phone,
-      this.encryptionService.encrypt("989$%&2!3123KeepsakeBox2021", this.step1Data.password),
+      // Raw password — same reasoning as caregiverRegister above.
+      this.step1Data.password,
       new Date(this.step1Data.birthDate.year, this.step1Data.birthDate.month,
         this.step1Data.birthDate.day, 0, 0, 0, 0),
       this.step2Data.profileImage.imageURL,
-      // primaryCaregiverId intentionally left undefined: independent users
-      // self-register without a caregiver link. A caregiver association
-      // can be created afterwards via IndependentUserService.linkCaregiver
-      // (e.g. on a future "find me a caregiver" flow).
+      // primaryCaregiverId intentionally left undefined — independent users
+      // self-register; a caregiver association can be added later.
     );
     if (await this.authenticationService.registerIndependent(independent)) {
-      const loginData = new LoginData(independent.email, independent.password);
-      const role = await this.authenticationService.login(loginData);
-      if (role === 'independent') {
-        this.router.navigate(['/independent']);
-      } else {
-        this.router.navigate(['/login']);
-      }
+      // Same as above: redirect to Keycloak login.
+      this.authenticationService.login();
     } else {
       this.step2Data.submittingRegister = false;
       this.step2Data.registered = false;

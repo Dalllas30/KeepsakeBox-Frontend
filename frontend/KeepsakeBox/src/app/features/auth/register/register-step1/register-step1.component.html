@@ -110,12 +110,20 @@
                             <i class="bi bi-key"></i>
                             {{'password' | translate}}*
                         </label>
-                        <input type="password" class="form-control input-text-select" 
-                        id="password" placeholder="{{'required' | translate}}" required 
-                        [(ngModel)]="step1Data.password" 
+                        <input type="password" class="form-control input-text-select"
+                        id="password" placeholder="{{'required' | translate}}" required
+                        minlength="8"
+                        [(ngModel)]="step1Data.password"
                         name="password" #password="ngModel"
-                        [class.input-text-select-error]="!validPasswordFields"
-                        (change)="arePasswordsValid(password,confirmPassword)">   
+                        [class.input-text-select-error]="!validPasswordFields || (password.dirty && password.errors?.['minlength'])"
+                        (change)="arePasswordsValid(password,confirmPassword)">
+                        <!--Error Message - Password Too Short-->
+                        @if(password.dirty && password.errors?.['minlength']) {
+                        <small class="form-text text-error-message" style="margin-top: 10px;">
+                            @if(translateCache=='pt') { A password deve ter pelo menos 8 caracteres. }
+                            @if(translateCache=='en') { Password must be at least 8 characters. }
+                        </small>
+                        }
                     </div>
                     
                     <!--Password Confirm-->

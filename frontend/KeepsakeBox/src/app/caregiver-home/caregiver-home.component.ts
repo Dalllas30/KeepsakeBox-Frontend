@@ -5,9 +5,11 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from '../core/services/app.service';
 import { CaregiverService } from '../core/services/caregiver.service';
+import { AuthenticationService } from '../core/services/authentication.service';
 import { PatientService } from '../core/services/patient.service';
 import { Caregiver } from '../core/models/caregiver.model';
 import { Patient } from '../core/models/patient.model';
+import { USER_ROLES } from '../core/models/user-role.model';
 
 @Component({
   selector: 'app-caregiver-home',
@@ -26,6 +28,7 @@ export class CaregiverHomeComponent implements OnInit {
   constructor(
     private router: Router,
     private appService: AppService,
+    private authenticationService: AuthenticationService,
     private patientService: PatientService,
     private caregiverService: CaregiverService
   ) {}
@@ -44,6 +47,10 @@ export class CaregiverHomeComponent implements OnInit {
 
   public isRouteActive(route: string): boolean {
     return this.appService.isRouteActive(route);
+  }
+
+  public isCaregiver(): boolean {
+    return this.authenticationService.getCurrentUserRole() === USER_ROLES.CAREGIVER;
   }
 
   hideNavBar(): boolean {

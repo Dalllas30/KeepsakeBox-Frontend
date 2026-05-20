@@ -34,11 +34,19 @@ export class LoginComponent implements OnInit {
   currentPassword: string = '';
 
   ngOnInit(): void {
-    // If a token already exists, skip login entirely — route by role.
-    if (this.authenticationService.getCurrentCaregiverToken()) {
-      const role = this.authenticationService.getCurrentUserRole();
-      this.router.navigate([role === 'independent' ? '/independent' : '/caregiver/persons']);
+    // After the Keycloak redirect back, APP_INITIALIZER has already run
+    // resolveCurrentUser(). If the user is authenticated, go straight to
+    // the app — both roles share the same home.
+    if (this.authenticationService.isLoggedIn()) {
+      this.router.navigate(['/caregiver/persons']);
+      return;
     }
+
+    // Not authenticated — skip the KeepsakeBox login form entirely and
+    // redirect straight to the Keycloak login page.  Keycloak will send
+    // the user back here after a successful login, at which point the
+    // branch above fires and navigates into the app.
+    this.authenticationService.login();
   }
 
   /** Used by login-loading to decide whether to show the overlay */
@@ -78,25 +86,16 @@ export class LoginComponent implements OnInit {
 
     this.loginIn.set(true);
 
-    try {
-      const passwordToUse = environment.useEncryption
-        ? this.encryptionService.encrypt(environment.encryptionKey, this.currentPassword)
-        : this.currentPassword;
+    // login() redirects to Keycloak — it never returns a role.
+    // Routing happens in ngOnInit after Keycloak redirects back and
+    // APP_INITIALIZER resolves the user identity.
+    // The email/password fields are kept for UX (pre-fill the Keycloak form
+    // via the login_hint parameter) but Keycloak handles the actual auth.
+    this.authenticationService.login({
+      email: this.loginData.email,
+      password: this.currentPassword
+    });
 
-      const role = await this.authenticationService.login({
-        email: this.loginData.email,
-        password: passwordToUse
-      });
-
-      if (role === 'caregiver') {
-        await this.router.navigate(['/caregiver/persons']);
-      } else if (role === 'independent') {
-        await this.router.navigate(['/independent']);
-      } else {
-        this.validLogin.set(false);
-      }
-    } finally {
-      this.loginIn.set(false);
-    }
+    // loginIn stays true while the redirect is in flight — no finally needed.
   }
 }

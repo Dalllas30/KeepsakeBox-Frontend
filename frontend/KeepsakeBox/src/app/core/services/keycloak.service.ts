@@ -132,7 +132,18 @@ export class KeycloakService {
    */
   login(redirectUri?: string): void {
     if (!isPlatformBrowser(this.platformId) || !this.keycloak) return;
-    this.keycloak.login({ redirectUri: redirectUri ?? window.location.href });
+    // Default redirect: app root.  Keycloak bounces back there after login;
+    // APP_INITIALIZER runs resolveCurrentUser(), then the role guard or the
+    // login/register components' ngOnInit routes the user to /caregiver/persons.
+    // Never redirect back to auth pages — that causes an unnecessary extra
+    // round-trip before navigating into the app.
+    const AUTH_PAGES = ['/login', '/register'];
+    const target = redirectUri ?? (
+      AUTH_PAGES.some(p => window.location.pathname.startsWith(p))
+        ? window.location.origin + '/'
+        : window.location.href
+    );
+    this.keycloak.login({ redirectUri: target });
   }
 
   /**

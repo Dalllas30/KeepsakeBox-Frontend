@@ -1,9 +1,10 @@
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SelectLanguageComponent } from '../features/select-language/select-language.component';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
+import { AuthenticationService } from '../core/services/authentication.service';
 
 @Component({
   selector: 'app-home-page',
@@ -36,15 +37,23 @@ export class HomePageComponent {
   ];
 
   constructor(
-    private translate: TranslateService, 
+    private translate: TranslateService,
+    private router: Router,
+    private authService: AuthenticationService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {}
 
   ngOnInit() {
-    const activeLang = this.translate.getCurrentLang() || 
-                     localStorage.getItem('lang') || 
+    // Logged-in users have no business on the landing page.
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/caregiver/persons']);
+      return;
+    }
+
+    const activeLang = this.translate.getCurrentLang() ||
+                     localStorage.getItem('lang') ||
                      'pt';
-    
+
     this.updateImages(activeLang);
 
     this.translate.onLangChange.subscribe((event) => {

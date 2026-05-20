@@ -20,6 +20,12 @@ const BACKEND_ORIGINS = [
   environment.sessionServiceUrl,
 ];
 
+/** Public registration endpoints — no Authorization header needed (or wanted). */
+const PUBLIC_PATHS = [
+  '/users/register/caregiver',
+  '/users/register/independent',
+];
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
 
@@ -30,6 +36,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const isBackendRequest = BACKEND_ORIGINS.some(origin => req.url.startsWith(origin));
   if (!isBackendRequest) {
+    return next(req);
+  }
+
+  // Skip public endpoints — adding a token causes a CORS preflight that
+  // would fail for unauthenticated users hitting the registration endpoints.
+  const isPublic = PUBLIC_PATHS.some(path => req.url.includes(path));
+  if (isPublic) {
     return next(req);
   }
 

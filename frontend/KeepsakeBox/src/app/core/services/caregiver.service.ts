@@ -43,9 +43,27 @@
      } as Caregiver;
    }
 
-   private async getCaregiverByToken(token: string): Promise<Caregiver | null> {
-     const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise();
-     return caregivers?.[0] ? this.normalizeCaregiver(caregivers[0]) : null;
+   /**
+    * Returns the caregiver for the given token/JWT.
+    *
+    * With Keycloak the token is a long JWT — not a json-server record key.
+    * We return the in-memory cache (set by resolveCurrentUser on login) to
+    * avoid sending the JWT to json-server and crashing when it isn't running.
+    * Legacy call-sites that relied on the json-server lookup continue to work
+    * because the cache is populated before any authenticated page loads.
+    */
+   private async getCaregiverByToken(_token: string): Promise<Caregiver | null> {
+     if (this.currentCaregiver.value) {
+       return this.currentCaregiver.value;
+     }
+     // Fallback: try json-server for legacy/testing scenarios where the cache
+     // is cold, but swallow the error so the app keeps working offline.
+     try {
+       const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${_token}`).toPromise();
+       return caregivers?.[0] ? this.normalizeCaregiver(caregivers[0]) : null;
+     } catch {
+       return null;
+     }
    }
 
    private async getPatientCaregivers(): Promise<any[]> {
@@ -321,10 +339,9 @@
     */
    async caregiverUpdate(token: string,
      updatedCaregiver: Caregiver): Promise<boolean>{
-     // Fetch the raw db record first and PATCH it to avoid destructive
-     // replacements that can drop fields (token, password, legacy keys, etc.).
-     const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise().catch(() => null);
-     const existing = caregivers?.[0];
+     // Use the in-memory cache (set by resolveCurrentUser) instead of
+     // querying json-server with a Keycloak JWT — json-server won't find it.
+     const existing = this.currentCaregiver.value;
      if (!existing) return false;
 
      const payload = {
@@ -335,8 +352,8 @@
        // Keep both naming variants so old and new readers remain compatible.
        profileImage:    updatedCaregiver.profileImageURL,
        profileImageURL: updatedCaregiver.profileImageURL,
-       caregiverType:   updatedCaregiver.type || existing.caregiverType || existing.type || '',
-       type:            updatedCaregiver.type || existing.type || existing.caregiverType || '',
+       caregiverType:   updatedCaregiver.type || existing.type || '',
+       type:            updatedCaregiver.type || existing.type || '',
        speciality:      updatedCaregiver.speciality ?? existing.speciality ?? '',
        isActive:        updatedCaregiver.isActive ?? existing.isActive,
      };

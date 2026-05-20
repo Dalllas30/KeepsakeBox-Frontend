@@ -81,9 +81,18 @@ export class RtSessionService {
     });
   }
 
-  private async getCurrentCaregiverId(token: string): Promise<string | null> {
-    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?token=${token}`).toPromise();
-    return caregivers?.[0]?.id?.toString() ?? localStorage.getItem('currentCaregiverId');
+  private async getCurrentCaregiverId(_token: string): Promise<string | null> {
+    // With Keycloak the token is a JWT — not a json-server lookup key.
+    // Read the ID that resolveCurrentUser stored after login instead.
+    const cached = localStorage.getItem('currentCaregiverId');
+    if (cached) return cached;
+    // Fallback to json-server for legacy/testing only (swallows errors).
+    try {
+      const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?token=${_token}`).toPromise();
+      return caregivers?.[0]?.id?.toString() ?? null;
+    } catch {
+      return null;
+    }
   }
 
   private async upsertSessionFeedback(sessionFeedback: SessionFeedback): Promise<boolean> {
