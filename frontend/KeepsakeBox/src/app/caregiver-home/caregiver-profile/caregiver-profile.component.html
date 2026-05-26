@@ -47,14 +47,12 @@
             </li>
 
             <!--Sessions (caregiver only)-->
-            @if (isCaregiver()) {
             <li class="nav-item">
               <a class="nav-link nav-link-grey" [class.nav-link-grey-focus]="isRouteActive('profile/session')"
                 routerLink="/caregiver/profile/session">
                 <i class="bi bi-card-list"></i> {{'manageSessions' | translate}}
               </a>
-            </li>
-            }
+            </li>      
 
             <!--History (caregiver only)-->
             @if (isCaregiver()) {
