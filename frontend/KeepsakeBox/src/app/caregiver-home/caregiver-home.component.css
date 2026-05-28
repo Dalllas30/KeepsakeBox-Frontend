@@ -6,6 +6,10 @@
   background-color: #000052;
 }
 
+.nav-orange{
+  background-color: #d97700;
+}
+
 .nav-icon{
   height: 25px;
   width: 25px;
@@ -27,10 +31,22 @@
   border-radius: 0;
 }
 
+.nav-orange .nav-link{
+  background-color: #d97700;
+}
+
+.color-orange{
+  color: #b45b00 !important;
+}
+
 .nav-link:hover{
   background-color: #01196b;
   color: white;
   cursor: pointer;
+}
+
+.nav-orange .nav-link:hover{
+  background-color: #bf6500;
 }
 
 .nav-link-active{
@@ -38,6 +54,10 @@
   color: #000052 !important;
   border: none;
   border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.nav-orange .nav-link-active{
+  color: #d97700 !important;
 }
 
 .nav-link-active:hover{
@@ -49,7 +69,15 @@
   color: #ffffff;
 }
 
+.nav-orange .logout{
+  background-color: #b14d00;
+}
+
 .logout:hover {
   background-color: #860000 !important;
   cursor: pointer;
+}
+
+.nav-orange .logout:hover {
+  background-color: #8d3e00 !important;
 }

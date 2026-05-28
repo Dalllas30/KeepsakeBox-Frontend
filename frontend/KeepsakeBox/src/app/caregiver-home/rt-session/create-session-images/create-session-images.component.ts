@@ -77,6 +77,10 @@ export class CreateSessionImagesComponent implements OnInit {
     this.showPatientFilter = this.appContext.patientContext;
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
     this.patient = this.patientService.getCurrentPatient()!;
+    // Independent users only see their own images (not all public images)
+    if (this.authenticationService.getCurrentUserRole() === 'independent') {
+      this.AllPublicImage = false;
+    }
     this.selectedCategories = this.appService.getSelectedCategories();
     this.selectedCategory = this.selectedCategories[0];
     this.loadingImage = false;

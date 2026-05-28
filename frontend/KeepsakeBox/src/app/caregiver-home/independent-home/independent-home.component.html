@@ -1,0 +1,117 @@
+<div>
+  <!--Action buttons-->
+  <div class="d-flex justify-content-center caregiver-home-container">
+    <div class="p-2">
+      <button type="button" class="p-2 btn button button-action button-width" style="width: 17em;"
+        (click)="createAutomaticTemplateSession()">
+        <i class="bi bi-gear-fill color-white"></i>
+        {{'createSessionAutomatically' | translate}}
+      </button>
+    </div>
+
+    <div class="p-2">
+      <button type="button" class="btn button button-action button-width" style="width: 17em;"
+        (click)="createManualTemplateSession()">
+        <i class="bi bi-tools color-white"></i>
+        {{'createSessionManually' | translate}}
+      </button>
+    </div>
+  </div>
+
+  <!--Empty state-->
+  @if (collectionSize === 0) {
+    <div class="p-2 page-message" style="margin-bottom: 40px !important;">
+      {{'noSessionstoShow' | translate}}
+    </div>
+  } @else {
+
+    <!--Session list-->
+    <div class="p-2 page-message" style="margin-bottom: 20px;">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">{{'images' | translate}}</th>
+            <th scope="col">{{'date' | translate}}</th>
+            <th scope="col">{{'duration' | translate}}</th>
+            <th scope="col">{{'actions' | translate}}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (ts of templateSessions | slice: (page-1) * pageSize : page * pageSize; track ts.id) {
+            <tr>
+              <td class="table-text-fields bolder-text">
+                @if (ts.current_image > 0) { {{ts.current_image}} {{'of' | translate}} }
+                {{ts.total_images}}
+              </td>
+              <td class="table-text-fields bolder-text">
+                {{ts.start_session_date | date:'shortDate'}}
+              </td>
+              <td class="table-text-fields bolder-text">
+                {{ts.duration}}
+              </td>
+              <td>
+                <div class="p-2 full-width">
+
+                  @if (ts.isStarted) {
+                    <!--Session already started: resume or finish-->
+                    <button type="button" class="btn button button-action" (click)="navigateToSessionRT(ts)">
+                      <i class="bi bi-skip-forward-fill color-white"></i>
+                      {{'resumeSession' | translate}}
+                    </button>
+
+                    <button type="button" class="btn button button-destructive" style="margin-left: 5px;"
+                      (click)="navigateToFeedback(ts)">
+                      <i class="bi bi-stop-circle color-white"></i>
+                      {{'finishSession' | translate}}
+                    </button>
+                  } @else {
+                    <!--Session not yet started: begin, view, remove-->
+                    <button type="button" class="btn button button-action button-play" (click)="startSessionRT(ts)">
+                      <i class="bi bi-play-fill color-white"></i>
+                      {{'startSession' | translate}}
+                    </button>
+
+                    <button type="button" class="btn button button-action button-actions" style="margin-left: 5px;"
+                      (click)="manageSession(ts)">
+                      <i class="bi bi-eye-fill color-white"></i>
+                      {{'sessionDetail' | translate}}
+                    </button>
+
+                    <button type="button" class="btn button button-destructive button-actions" style="margin-left: 5px;"
+                      (click)="removeTemplateSession(ts)">
+                      <i class="bi bi-trash-fill color-white"></i>
+                      {{'discardSession' | translate}}
+                    </button>
+                  }
+
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!--Pagination-->
+  @if (collectionSize !== 0) {
+    <div class="d-flex justify-content-center flex-wrap" style="margin-top: 10px;">
+      <ngb-pagination
+        [(page)]="page"
+        [pageSize]="pageSize"
+        [maxSize]="maxSize"
+        [collectionSize]="collectionSize"
+        [rotate]="true"
+        [ellipses]="true">
+        <ng-template ngbPaginationPrevious>
+          <i class="bi bi-caret-left"></i>{{'previous' | translate}}
+        </ng-template>
+        <ng-template ngbPaginationNext>
+          {{'next' | translate}}<i class="bi bi-caret-right"></i>
+        </ng-template>
+        <ng-template ngbPaginationEllipsis>...</ng-template>
+      </ngb-pagination>
+    </div>
+  }
+</div>

@@ -15,7 +15,7 @@
 
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IndependentUserService } from '../core/services/independent-user.service';
@@ -24,7 +24,7 @@ import { IndependentUser } from '../core/models/independent-user.model';
 @Component({
   selector: 'app-independent-home',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterLink, RouterOutlet],
+  imports: [CommonModule, TranslateModule, RouterModule],
   templateUrl: './independent-home.component.html',
   styleUrls: ['./independent-home.component.css']
 })

@@ -44,6 +44,11 @@
    }
 
    private async getCaregiverByToken(token: string): Promise<Caregiver | null> {
+     const role = localStorage.getItem('currentUserRole');
+     if (role === 'independent') {
+       const independents = await this.http.get<any[]>(`${apiUrl}/independents?token=${token}`).toPromise().catch(() => null);
+       return independents?.[0] ? this.normalizeCaregiver(independents[0]) : null;
+     }
      const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise();
      return caregivers?.[0] ? this.normalizeCaregiver(caregivers[0]) : null;
    }
@@ -321,6 +326,27 @@
     */
    async caregiverUpdate(token: string,
      updatedCaregiver: Caregiver): Promise<boolean>{
+     const role = localStorage.getItem('currentUserRole');
+
+     // Independent users are stored in the 'independents' collection
+     if (role === 'independent') {
+       const independents = await this.http.get<any[]>(`${apiUrl}/independents?token=${token}`).toPromise().catch(() => null);
+       const existing = independents?.[0];
+       if (!existing) return false;
+       const payload = {
+         name:            updatedCaregiver.name,
+         email:           updatedCaregiver.email,
+         phone:           updatedCaregiver.phone,
+         birthDate:       updatedCaregiver.birthDate,
+         profileImage:    updatedCaregiver.profileImageURL,
+         profileImageURL: updatedCaregiver.profileImageURL,
+         isActive:        updatedCaregiver.isActive ?? existing.isActive,
+       };
+       let updated = true;
+       await this.http.patch(`${apiUrl}/independents/${existing.id}`, payload).toPromise().catch(() => { updated = false; });
+       return updated;
+     }
+
      // Fetch the raw db record first and PATCH it to avoid destructive
      // replacements that can drop fields (token, password, legacy keys, etc.).
      const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise().catch(() => null);
@@ -355,10 +381,15 @@
     * @param password - password to validate
     */
    async validatePassword(token: string, password: string): Promise<boolean>{
+     const role = localStorage.getItem('currentUserRole');
+     if (role === 'independent') {
+       const independents = await this.http.get<any[]>(`${apiUrl}/independents?token=${token}`).toPromise().catch(() => null);
+       return (independents?.[0] as any)?.password === password;
+     }
      const caregiver = await this.getCaregiverByToken(token);
      return (caregiver as any)?.password === password;
    }
- 
+
    /**
     * Changes a password for the caregiver
     * with given token
@@ -366,6 +397,14 @@
     * @param password - new password
     */
    async changePassword(token: string, newPassword: string): Promise<boolean>{
+     const role = localStorage.getItem('currentUserRole');
+     if (role === 'independent') {
+       const independents = await this.http.get<any[]>(`${apiUrl}/independents?token=${token}`).toPromise().catch(() => null);
+       const existing = independents?.[0];
+       if (!existing?.id) return false;
+       await this.http.patch(`${apiUrl}/independents/${existing.id}`, { password: newPassword }).toPromise().catch(() => false);
+       return true;
+     }
      const caregiver = await this.getCaregiverByToken(token);
      if (!caregiver?.id) {
        return false;

@@ -1,0 +1,60 @@
+.independent-home-shell {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(180deg, rgba(217, 119, 0, 0.08), rgba(255, 255, 255, 0.92));
+}
+
+.independent-home-card {
+  max-width: 720px;
+  width: 100%;
+  border: 2px solid rgba(217, 119, 0, 0.28);
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 50px rgba(68, 39, 0, 0.12);
+}
+
+.independent-home-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(217, 119, 0, 0.12);
+  color: #b45b00;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.btn-start-session {
+  background: #d97700;
+  color: white;
+  font-weight: 700;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+}
+
+.btn-start-session:hover {
+  background: #b96000;
+  color: white;
+}
+
+.independent-home-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  color: #8a5a27;
+}
+
+.independent-home-links a {
+  color: #b45b00;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.independent-home-links a:hover {
+  text-decoration: underline;
+}

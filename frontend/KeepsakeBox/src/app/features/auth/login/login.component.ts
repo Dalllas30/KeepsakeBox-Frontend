@@ -36,7 +36,8 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     // If a token already exists, skip login entirely — route by role.
     if (this.authenticationService.getCurrentCaregiverToken()) {
-      this.router.navigate(['/caregiver/persons']);
+      const role = this.authenticationService.getCurrentUserRole();
+      this.router.navigate([role === 'independent' ? '/caregiver/independent' : '/caregiver/persons']);
     }
   }
 
@@ -90,7 +91,7 @@ export class LoginComponent implements OnInit {
       if (role === 'caregiver') {
         await this.router.navigate(['/caregiver/persons']);
       } else if (role === 'independent') {
-        await this.router.navigate(['/caregiver/persons']);
+        await this.router.navigate(['/caregiver/independent']);
       } else {
         this.validLogin.set(false);
       }

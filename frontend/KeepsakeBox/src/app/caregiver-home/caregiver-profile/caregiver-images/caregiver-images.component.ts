@@ -65,7 +65,11 @@ export class CaregiverImagesComponent implements OnInit {
 
   async retrieveCaregiverPersonalImages(): Promise<void> {
     this.loadingImages = true;
-    this.images = await this.imageService.getCaregiverImages(this.authenticationService.getCurrentCaregiverToken()!);
+    const isIndependent = this.authenticationService.getCurrentUserRole() === 'independent';
+    const token = this.authenticationService.getCurrentCaregiverToken()!;
+    this.images = isIndependent
+      ? await this.imageService.getIndependentImages(token)
+      : await this.imageService.getCaregiverImages(token);
     this.imagesCopy = this.images;
     this.imagesByCategory = this.images;
     this.imagesByFavorite = this.images.filter(img => img.isFavorite);

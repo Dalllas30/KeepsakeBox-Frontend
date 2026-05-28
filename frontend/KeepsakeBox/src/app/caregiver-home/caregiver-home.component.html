@@ -6,7 +6,7 @@
   @if (!hideNavBarCaregiver()) {
 
     <!--Principal Nav-->
-    <ul class="nav nav-pills nav-fill">
+    <ul class="nav nav-pills nav-fill" [class.nav-orange]="isIndependent()">
 
       <!--Profile-->
       <li class="nav-item">
@@ -43,6 +43,16 @@
               <span class="color-white"
                     [class.color-blue]="isRouteActive('persons') || isRouteActive('person/info')"> {{'relatives' | translate}}</span>
             }
+          </a>
+      </li>
+      } @else {
+      <li class="nav-item">
+          <a class="nav-link" routerLink="/caregiver/independent"
+            [class.nav-link-active]="isRouteActive('independent') || isRouteActive('session/create') || isRouteActive('session/running') || isRouteActive('profile/session') || isRouteActive('profile/history') || isRouteActive('profile/statistics')">
+            <i class="bi bi-lightning-charge-fill color-white"
+            [class.color-orange]="isRouteActive('independent') || isRouteActive('session/create') || isRouteActive('session/running') || isRouteActive('profile/session') || isRouteActive('profile/history') || isRouteActive('profile/statistics')"></i>
+            <span class="color-white"
+                  [class.color-orange]="isRouteActive('independent') || isRouteActive('session/create') || isRouteActive('session/running') || isRouteActive('profile/session') || isRouteActive('profile/history') || isRouteActive('profile/statistics')"> {{'manageSessions' | translate}}</span>
           </a>
       </li>
       }

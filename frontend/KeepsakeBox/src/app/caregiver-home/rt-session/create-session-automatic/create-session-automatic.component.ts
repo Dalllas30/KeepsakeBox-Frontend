@@ -103,7 +103,11 @@ export class CreateSessionAutomaticComponent implements OnInit {
     }
     console.log("will generate images");
 
-    if (this.patient) {
+    const isIndependent = this.authenticationService.getCurrentUserRole() === 'independent';
+    const independentUserId = localStorage.getItem('currentIndependentUserId') ?? undefined;
+    if (isIndependent) {
+      this.templateSessionData = new TemplateSessionData("", "", "", 2, categoryList.length, categories, new Date(), new Date(), categoryList, independentUserId);
+    } else if (this.patient) {
       this.templateSessionData = new TemplateSessionData("", this.caregiver.id, this.patient.id, 2, categoryList.length, categories, new Date(), new Date(), categoryList);
       console.log("with patient");
     } else {

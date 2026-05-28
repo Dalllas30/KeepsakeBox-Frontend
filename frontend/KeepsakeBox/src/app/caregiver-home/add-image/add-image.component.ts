@@ -170,11 +170,14 @@ export class AddImageComponent implements OnInit {
     this.currentImage.category = this.categoryService.parseCategories(this.selectedCategories);
 
     const token = this.authenticationService.getCurrentCaregiverToken()!;
+    const isIndependent = this.authenticationService.getCurrentUserRole() === 'independent';
     let success: boolean;
 
     if (this.appService.isRouteActive('caregiver/person/images/add')) {
       success = await this.imageService.addPatientImage(
         token, this.patientService.getCurrentPatient()!.id, this.currentImage);
+    } else if (isIndependent) {
+      success = await this.imageService.addIndependentImage(token, this.currentImage);
     } else {
       success = await this.imageService.addCaregiverImage(token, this.currentImage);
     }

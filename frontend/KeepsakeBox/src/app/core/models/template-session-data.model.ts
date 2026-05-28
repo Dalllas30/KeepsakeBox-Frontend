@@ -12,6 +12,7 @@ export class TemplateSessionData {
       public categories: string,
       public created_date: Date,
       public last_updated_date: Date,
-      public image_list: string[]
+      public image_list: string[],
+      public independent_user_id?: string
   ){}
 }

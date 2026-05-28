@@ -18,12 +18,24 @@ export const routes: Routes = [
     children: [
 
       // --- Persons / Patients ---
-      { path: 'persons', loadComponent: () => import('./caregiver-home/caregiver-patients/caregiver-patients.component').then(m => m.CaregiverPatientsComponent) },
-      { path: 'persons/add', loadComponent: () => import('./caregiver-home/patient/add-patient/add-patient.component').then(m => m.AddPatientComponent) },
+      {
+        path: 'persons',
+        canActivate: [roleGuard],
+        data: { roles: ['caregiver'] },
+        loadComponent: () => import('./caregiver-home/caregiver-patients/caregiver-patients.component').then(m => m.CaregiverPatientsComponent)
+      },
+      {
+        path: 'persons/add',
+        canActivate: [roleGuard],
+        data: { roles: ['caregiver'] },
+        loadComponent: () => import('./caregiver-home/patient/add-patient/add-patient.component').then(m => m.AddPatientComponent)
+      },
 
       // --- Person (patient subpages) ---
       {
         path: 'person',
+        canActivate: [roleGuard],
+        data: { roles: ['caregiver'] },
         loadComponent: () => import('./caregiver-home/patient/patient.component').then(m => m.PatientComponent),
         children: [
           { path: 'info', loadComponent: () => import('./caregiver-home/patient/patient-info/patient-info.component').then(m => m.PatientInfoComponent) },
@@ -54,6 +66,14 @@ export const routes: Routes = [
           { path: 'leave', loadComponent: () => import('./caregiver-home/leave-patient-care/leave-patient-care.component').then(m => m.LeavePatientCareComponent) },
           { path: 'primary/leave', loadComponent: () => import('./caregiver-home/leave-patient-primary-care/leave-patient-primary-care.component').then(m => m.LeavePatientPrimaryCareComponent) },
         ]
+      },
+
+      // --- Independent home ---
+      {
+        path: 'independent',
+        canActivate: [roleGuard],
+        data: { roles: ['independent'] },
+        loadComponent: () => import('./caregiver-home/independent-home/independent-home.component').then(m => m.IndependentHomeComponent)
       },
 
       // --- Profile ---
@@ -110,7 +130,7 @@ export const routes: Routes = [
 
   {
     path: 'independent',
-    redirectTo: 'caregiver/persons',
+    redirectTo: 'caregiver/independent',
     pathMatch: 'full'
   },
 

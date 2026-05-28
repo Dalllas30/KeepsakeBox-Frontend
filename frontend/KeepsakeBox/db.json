@@ -1,1330 +1,252 @@
 {
   "caregivers": [
     {
-      "name": "daniel",
-      "email": "teste@gmail.com",
+      "name": "Caregiver",
+      "email": "caregiver@gmail.com",
       "phone": "",
-      "password": "DxQimQHs0EOSGRnG430g8A==",
+      "password": "XeTlaGmRf6wHiWWqhswHpw==",
       "birthDate": "2025-01-01T00:00:00.000Z",
       "profileImage": "/assets/profileimage-default.png",
+      "profileImageURL": "/assets/profileimage-default.png",
       "caregiverType": "Informal",
       "speciality": "",
-      "token": "temp-token-1775572651037",
-      "id": 4
+      "token": "temp-token-1779795458683",
+      "isActive": true,
+      "id": 1
     },
     {
-      "name": "teste_tdog",
-      "email": "teste3@gmail.com",
+      "name": "2Caregiver",
+      "email": "caregiver2@gmail.com",
       "phone": "",
-      "password": "ibjDrM2sAVrATzSfAwBVZg==",
-      "birthDate": "1965-03-10T00:00:00.000Z",
+      "password": "XeTlaGmRf6wHiWWqhswHpw==",
+      "birthDate": "2016-11-10T00:00:00.000Z",
       "profileImage": "/assets/profileimage-default.png",
-      "caregiverType": "Formal",
-      "speciality": "Geriatrics",
-      "token": "temp-token-1776268227649",
-      "id": 5,
       "profileImageURL": "/assets/profileimage-default.png",
-      "type": "Formal",
-      "isActive": true
-    },
-    {
-      "name": "t_f",
-      "email": "12@gmail.com",
-      "phone": "",
-      "password": "ibjDrM2sAVrATzSfAwBVZg==",
-      "birthDate": "2023-03-02T00:00:00.000Z",
-      "profileImage": "/assets/profileimage-default.png",
       "caregiverType": "Formal",
       "speciality": "Medicine",
-      "token": "temp-token-1776350561721",
-      "id": 6
-    },
-    {
-      "name": "new",
-      "email": "new@gmail.com",
-      "phone": "",
-      "password": "ibjDrM2sAVrATzSfAwBVZg==",
-      "birthDate": "2024-01-02T00:00:00.000Z",
-      "profileImage": "/assets/profileimage-default.png",
-      "caregiverType": "Formal",
-      "speciality": "Geriatrics",
-      "token": "temp-token-1776350915899",
-      "id": 7
-    },
-    {
-      "name": "register",
-      "email": "tt@gmail.com",
-      "phone": "",
-      "password": "ibjDrM2sAVrATzSfAwBVZg==",
-      "birthDate": "2022-04-03T23:00:00.000Z",
-      "profileImage": "/assets/profileimage-default.png",
-      "caregiverType": "Informal",
-      "speciality": "",
-      "token": "temp-token-1776353696827",
-      "id": 8
-    },
-    {
-      "name": "testeELim",
-      "email": "test4@gmail.com",
-      "phone": 123456789,
-      "password": "ibjDrM2sAVrATzSfAwBVZg==",
-      "birthDate": "2024-02-02T00:00:00.000Z",
-      "profileImage": "/assets/profileimage-default.png",
-      "caregiverType": "Formal",
-      "speciality": "Geriatrics",
-      "token": "temp-token-1776515015651",
-      "id": 9
-    },
-    {
-      "name": "dev",
-      "email": "dev@gmail.com",
-      "phone": "",
-      "password": "ibjDrM2sAVrATzSfAwBVZg==",
-      "birthDate": "1980-06-02T23:00:00.000Z",
-      "profileImage": "/assets/profileimage-default.png",
-      "caregiverType": "Formal",
-      "speciality": "Geriatrics",
-      "token": "temp-token-1776783299336",
-      "id": 10
-    },
-    {
-      "id": 11,
-      "name": "Andre",
-      "email": "andre@gmail.com",
-      "phone": "",
-      "birthDate": null,
-      "profileImage": "/assets/profileimage-default.png",
-      "type": "Formal",
-      "speciality": "Geriatrics",
-      "isActive": true
-    },
-    {
-      "name": "Imagens",
-      "email": "imagens@gmail.com",
-      "phone": "919191919",
-      "password": "XeTlaGmRf6wHiWWqhswHpw==",
-      "birthDate": "2014-05-04T23:00:00.000Z",
-      "profileImage": "/assets/profileimage-default.png",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "caregiverType": "Informal",
-      "speciality": "",
-      "token": "temp-token-1776943039283",
+      "token": "temp-token-1779976051166",
       "isActive": true,
-      "id": 12,
-      "type": "Informal"
-    },
-    {
-      "name": "Login2",
-      "email": "login@gmail.com",
-      "phone": "",
-      "password": "XeTlaGmRf6wHiWWqhswHpw==",
-      "birthDate": "2020-07-09T23:00:00.000Z",
-      "profileImage": "/assets/profileimage-default.png",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "caregiverType": "Formal",
-      "speciality": "Geriatrics",
-      "token": "temp-token-1777990688284",
-      "isActive": true,
-      "id": 13,
+      "id": 2,
       "type": "Formal"
     }
   ],
   "patients": [
     {
-      "id": 1,
-      "name": "Maria Silva",
-      "displayName": "Maria",
-      "birthDate": "1945-06-15T00:00:00.000Z",
-      "education": "Primary",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "isActive": true,
-      "lastSession": null,
-      "chat": {
-        "id": 2,
-        "lastMessageSentDate": "2025-01-10T12:00:00.000Z",
-        "lastMessageReadDate": "2025-01-10T12:00:00.000Z"
-      },
-      "interests": [
-        "music",
-        "gardening"
-      ],
-      "cities": [
-        "Lisbon"
-      ],
-      "caregiverId": 4,
-      "patientRelation": "Mother"
-    },
-    {
-      "id": 2,
-      "name": "Jão Pedro",
-      "displayName": "Jão",
-      "birthDate": "1955-12-23T00:00:00.000Z",
-      "education": "Primary",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "isActive": true,
-      "lastSession": null,
-      "chat": {
-        "id": 1,
-        "lastMessageSentDate": "2025-01-10T14:30:00.000Z",
-        "lastMessageReadDate": "2026-04-30T11:04:39.813Z"
-      },
-      "interests": [
-        "games",
-        "building"
-      ],
-      "cities": [
-        "Lisbon"
-      ],
-      "caregiverId": 5,
-      "patientRelation": "Father"
-    },
-    {
-      "name": "test pat",
-      "displayName": "pat",
-      "birthDate": "1937-02-01T00:00:00.000Z",
-      "education": "Primary School / Elementary School",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "interests": "bowling",
-      "cities": "evora",
-      "caregiverId": 5,
-      "patientRelation": "Relative",
-      "isActive": true,
-      "id": 3,
-      "chat": {
-        "id": 3,
-        "lastMessageSentDate": "2026-04-30T11:04:52.438Z",
-        "lastMessageReadDate": "2026-04-30T11:16:44.266Z"
-      }
-    },
-    {
-      "name": "tdog",
-      "displayName": "t",
-      "birthDate": "2020-03-02T00:00:00.000Z",
-      "education": "Preparatory Cicle / 2nd Cycle of Basic Education",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "interests": "kk",
-      "cities": "vora",
-      "caregiverId": 6,
-      "patientRelation": "",
-      "isActive": true,
-      "id": 4
-    },
-    {
-      "name": "tt",
-      "displayName": "tt2",
-      "birthDate": "1975-03-01T23:00:00.000Z",
-      "education": "General Secondary Education / 3rd Cycle of Basic Education",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "interests": "ye",
-      "cities": "ok",
-      "caregiverId": 6,
-      "patientRelation": "",
-      "isActive": true,
-      "id": 5
-    },
-    {
-      "name": "pat1",
-      "displayName": "1",
-      "birthDate": "1974-12-31T23:00:00.000Z",
-      "education": "Higher Education",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "interests": "",
-      "cities": "",
-      "caregiverId": 10,
-      "patientRelation": "",
-      "isActive": true,
-      "id": 6
-    },
-    {
-      "name": "Sonia",
-      "displayName": "Sonia",
-      "birthDate": "2025-01-01T00:00:00.000Z",
-      "education": "Primary School / Elementary School",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "interests": "",
-      "cities": "",
-      "caregiverId": 11,
-      "patientRelation": "",
-      "isActive": true,
-      "id": 7
-    },
-    {
-      "name": "paciente",
-      "displayName": "Daniel",
-      "birthDate": "2020-03-31T23:00:00.000Z",
-      "education": "Primary School / Elementary School",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "interests": "Basquetebol",
-      "cities": "Povoa",
-      "caregiverId": 12,
-      "patientRelation": "Friend",
-      "isActive": true,
-      "id": 8
-    },
-    {
-      "name": "teste_usuario",
-      "displayName": "user",
-      "birthDate": "1919-01-01T00:00:00.000Z",
-      "education": "Primary School / Elementary School",
-      "profileImageURL": "/assets/profileimage-default.png",
-      "interests": "futebol",
-      "cities": "lisboa",
-      "caregiverId": 5,
-      "patientRelation": "Grandmother/Grandfather",
-      "isActive": true,
-      "id": 9,
-      "chat": {
-        "id": 4,
-        "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-        "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-      }
-    },
-    {
-      "name": "Remover",
-      "displayName": "",
-      "birthDate": "2022-02-01T00:00:00.000Z",
+      "name": "Paciente",
+      "displayName": "PacienteCaregiver",
+      "birthDate": "2022-04-01T23:00:00.000Z",
       "education": "Primary School / Elementary School",
       "profileImageURL": "/assets/profileimage-default.png",
       "interests": "Basket",
-      "cities": "Lisboa",
-      "caregiverId": null,
-      "patientRelation": "",
+      "cities": "Povoa",
+      "caregiverId": 1,
+      "patientRelation": "Spouse",
       "isActive": true,
-      "id": 10
+      "id": 1
     }
   ],
   "patientCaregivers": [
     {
-      "id": 1,
       "patientId": 1,
       "caregiver": {
-        "id": 4,
-        "name": "daniel",
-        "email": "teste@gmail.com",
+        "name": "Caregiver",
+        "email": "caregiver@gmail.com",
         "phone": "",
+        "password": "XeTlaGmRf6wHiWWqhswHpw==",
         "birthDate": "2025-01-01T00:00:00.000Z",
         "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Informal",
-        "speciality": "",
-        "token": "temp-token-1775572651037"
-      },
-      "isPrimary": true,
-      "patientRelation": "Mother"
-    },
-    {
-      "id": 2,
-      "patientId": 2,
-      "caregiver": {
-        "id": 5,
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Informal",
-        "speciality": "",
-        "token": "temp-token-1776268227649"
-      },
-      "isPrimary": true,
-      "patientRelation": "Father"
-    },
-    {
-      "patientId": 7,
-      "caregiver": {
-        "name": "Andre",
-        "email": "andre@gmail.com",
-        "phone": "",
-        "password": "XeTlaGmRf6wHiWWqhswHpw==",
-        "birthDate": "2021-02-04T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776941964366",
-        "isActive": true,
-        "id": 11,
-        "type": "Formal"
-      },
-      "caregiverId": 11,
-      "isPrimary": true,
-      "patientRelation": "",
-      "id": 3
-    },
-    {
-      "patientId": 8,
-      "caregiver": {
-        "name": "Imagens",
-        "email": "imagens@gmail.com",
-        "phone": "",
-        "password": "XeTlaGmRf6wHiWWqhswHpw==",
-        "birthDate": "2019-01-01T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
         "profileImageURL": "/assets/profileimage-default.png",
         "caregiverType": "Informal",
         "speciality": "",
-        "token": "temp-token-1776943039283",
+        "token": "temp-token-1779795458683",
         "isActive": true,
-        "id": 12,
+        "id": 1,
         "type": "Informal"
       },
-      "caregiverId": 12,
+      "caregiverId": 1,
       "isPrimary": true,
-      "patientRelation": "Friend",
-      "id": 4
-    },
-    {
-      "patientId": 9,
-      "caregiver": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Informal",
-        "speciality": "",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "type": "Informal"
-      },
-      "caregiverId": 5,
-      "isPrimary": true,
-      "patientRelation": "Grandmother/Grandfather",
-      "id": 5
-    },
-    {
-      "patientId": 3,
-      "caregiver": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "caregiverId": 5,
-      "isPrimary": true,
-      "patientRelation": "",
-      "id": 6
-    },
-    {
-      "patientId": 3,
-      "caregiver": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "caregiverId": 5,
-      "isPrimary": false,
-      "patientRelation": "",
-      "patient": {
-        "name": "test pat",
-        "displayName": "pat",
-        "birthDate": "1937-02-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "bowling",
-        "cities": "evora",
-        "caregiverId": 5,
-        "patientRelation": "Relative",
-        "isActive": true,
-        "id": 3,
-        "chat": {
-          "id": 3,
-          "lastMessageSentDate": "2026-04-30T11:04:52.438Z",
-          "lastMessageReadDate": "2026-04-30T11:16:44.266Z"
-        }
-      },
-      "id": 7
-    },
-    {
-      "patientId": 9,
-      "caregiver": {
-        "name": "t_f",
-        "email": "12@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "2023-03-02T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Medicine",
-        "token": "temp-token-1776350561721",
-        "id": 6
-      },
-      "caregiverId": 6,
-      "isPrimary": false,
-      "patientRelation": "",
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "id": 8
+      "patientRelation": "Spouse",
+      "id": 1
     }
   ],
-  "messages": [
-    {
-      "id": 1,
-      "chatId": 1,
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "Olá! Como está o Jão hoje?",
-      "createdDate": "2025-01-10T14:00:00.000Z"
-    },
-    {
-      "id": 2,
-      "chatId": 1,
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "Tem estado mais animado ultimamente.",
-      "createdDate": "2025-01-10T14:15:00.000Z"
-    },
-    {
-      "id": 3,
-      "chatId": 1,
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "Até logo!",
-      "createdDate": "2025-01-10T14:30:00.000Z"
-    },
-    {
-      "id": 4,
-      "chatId": "3",
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "Olá! Como está a test pat hoje?",
-      "createdDate": "2025-01-31T08:00:00.000Z"
-    },
-    {
-      "id": 5,
-      "chatId": "3",
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "Temos consulta amanhã às 10h.",
-      "createdDate": "2025-02-01T09:00:00.000Z"
-    },
-    {
-      "id": 6,
-      "chatId": "3",
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "Não esquecer a medicação da manhã!",
-      "createdDate": "2025-02-01T10:30:00.000Z"
-    },
-    {
-      "chatId": 3,
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "hey",
-      "createdDate": "2026-04-30T10:55:41.797Z",
-      "id": 7
-    },
-    {
-      "chatId": 3,
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "ok",
-      "createdDate": "2026-04-30T11:04:52.438Z",
-      "id": 8
-    },
-    {
-      "chatId": 3,
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "nova?",
-      "createdDate": "2026-04-30T11:16:38.691Z",
-      "id": 9
-    },
-    {
-      "chatId": 4,
-      "createdBy": {
-        "id": "5",
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "message": "yo?",
-      "createdDate": "2026-04-30T11:17:02.757Z",
-      "id": 10
-    }
-  ],
-  "observations": [
-    {
-      "id": 1,
-      "patientId": 1,
-      "caregiverId": 4,
-      "text": "Patient was calm and responsive today.",
-      "lastUpdatedDate": "2026-04-20T10:00:00.000Z"
-    },
-    {
-      "patientId": 3,
-      "caregiverId": 5,
-      "observation": "é fixe",
-      "id": 2
-    }
-  ],
+  "messages": [],
   "images": [
     {
-      "createdById": 12,
+      "createdById": 1,
       "createdBy": {
-        "name": "Imagens",
-        "email": "imagens@gmail.com",
+        "name": "Caregiver",
+        "email": "caregiver@gmail.com",
         "phone": "",
         "password": "XeTlaGmRf6wHiWWqhswHpw==",
-        "birthDate": "2019-01-01T00:00:00.000Z",
+        "birthDate": "2025-01-01T00:00:00.000Z",
         "profileImage": "/assets/profileimage-default.png",
         "profileImageURL": "/assets/profileimage-default.png",
         "caregiverType": "Informal",
         "speciality": "",
-        "token": "temp-token-1776943039283",
+        "token": "temp-token-1779795458683",
         "isActive": true,
-        "id": 12
+        "id": 1
       },
       "isFavorite": false,
       "image": {
         "category": "Animais",
-        "description": "a",
-        "imageURL": "/assets/keepsakebox-image.png",
-        "createdById": 12,
+        "description": "Caregiver",
+        "imageURL": "/assets/keepsakebox-icon.png",
+        "createdById": 1,
         "createdBy": {
-          "name": "Imagens",
-          "email": "imagens@gmail.com",
+          "name": "Caregiver",
+          "email": "caregiver@gmail.com",
           "phone": "",
           "password": "XeTlaGmRf6wHiWWqhswHpw==",
-          "birthDate": "2019-01-01T00:00:00.000Z",
+          "birthDate": "2025-01-01T00:00:00.000Z",
           "profileImage": "/assets/profileimage-default.png",
           "profileImageURL": "/assets/profileimage-default.png",
           "caregiverType": "Informal",
           "speciality": "",
-          "token": "temp-token-1776943039283",
+          "token": "temp-token-1779795458683",
           "isActive": true,
-          "id": 12
+          "id": 1
         },
         "isPersonal": false,
         "isPrivate": true,
         "negativeIntensity": 0,
         "neutralIntensity": 0,
         "positiveIntensity": 0,
-        "createdDate": "2026-04-23T11:25:09.327Z",
-        "lastUpdatedDate": "2026-04-23T11:25:09.327Z"
+        "createdDate": "2026-05-28T13:41:47.224Z",
+        "lastUpdatedDate": "2026-05-28T13:41:47.224Z"
       },
       "id": 1
     },
     {
-      "createdById": 12,
+      "independent_user_id": "1",
+      "createdById": 1,
       "createdBy": {
-        "name": "Imagens",
-        "email": "imagens@gmail.com",
+        "name": "Independente",
+        "email": "indep@gmail.com",
         "phone": "",
         "password": "XeTlaGmRf6wHiWWqhswHpw==",
-        "birthDate": "2019-01-01T00:00:00.000Z",
+        "birthDate": "2021-05-03T23:00:00.000Z",
         "profileImage": "/assets/profileimage-default.png",
         "profileImageURL": "/assets/profileimage-default.png",
-        "caregiverType": "Informal",
-        "speciality": "",
-        "token": "temp-token-1776943039283",
+        "primaryCaregiverId": null,
+        "token": "temp-token-1779975846054",
         "isActive": true,
-        "id": 12
+        "id": 1
       },
       "isFavorite": true,
       "image": {
         "category": "Animais",
-        "description": "cao2",
-        "imageURL": "/assets/profileimage-default.png",
-        "createdById": 12,
+        "description": "Independente",
+        "imageURL": "/assets/keepsakebox-image.png",
+        "createdById": 1,
         "createdBy": {
-          "name": "Imagens",
-          "email": "imagens@gmail.com",
+          "name": "Independente",
+          "email": "indep@gmail.com",
           "phone": "",
           "password": "XeTlaGmRf6wHiWWqhswHpw==",
-          "birthDate": "2019-01-01T00:00:00.000Z",
+          "birthDate": "2021-05-03T23:00:00.000Z",
           "profileImage": "/assets/profileimage-default.png",
           "profileImageURL": "/assets/profileimage-default.png",
-          "caregiverType": "Informal",
-          "speciality": "",
-          "token": "temp-token-1776943039283",
+          "primaryCaregiverId": null,
+          "token": "temp-token-1779975846054",
           "isActive": true,
-          "id": 12
+          "id": 1
         },
         "isPersonal": false,
         "isPrivate": true,
         "negativeIntensity": 0,
         "neutralIntensity": 0,
         "positiveIntensity": 0,
-        "createdDate": "2026-04-29T15:24:16.359Z",
-        "lastUpdatedDate": "2026-04-29T15:24:16.359Z"
+        "createdDate": "2026-05-28T13:44:59.371Z",
+        "lastUpdatedDate": "2026-05-28T13:44:59.371Z"
       },
       "id": 2
+    },
+    {
+      "independent_user_id": "1",
+      "createdById": 1,
+      "createdBy": {
+        "name": "Independente",
+        "email": "indep@gmail.com",
+        "phone": "",
+        "password": "XeTlaGmRf6wHiWWqhswHpw==",
+        "birthDate": "2021-05-03T23:00:00.000Z",
+        "profileImage": "/assets/profileimage-default.png",
+        "profileImageURL": "/assets/profileimage-default.png",
+        "primaryCaregiverId": null,
+        "token": "temp-token-1779975846054",
+        "isActive": true,
+        "id": 1
+      },
+      "isFavorite": false,
+      "image": {
+        "category": "Animais",
+        "description": "A",
+        "imageURL": "/assets/keepsakebox-image-white.png",
+        "createdById": 1,
+        "createdBy": {
+          "name": "Independente",
+          "email": "indep@gmail.com",
+          "phone": "",
+          "password": "XeTlaGmRf6wHiWWqhswHpw==",
+          "birthDate": "2021-05-03T23:00:00.000Z",
+          "profileImage": "/assets/profileimage-default.png",
+          "profileImageURL": "/assets/profileimage-default.png",
+          "primaryCaregiverId": null,
+          "token": "temp-token-1779975846054",
+          "isActive": true,
+          "id": 1
+        },
+        "isPersonal": false,
+        "isPrivate": true,
+        "negativeIntensity": 0,
+        "neutralIntensity": 0,
+        "positiveIntensity": 0,
+        "createdDate": "2026-05-28T17:16:50.828Z",
+        "lastUpdatedDate": "2026-05-28T17:16:50.828Z"
+      },
+      "id": 3
     }
   ],
   "thumbnails": [
     {
       "imageId": "1",
-      "imagePath": "/assets/profileimage-default.png",
+      "imagePath": "/assets/keepsakebox-icon.png",
       "id": 1
     },
     {
       "imageId": "2",
-      "imagePath": "/assets/profileimage-default.png",
+      "imagePath": "/assets/keepsakebox-image.png",
       "id": 2
+    },
+    {
+      "imageId": "3",
+      "imagePath": "/assets/keepsakebox-image-white.png",
+      "id": 3
     }
   ],
-  "notifications": [
-    {
-      "id": 2,
-      "sender": {
-        "id": 5,
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com"
-      },
-      "receiver": {
-        "id": 4,
-        "name": "daniel",
-        "email": "teste@gmail.com"
-      },
-      "patient": {
-        "id": 2,
-        "name": "Jão Pedro"
-      },
-      "messageType": "ACCEPTED_SHARE_PATIENT",
-      "createdDate": "2025-01-09T10:05:00.000Z"
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": {
-        "name": "t_f",
-        "email": "12@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "2023-03-02T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Medicine",
-        "token": "temp-token-1776350561721",
-        "id": 6
-      },
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "DENY_SHARE",
-      "createdDate": "2026-04-30T11:53:34.256Z",
-      "id": 7
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": {
-        "name": "t_f",
-        "email": "12@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "2023-03-02T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Medicine",
-        "token": "temp-token-1776350561721",
-        "id": 6
-      },
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "DENY_SHARE",
-      "createdDate": "2026-04-30T11:53:36.109Z",
-      "id": 8
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": {
-        "name": "t_f",
-        "email": "12@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "2023-03-02T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Medicine",
-        "token": "temp-token-1776350561721",
-        "id": 6
-      },
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "DENY_SHARE",
-      "createdDate": "2026-04-30T11:53:38.527Z",
-      "id": 9
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": {
-        "name": "t_f",
-        "email": "12@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "2023-03-02T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Medicine",
-        "token": "temp-token-1776350561721",
-        "id": 6
-      },
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "ACCEPT_SHARE",
-      "createdDate": "2026-04-30T11:53:40.775Z",
-      "id": 10
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": {
-        "name": "t_f",
-        "email": "12@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "2023-03-02T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Medicine",
-        "token": "temp-token-1776350561721",
-        "id": 6
-      },
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "PRIMARY_TRANSFER",
-      "createdDate": "2026-04-30T11:53:55.526Z",
-      "id": 11
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": {
-        "name": "t_f",
-        "email": "12@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "2023-03-02T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Medicine",
-        "token": "temp-token-1776350561721",
-        "id": 6
-      },
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "PRIMARY_TRANSFER",
-      "createdDate": "2026-04-30T11:53:57.011Z",
-      "id": 12
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": null,
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "REMOVED_FROM_PATIENT",
-      "createdDate": "2026-04-30T12:04:03.560Z",
-      "id": 13
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": null,
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "REMOVED_FROM_PATIENT",
-      "createdDate": "2026-04-30T12:04:04.983Z",
-      "id": 14
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": {
-        "name": "t_f",
-        "email": "12@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "2023-03-02T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Medicine",
-        "token": "temp-token-1776350561721",
-        "id": 6
-      },
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "ACCEPT_SHARE",
-      "createdDate": "2026-04-30T12:04:22.271Z",
-      "id": 15
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": {
-        "name": "daniel",
-        "email": "teste@gmail.com",
-        "phone": "",
-        "password": "DxQimQHs0EOSGRnG430g8A==",
-        "birthDate": "2025-01-01T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Informal",
-        "speciality": "",
-        "token": "temp-token-1775572651037",
-        "id": 4
-      },
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "SHARE_PATIENT",
-      "createdDate": "2026-04-30T12:07:13.380Z",
-      "id": 16
-    },
-    {
-      "sender": {
-        "name": "teste_tdog",
-        "email": "teste3@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "1965-03-10T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Geriatrics",
-        "token": "temp-token-1776268227649",
-        "id": 5,
-        "profileImageURL": "/assets/profileimage-default.png",
-        "type": "Formal",
-        "isActive": true
-      },
-      "receiver": {
-        "name": "t_f",
-        "email": "12@gmail.com",
-        "phone": "",
-        "password": "ibjDrM2sAVrATzSfAwBVZg==",
-        "birthDate": "2023-03-02T00:00:00.000Z",
-        "profileImage": "/assets/profileimage-default.png",
-        "caregiverType": "Formal",
-        "speciality": "Medicine",
-        "token": "temp-token-1776350561721",
-        "id": 6
-      },
-      "patient": {
-        "name": "teste_usuario",
-        "displayName": "user",
-        "birthDate": "1919-01-01T00:00:00.000Z",
-        "education": "Primary School / Elementary School",
-        "profileImageURL": "/assets/profileimage-default.png",
-        "interests": "futebol",
-        "cities": "lisboa",
-        "caregiverId": 5,
-        "patientRelation": "Grandmother/Grandfather",
-        "isActive": true,
-        "id": 9,
-        "chat": {
-          "id": 4,
-          "lastMessageSentDate": "2025-02-01T11:00:00.000Z",
-          "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-        }
-      },
-      "messageType": "ACCEPT_SHARE",
-      "createdDate": "2026-05-02T21:44:58.837Z",
-      "id": 17
-    }
-  ],
-  "chats": [
-    {
-      "id": 1,
-      "caregiverId": 5,
-      "chat": {
-        "id": 1,
-        "lastMessageSentDate": "2025-01-10T14:30:00.000Z",
-        "lastMessageReadDate": "2025-01-10T14:00:00.000Z"
-      },
-      "lastMessageReadDate": "2026-04-30T11:04:39.813Z"
-    },
-    {
-      "id": 2,
-      "caregiverId": 4,
-      "chat": {
-        "id": 2,
-        "lastMessageSentDate": "2025-01-10T12:00:00.000Z",
-        "lastMessageReadDate": "2025-01-10T12:00:00.000Z"
-      },
-      "lastMessageReadDate": "2025-01-10T12:00:00.000Z"
-    },
-    {
-      "id": 3,
-      "caregiverId": 5,
-      "lastMessageSentDate": "2026-04-30T11:16:38.691Z",
-      "lastMessageReadDate": "2026-04-30T11:16:44.266Z"
-    },
-    {
-      "id": 4,
-      "caregiverId": 5,
-      "lastMessageSentDate": "2026-04-30T11:17:02.757Z",
-      "lastMessageReadDate": "2026-04-30T11:51:49.622Z"
-    }
-  ],
+  "notifications": [],
+  "chats": [],
   "sessions": [
     {
-      "template_id": 1,
-      "caregiver_id": 12,
-      "patient_id": 8,
-      "full_name": "",
-      "start_session": "2026-05-05T14:05:10.964Z",
-      "end_session": "2026-05-05T14:06:41.432Z",
+      "template_id": 4,
+      "caregiver_id": null,
+      "caregiver_name": null,
+      "independent_user_id": "1",
+      "patient_id": null,
+      "patient_name": null,
+      "full_name": null,
+      "start_session": "2026-05-28T17:50:28.680Z",
+      "end_session": "2026-05-28T17:50:49.056Z",
       "sessionFinished": true,
-      "duration": 70,
-      "total_images": 2,
+      "duration": 9,
+      "total_images": 1,
       "patient_feedback": 5,
       "global_feedback": {
         "id": "",
         "session_id": "1",
         "created_by": "",
-        "created_date": "2026-05-05T14:06:27.889Z",
+        "created_date": "2026-05-28T17:50:43.698Z",
         "patient_feedback": 5,
         "anxiety": -1,
         "agressivity": -1,
@@ -1332,13 +254,13 @@
         "commitment": 0,
         "joy": 1,
         "enthusiasm": 1,
-        "communication": 1,
+        "communication": 0,
         "apathy": -1,
         "patient_agressivity": 0,
         "patient_sadness": 0,
         "patient_isolation": 0,
-        "patient_observation": "Overall boa",
-        "duration": 70
+        "patient_observation": "Foi fixe",
+        "duration": 9
       },
       "id": 1
     }
@@ -1348,7 +270,7 @@
       "id": 1,
       "session_id": "1",
       "created_by": "",
-      "created_date": "2026-05-05T14:06:27.889Z",
+      "created_date": "2026-05-28T17:50:43.698Z",
       "patient_feedback": 5,
       "anxiety": -1,
       "agressivity": -1,
@@ -1356,101 +278,121 @@
       "commitment": 0,
       "joy": 1,
       "enthusiasm": 1,
-      "communication": 1,
+      "communication": 0,
       "apathy": -1,
       "patient_agressivity": 0,
       "patient_sadness": 0,
       "patient_isolation": 0,
-      "patient_observation": "Overall boa",
-      "duration": 70
+      "patient_observation": "Foi fixe",
+      "duration": 9
     }
   ],
   "templateSessions": [
     {
       "id": 1,
-      "caregiver_id": 12,
-      "patient_id": 8,
+      "caregiver_id": "",
+      "patient_id": "",
       "creation_type": 1,
-      "total_images": 2,
+      "total_images": 1,
       "categories": "Animais",
-      "created_date": "2026-05-05T14:05:00.300Z",
-      "last_updated_date": "2026-05-05T14:05:00.300Z",
+      "created_date": "2026-05-28T15:01:57.786Z",
+      "last_updated_date": "2026-05-28T15:01:57.786Z",
       "image_list": [
-        "2",
+        "2"
+      ],
+      "independent_user_id": "2"
+    },
+    {
+      "id": 2,
+      "caregiver_id": 1,
+      "patient_id": 1,
+      "creation_type": 1,
+      "total_images": 1,
+      "categories": "Animais",
+      "created_date": "2026-05-28T15:02:32.282Z",
+      "last_updated_date": "2026-05-28T15:02:32.282Z",
+      "image_list": [
         "1"
       ]
+    },
+    {
+      "id": 3,
+      "caregiver_id": 1,
+      "patient_id": 1,
+      "creation_type": 1,
+      "total_images": 1,
+      "categories": "Animais",
+      "created_date": "2026-05-28T17:18:52.649Z",
+      "last_updated_date": "2026-05-28T17:18:52.649Z",
+      "image_list": [
+        "3"
+      ]
+    },
+    {
+      "id": 4,
+      "caregiver_id": "",
+      "patient_id": "",
+      "creation_type": 1,
+      "total_images": 1,
+      "categories": "Animais",
+      "created_date": "2026-05-28T17:49:59.608Z",
+      "last_updated_date": "2026-05-28T17:49:59.608Z",
+      "image_list": [
+        "2"
+      ],
+      "independent_user_id": "1"
     }
   ],
   "rtSessionImages": [
     {
-      "id": 1,
+      "sessionId": "1",
       "image_id": "2",
-      "imageURL": "/assets/profileimage-default.png",
+      "imageURL": "/assets/keepsakebox-image.png",
       "current_image": 1,
-      "total_images": 2,
-      "patient_feedback": 4,
+      "total_images": 1,
+      "patient_feedback": 0,
       "anxiety": -1,
       "agressivity": -1,
       "irritability": -1,
-      "commitment": 1,
-      "joy": 1,
-      "enthusiasm": 1,
-      "communication": 1,
-      "apathy": -1,
-      "observation": "Perfil feliz",
-      "patient_agressivity": 0,
-      "patient_sadness": 0,
-      "patient_isolation": 0,
-      "category": "Animais"
-    },
-    {
-      "id": 2,
-      "image_id": "1",
-      "imageURL": "/assets/keepsakebox-image.png",
-      "current_image": 2,
-      "total_images": 2,
-      "patient_feedback": 2,
-      "anxiety": 0,
-      "agressivity": 0,
-      "irritability": 0,
       "commitment": -1,
       "joy": -1,
       "enthusiasm": -1,
       "communication": -1,
-      "apathy": 0,
-      "observation": "Keepsakebox triste",
+      "apathy": -1,
+      "observation": "",
       "patient_agressivity": 0,
       "patient_sadness": 0,
       "patient_isolation": 0,
-      "category": "Animais"
+      "category": "Animais",
+      "id": 1
     }
   ],
   "requests": [],
   "imagesToValidate": [],
   "independents": [
     {
-      "name": "independent",
-      "email": "independent@gmail.com",
+      "name": "Independente2",
+      "email": "indep@gmail.com",
       "phone": "",
-      "password": "ibjDrM2sAVrATzSfAwBVZg==",
-      "birthDate": "1901-01-01T00:36:45.000Z",
+      "password": "XeTlaGmRf6wHiWWqhswHpw==",
+      "birthDate": "2021-05-02T23:00:00.000Z",
       "profileImage": "/assets/profileimage-default.png",
       "profileImageURL": "/assets/profileimage-default.png",
       "primaryCaregiverId": null,
-      "token": "temp-token-1778587201691",
+      "token": "temp-token-1779975846054",
       "isActive": true,
       "id": 1
     },
     {
-      "name": "inde",
-      "email": "ind@gmail.com",
+      "name": "indep2",
+      "email": "indep2@gmail.com",
       "phone": "",
       "password": "XeTlaGmRf6wHiWWqhswHpw==",
-      "birthDate": "2020-03-01T00:00:00.000Z",
+      "birthDate": "2015-08-09T23:00:00.000Z",
       "profileImage": "/assets/profileimage-default.png",
       "profileImageURL": "/assets/profileimage-default.png",
       "primaryCaregiverId": null,
-      "token": "temp-token-1778669907646",
+      "token": "temp-token-1779978788953",
       "isActive": true,
       "id": 2
     }

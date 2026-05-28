@@ -173,7 +173,11 @@ export class PreviewSessionComponent implements OnInit {
       imageList.push(imageId);
     }
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
-    if (this.appContext.patientContext) {
+    const isIndependent = this.authenticationService.getCurrentUserRole() === 'independent';
+    const independentUserId = localStorage.getItem('currentIndependentUserId') ?? undefined;
+    if (isIndependent) {
+      this.templateSessionData = new TemplateSessionData("", "", "", 1, imageList.length, categories, new Date(), new Date(), imageList, independentUserId);
+    } else if (this.appContext.patientContext) {
       this.patient = this.patientService.getCurrentPatient()!;
       console.log("save with patient context:" + this.patient.name);
       this.templateSessionData = new TemplateSessionData("", this.caregiver.id, this.patient.id, 1, imageList.length, categories, new Date(), new Date(), imageList);

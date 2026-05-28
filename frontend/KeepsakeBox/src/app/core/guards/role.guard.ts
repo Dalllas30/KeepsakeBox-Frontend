@@ -38,6 +38,9 @@ export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     return true;
   }
 
-  // Both roles now share the caregiver UI tree.
+  if (role === 'independent') {
+    return router.createUrlTree(['/caregiver/independent']);
+  }
+
   return router.createUrlTree(['/caregiver/persons']);
 };

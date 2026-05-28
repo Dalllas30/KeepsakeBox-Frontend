@@ -94,7 +94,7 @@ export class RegisterComponent implements OnInit {
       if (role === 'caregiver') {
         this.router.navigate(['/caregiver/persons']);
       } else {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/caregiver/independent']);
       }
     } else {
       this.step2Data.submittingRegister = false;
@@ -121,7 +121,7 @@ export class RegisterComponent implements OnInit {
       const loginData = new LoginData(independent.email, independent.password);
       const role = await this.authenticationService.login(loginData);
       if (role === 'independent') {
-        this.router.navigate(['/caregiver/persons']);
+        this.router.navigate(['/caregiver/independent']);
       } else {
         this.router.navigate(['/login']);
       }

@@ -36,13 +36,14 @@
                         <strong><i class="bi bi-calendar-event"></i> {{'birthDate' | translate}}</strong><br>
                         {{caregiver.birthDate | date:'shortDate'}}
                     </div>
-
+                    
+                @if (isCaregiver()) {
                 <!--Caregiver Type-->
                 <div class="p-2 info-field">
                     <strong><i class="bi bi-file-medical"></i> {{'caregiverType' | translate}}</strong><br>
                     {{caregiver.type}}
                 </div>
-
+            }
                 <!--Caregiver Speciality-->
                 @if(caregiver.type=='Formal') {
                     <div class="p-2 info-field">

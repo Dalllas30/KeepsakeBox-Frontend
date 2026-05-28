@@ -43,6 +43,12 @@ export class CaregiverHomeComponent implements OnInit {
       });
 
     this.patient = this.patientService.getCurrentPatient()!;
+
+    if (this.router.url === '/caregiver' || this.router.url === '/caregiver/') {
+      this.router.navigate([
+        this.isIndependent() ? '/caregiver/independent' : '/caregiver/persons'
+      ]);
+    }
   }
 
   public isRouteActive(route: string): boolean {
@@ -51,6 +57,10 @@ export class CaregiverHomeComponent implements OnInit {
 
   public isCaregiver(): boolean {
     return this.authenticationService.getCurrentUserRole() === USER_ROLES.CAREGIVER;
+  }
+
+  public isIndependent(): boolean {
+    return this.authenticationService.getCurrentUserRole() === USER_ROLES.INDEPENDENT;
   }
 
   hideNavBar(): boolean {
