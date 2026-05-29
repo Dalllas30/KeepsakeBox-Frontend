@@ -145,6 +145,10 @@ export class PatientSessionStartlistComponent implements OnInit {
     this.router.navigate(['/caregiver/session/create/sessionCategories']);
   }
 
+  openPwdScreen(): void {
+    window.open('/session/view', '_blank');
+  }
+
   async removeTemplateSession(templateSession: TemplateSession, patientId: string) {
     var response = await this.dialogService.askConfirmation('discardTemplateSessionConfirmation', 'discardTemplateSessionHelp')
       .catch(err => false);

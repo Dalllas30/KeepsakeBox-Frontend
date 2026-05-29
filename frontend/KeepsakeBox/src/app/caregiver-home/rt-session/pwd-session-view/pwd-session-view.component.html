@@ -1,0 +1,22 @@
+<div class="pwd-screen">
+
+  @if (sessionEnded) {
+    <!-- Session finished -->
+    <div class="pwd-message">
+      <i class="bi bi-check-circle pwd-icon"></i>
+      <span>Sessão terminada</span>
+    </div>
+
+  } @else if (currentImageURL) {
+    <!-- Active image — full screen -->
+    <img class="pwd-image" [src]="currentImageURL" alt="">
+
+  } @else {
+    <!-- Waiting for caregiver to start -->
+    <div class="pwd-message">
+      <div class="pwd-spinner"></div>
+      <span>A sessão vai começar em breve...</span>
+    </div>
+  }
+
+</div>

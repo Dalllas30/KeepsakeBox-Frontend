@@ -17,6 +17,7 @@ import { RtSessionImage } from '../../../core/models/rt-session-image.model';
 import { Session } from '../../../core/models/session.model';
 import { DialogService } from '../../../core/services/dialog.service';
 import { ImageService } from '../../../core/services/image.service';
+import { SessionBroadcastService } from '../../../core/services/session-broadcast.service';
 
 @Component({
   selector: 'app-rt-session-running',
@@ -90,6 +91,8 @@ export class RtSessionRunningComponent implements OnInit {
   public updating!: boolean;
   public startTime!: number;
 
+  public isCaregiver: boolean = false;
+
   constructor(
     private router: Router,
     private imageService: ImageService,
@@ -100,6 +103,7 @@ export class RtSessionRunningComponent implements OnInit {
     private patientService: PatientService,
     private dialogService: DialogService,
     private appService: AppService,
+    private broadcast: SessionBroadcastService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -111,6 +115,7 @@ export class RtSessionRunningComponent implements OnInit {
     this.caregiver = this.caregiverService.getCurrentCaregiver()!;
     this.patient = this.patientService.getCurrentPatient()!;
     this.session = this.rtSessionService.getCurrentSession()!;
+    this.isCaregiver = this.authenticationService.getCurrentUserRole() === 'caregiver';
     this.rtSessionImage = new RtSessionImage("", "", "", 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, "", 0, 0, 0, "");
     await this.getRtSessionImage(this.session.id, "Current");
     this.updated = true;
@@ -154,6 +159,10 @@ export class RtSessionRunningComponent implements OnInit {
     this.PreviousImage = this.rtSessionImage.current_image > 1;
     this.NextImage = this.rtSessionImage.current_image < this.rtSessionImage.total_images;
     this.NextButtonRight = 0;
+    // Broadcast current image to the PwD screen tab (caregivers only)
+    if (this.isCaregiver && this.rtSessionImage.imageURL) {
+      this.broadcast.broadcastImage(this.rtSessionImage.imageURL);
+    }
     this.cdr.detectChanges();
   }
 
@@ -313,7 +322,15 @@ export class RtSessionRunningComponent implements OnInit {
     this.rtSessionService.setCurrentDuration(duration);
     this.appService.resetPageStatus();
     this.appService.setPageStatus(action);
+    // Signal the PwD screen that the session has ended
+    if (this.isCaregiver) {
+      this.broadcast.broadcastSessionEnd();
+    }
     this.router.navigate(['/caregiver/session/feedback']);
+  }
+
+  openPwdScreen(): void {
+    window.open('/session/view', '_blank');
   }
 
   async resetfeedback() {

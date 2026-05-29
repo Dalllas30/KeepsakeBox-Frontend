@@ -70,6 +70,15 @@
                 (click)="OpenImageFeedback()">
                 <span class="small-button-text color-white">{{'recordFeedback' | translate}}&nbsp;</span>{{'feedback' | translate}}
         </button>
+        @if (isCaregiver) {
+          &nbsp;&nbsp;
+          <button type="button"
+                  class="btn small-button button-neutral button-full-width"
+                  (click)="openPwdScreen()">
+                  <i class="bi bi-display color-white"></i>
+                  <span class="small-button-text color-white">&nbsp;Ecrã PwD</span>
+          </button>
+        }
       </div>
     </div>
   </div>

@@ -134,5 +134,11 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
+  // PwD dual-screen view — top-level, no auth guard, no caregiver layout
+  {
+    path: 'session/view',
+    loadComponent: () => import('./caregiver-home/rt-session/pwd-session-view/pwd-session-view.component').then(m => m.PwdSessionViewComponent)
+  },
+
   { path: '**', redirectTo: 'login' }
 ];

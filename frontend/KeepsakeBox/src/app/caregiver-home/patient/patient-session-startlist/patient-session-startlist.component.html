@@ -123,6 +123,11 @@
                       {{'finishSession' | translate}}
                     </button>
                   } @else {
+                    <button type="button" class="btn button button-neutral button-actions" style="margin-right: 4px;" (click)="openPwdScreen()">
+                      <i class="bi bi-display color-white"></i>
+                      <span class="color-white">&nbsp;Ecrã PwD</span>
+                    </button>
+
                     <button type="button" class="btn button button-action button-play" (click)="startSessionRT(ts)">
                       <i class="bi bi-play-fill color-white"></i>
                       {{'startSession' | translate}}
