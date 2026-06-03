@@ -262,39 +262,6 @@ export class ImageService {
     return ok;
   }
 
-  async addIndependentImage(token: string, addImageData: AddImageData): Promise<boolean> {
-    let ok = true;
-    const independentUserId = localStorage.getItem('currentIndependentUserId');
-    const createdBy = await this.http.get<any[]>(`${apiUrl}/independents?token=${token}`).toPromise().then(response => response?.[0] ?? null);
-    const payload = {
-      independent_user_id: independentUserId,
-      createdById: addImageData.createdById,
-      createdBy,
-      isFavorite: addImageData.isFavorite,
-      image: {
-        category: addImageData.category,
-        description: addImageData.description,
-        imageURL: addImageData.imageURL,
-        createdById: addImageData.createdById,
-        createdBy,
-        isPersonal: false,
-        isPrivate: addImageData.isPrivate,
-        negativeIntensity: 0,
-        neutralIntensity: 0,
-        positiveIntensity: 0,
-        createdDate: new Date().toISOString(),
-        lastUpdatedDate: new Date().toISOString()
-      }
-    };
-    const response = await this.http.post<any>(`${apiUrl}/images`, payload).toPromise().catch(() => null);
-    if (!response) {
-      ok = false;
-    } else {
-      await this.persistThumbnail(response.id.toString(), addImageData.imageURL);
-    }
-    return ok;
-  }
-
   async getPatientImages(token: string, patientId: string): Promise<PersonalImage[]> {
     let images: PersonalImage[] = [];
     await this.http.get<any[]>(`${apiUrl}/images?patientId=${patientId}`).toPromise().then(response => {
@@ -314,25 +281,10 @@ export class ImageService {
     const patientId = imagesFilterData.patientId;
     const category = imagesFilterData.category;
     const text = (imagesFilterData.description || '').toLowerCase();
-
-    const role = localStorage.getItem('currentUserRole');
-    const independentUserId = localStorage.getItem('currentIndependentUserId');
-
     return (allImages ?? [])
       .filter(image => !category || category === 'All' || image.image?.category === category)
       .filter(image => !text || `${image.image?.description ?? ''}`.toLowerCase().includes(text))
-      .filter(image => {
-        if (role === 'independent') {
-          // Independent users only see their own images
-          return image.independent_user_id?.toString() === independentUserId;
-        }
-        // Caregivers: apply the standard visibility rules, but never show independent-user images
-        if (image.independent_user_id) return false;
-        return imagesFilterData.allPublicImage
-          || image.image?.isPrivate === false
-          || image.createdById?.toString() === caregiverId
-          || image.patientId === patientId;
-      })
+      .filter(image => imagesFilterData.allPublicImage || image.image?.isPrivate === false || image.createdById === caregiverId || image.patientId === patientId)
       .map(image => this.normalizePersonalImage(image))
       .sort((a, b) => (new Date(a.image.lastUpdatedDate ?? 0).getTime()) < (new Date(b.image.lastUpdatedDate ?? 0).getTime()) ? 1 : -1);
   }
@@ -344,29 +296,10 @@ export class ImageService {
   }
 
   async getCaregiverImages(token: string): Promise<PersonalImage[]> {
-    const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise().catch(() => null);
-    const caregiverId = caregivers?.[0]?.id?.toString();
-    if (!caregiverId) return [];
-    const allImages = await this.http.get<any[]>(`${apiUrl}/images`).toPromise().catch(() => []);
-    const images = (allImages ?? [])
-      .filter(image => {
-        // Match by root-level or nested createdById; exclude patient images and independent-user images
-        const id = (image.createdById ?? image.image?.createdById ?? '').toString();
-        return id === caregiverId && !image.independent_user_id;
-      })
-      .map(image => this.normalizePersonalImage(image))
-      .sort((a, b) =>
-        (new Date(a.image.lastUpdatedDate ?? 0).getTime()) < (new Date(b.image.lastUpdatedDate ?? 0).getTime()) ? 1 : -1);
-    await Promise.all(images.map(async el => {
-      el.image.thumbnailPath = await this.getThumbnailPath(el.image.id);
-    }));
-    return images;
-  }
-
-  async getIndependentImages(token: string): Promise<PersonalImage[]> {
     let images: PersonalImage[] = [];
-    const independentUserId = localStorage.getItem('currentIndependentUserId');
-    await this.http.get<any[]>(`${apiUrl}/images?independent_user_id=${independentUserId}`).toPromise().then(response => {
+    const caregivers = await this.http.get<any[]>(`${apiUrl}/caregivers?token=${token}`).toPromise();
+    const caregiverId = caregivers?.[0]?.id?.toString();
+    await this.http.get<any[]>(`${apiUrl}/images?createdById=${caregiverId}`).toPromise().then(response => {
       images = (response ?? []).map(image => this.normalizePersonalImage(image)).sort((a, b) =>
         (new Date(a.image.lastUpdatedDate ?? 0).getTime()) < (new Date(b.image.lastUpdatedDate ?? 0).getTime()) ? 1 : -1);
     });

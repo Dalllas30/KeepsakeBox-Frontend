@@ -1,0 +1,17 @@
+.onboarding-wrapper {
+  padding: 1.5rem;
+  min-height: 100vh;
+}
+
+.onboarding-card {
+  width: 100%;
+  max-width: 640px;
+}
+
+.half-width {
+  width: 50%;
+}
+
+.full-width {
+  width: 100%;
+}

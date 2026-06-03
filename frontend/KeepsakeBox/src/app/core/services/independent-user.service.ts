@@ -19,7 +19,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { IndependentUser } from '../models/independent-user.model';
-import { IndependentUserRegisterData } from '../models/independent-user-register-data.model';
 import { environment } from '../../../environments/environment';
 
 const apiUrl = environment.apiUrl;
@@ -93,33 +92,6 @@ export class IndependentUserService {
   // ------------------------------------------------------------------------
   // Mutations
   // ------------------------------------------------------------------------
-
-  /**
-   * Register a new independent user.
-   * Returns the persisted record (with backend-generated id) on success, null on failure.
-   */
-  async register(data: IndependentUserRegisterData): Promise<IndependentUser | null> {
-    try {
-      const response = await firstValueFrom(
-        this.http.post<any>(`${apiUrl}/independents`, {
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          password: data.password,
-          birthDate: data.birthDate,
-          profileImage: data.profileImageURL,
-          profileImageURL: data.profileImageURL,
-          primaryCaregiverId: data.primaryCaregiverId ?? null,
-          token: 'temp-token-' + Date.now(),
-          isActive: true,
-        })
-      );
-      return response ? this.normalize(response) : null;
-    } catch (error) {
-      console.error('Independent user registration error:', error);
-      return null;
-    }
-  }
 
   /** Update an independent user (PATCH-style to avoid clobbering server-only fields). */
   async update(id: string, partial: Partial<IndependentUser>): Promise<boolean> {

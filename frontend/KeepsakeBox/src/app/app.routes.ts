@@ -4,11 +4,17 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { CaregiverHomeComponent } from './caregiver-home/caregiver-home.component';
 import { roleGuard } from './core/guards/role.guard';
+import { onboardingGuard } from './core/guards/onboarding.guard';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  {
+    path: 'onboarding',
+    canActivate: [onboardingGuard],
+    loadComponent: () => import('./features/auth/onboarding/onboarding.component').then(m => m.OnboardingComponent),
+  },
   { path: 'upload', loadComponent: () => import('./outside-user-image-upload/outside-user-image-upload.component').then(m => m.OutsideUserImageUploadComponent) },
   {
     path: 'caregiver',
@@ -18,24 +24,12 @@ export const routes: Routes = [
     children: [
 
       // --- Persons / Patients ---
-      {
-        path: 'persons',
-        canActivate: [roleGuard],
-        data: { roles: ['caregiver'] },
-        loadComponent: () => import('./caregiver-home/caregiver-patients/caregiver-patients.component').then(m => m.CaregiverPatientsComponent)
-      },
-      {
-        path: 'persons/add',
-        canActivate: [roleGuard],
-        data: { roles: ['caregiver'] },
-        loadComponent: () => import('./caregiver-home/patient/add-patient/add-patient.component').then(m => m.AddPatientComponent)
-      },
+      { path: 'persons', loadComponent: () => import('./caregiver-home/caregiver-patients/caregiver-patients.component').then(m => m.CaregiverPatientsComponent) },
+      { path: 'persons/add', loadComponent: () => import('./caregiver-home/patient/add-patient/add-patient.component').then(m => m.AddPatientComponent) },
 
       // --- Person (patient subpages) ---
       {
         path: 'person',
-        canActivate: [roleGuard],
-        data: { roles: ['caregiver'] },
         loadComponent: () => import('./caregiver-home/patient/patient.component').then(m => m.PatientComponent),
         children: [
           { path: 'info', loadComponent: () => import('./caregiver-home/patient/patient-info/patient-info.component').then(m => m.PatientInfoComponent) },

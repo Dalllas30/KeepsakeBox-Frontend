@@ -197,22 +197,9 @@ import { environment } from '../../../environments/environment';
         };
       });
 
-      // Filter by owner: independent users see only their own sessions;
-      // caregivers see sessions filtered by patientId, never seeing independent-user sessions.
-      const independentUserId = localStorage.getItem('currentIndependentUserId');
-      const userRole = localStorage.getItem('currentUserRole');
-      if (userRole === 'independent' && independentUserId) {
-        templateSessions = templateSessions.filter(ts =>
-          ts.independent_user_id?.toString() === independentUserId.toString()
-        );
-      } else {
-        // Caregiver: strip out any session that belongs to an independent user
-        templateSessions = templateSessions.filter(ts => !ts.independent_user_id);
-        if (patientId && patientId !== 'any' && patientId !== 'all') {
-          templateSessions = templateSessions.filter(ts => ts.patient_id?.toString() === patientId.toString());
-        }
+      if (patientId && patientId !== 'any' && patientId !== 'all') {
+        templateSessions = templateSessions.filter(templateSession => templateSession.patient_id?.toString() === patientId.toString());
       }
-
       if (filter && filter !== 'all') {
         if (filter === 'ongoing') {
           templateSessions = templateSessions.filter(templateSession => templateSession.isStarted);
@@ -348,15 +335,13 @@ import { environment } from '../../../environments/environment';
       if (!templateSession) {
         return null;
       }
-      const isIndependent = !!templateSession.independent_user_id;
       await this.http.post<any>(`${environment.apiUrl}/sessions`, {
         template_id: templateSessionId,
-        caregiver_id: isIndependent ? null : templateSession.caregiver_id,
-        caregiver_name: isIndependent ? null : templateSession.caregiver_name,
-        independent_user_id: isIndependent ? templateSession.independent_user_id : null,
-        patient_id: isIndependent ? null : patientId,
-        patient_name: isIndependent ? null : templateSession.patient_name,
-        full_name: isIndependent ? null : `${templateSession.caregiver_name ?? ''} ${templateSession.patient_name ?? ''}`.trim(),
+        caregiver_id: templateSession.caregiver_id,
+        caregiver_name: templateSession.caregiver_name,
+        patient_id: patientId,
+        patient_name: templateSession.patient_name,
+        full_name: `${templateSession.caregiver_name ?? ''} ${templateSession.patient_name ?? ''}`.trim(),
         start_session: new Date().toISOString(),
         end_session: null,
         sessionFinished: false,
