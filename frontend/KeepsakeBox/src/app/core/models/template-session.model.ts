@@ -20,6 +20,7 @@ export class TemplateSession {
       public last_updated_date: Date,
       public isStarted: boolean,
       public start_session_date: Date,
-      public duration: Time
+      public duration: Time,
+      public independent_user_id?: string
   ){}
 }

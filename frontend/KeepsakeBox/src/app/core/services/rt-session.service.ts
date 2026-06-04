@@ -81,18 +81,9 @@ export class RtSessionService {
     });
   }
 
-  private async getCurrentCaregiverId(_token: string): Promise<string | null> {
-    // With Keycloak the token is a JWT — not a json-server lookup key.
-    // Read the ID that resolveCurrentUser stored after login instead.
-    const cached = localStorage.getItem('currentCaregiverId');
-    if (cached) return cached;
-    // Fallback to json-server for legacy/testing only (swallows errors).
-    try {
-      const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?token=${_token}`).toPromise();
-      return caregivers?.[0]?.id?.toString() ?? null;
-    } catch {
-      return null;
-    }
+  private async getCurrentCaregiverId(token: string): Promise<string | null> {
+    const caregivers = await this.http.get<any[]>(`${environment.apiUrl}/caregivers?token=${token}`).toPromise();
+    return caregivers?.[0]?.id?.toString() ?? localStorage.getItem('currentCaregiverId');
   }
 
   private async upsertSessionFeedback(sessionFeedback: SessionFeedback): Promise<boolean> {
@@ -192,7 +183,21 @@ export class RtSessionService {
   }
 
   async getSessionListByCaregiverHistory(token: string): Promise<Session[]> {
+    const role = localStorage.getItem('currentUserRole');
+    if (role === 'independent') {
+      return this.getSessionListByIndependent(token);
+    }
     return this.getSessionListByCaregiver(token);
+  }
+
+  async getSessionListByIndependent(token: string): Promise<Session[]> {
+    const independentUserId = localStorage.getItem('currentIndependentUserId');
+    const sessions = await this.getSessions();
+    return sessions.filter(session =>
+      session.independent_user_id?.toString() === independentUserId?.toString() &&
+      session.sessionFinished &&
+      session.global_feedback != null
+    );
   }
 
   async getSessionListByDateCaregiver(
@@ -201,6 +206,10 @@ export class RtSessionService {
     filterYear: string,
     patientId: string
   ): Promise<Session[]> {
+    const role = localStorage.getItem('currentUserRole');
+    if (role === 'independent') {
+      return this.getSessionListByDateIndependent(token, filter, filterYear);
+    }
     const caregiverId = await this.getCurrentCaregiverId(token);
     const sessions = await this.getSessions();
     return sessions.filter(session => {
@@ -210,6 +219,22 @@ export class RtSessionService {
       const matchesMonth = !filter || filter === 'all' || `${startDate.getMonth() + 1}` === filter;
       const matchesYear = !filterYear || filterYear === 'all' || `${startDate.getFullYear()}` === filterYear;
       return matchesCaregiver && matchesPatient && matchesMonth && matchesYear && session.sessionFinished && session.global_feedback != null;
+    });
+  }
+
+  async getSessionListByDateIndependent(
+    token: string,
+    filter: string,
+    filterYear: string
+  ): Promise<Session[]> {
+    const independentUserId = localStorage.getItem('currentIndependentUserId');
+    const sessions = await this.getSessions();
+    return sessions.filter(session => {
+      const startDate = new Date(session.start_session as any);
+      const matchesIndependent = session.independent_user_id?.toString() === independentUserId?.toString();
+      const matchesMonth = !filter || filter === 'all' || `${startDate.getMonth() + 1}` === filter;
+      const matchesYear = !filterYear || filterYear === 'all' || `${startDate.getFullYear()}` === filterYear;
+      return matchesIndependent && matchesMonth && matchesYear && session.sessionFinished && session.global_feedback != null;
     });
   }
 
